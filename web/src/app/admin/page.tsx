@@ -110,17 +110,19 @@ export default function Admin() {
     <main id="main">
       <div className="page-head">
         <h1>검수</h1>
-        <p className="sub">
-          볼 공지 {notices.length}건. 위에서부터 보세요. 모든 재학생이 보는 공지가 먼저, 그림에만 날짜가 있어 학생 화면에
-          날짜 없이 &lsquo;확인 중&rsquo;으로 나가는 공지가 그다음이에요.
-          {queue && closedTotal > 0 && (
-            <>
-              {" "}
-              자동 정리 {closedTotal}건 (마감 지남 {queue.closed.PAST}, 결과 발표 {queue.closed.RESULT}, 날짜 없는 지난 안내{" "}
-              {queue.closed.STALE}).
-            </>
-          )}
-        </p>
+        {queue && (
+          <p className="sub">
+            볼 공지 {notices.length}건. 위에서부터 보세요. 모든 재학생이 보는 공지가 먼저, 그림에만 날짜가 있어 학생 화면에
+            날짜 없이 &lsquo;확인 중&rsquo;으로 나가는 공지가 그다음이에요.
+            {closedTotal > 0 && (
+              <>
+                {" "}
+                자동 정리 {closedTotal}건 (마감 지남 {queue.closed.PAST}, 결과 발표 {queue.closed.RESULT}, 날짜 없는 지난 안내{" "}
+                {queue.closed.STALE}).
+              </>
+            )}
+          </p>
+        )}
       </div>
       {error && (
         <div className="msg error" role="alert">
@@ -128,16 +130,18 @@ export default function Admin() {
         </div>
       )}
 
-      <div className="segmented wrap" role="group" aria-label="검수 사유 필터">
-        {(["ALL", "PARSED", "IMAGE_ONLY", "NO_DATE", "PARSE_FAILED"] as const).map((r) => (
-          <button key={r} aria-pressed={filter === r} onClick={() => setFilter(r)}>
-            {r === "ALL" ? "전체" : REASON_LABEL[r]} <span className="n">{counts[r] ?? 0}</span>
-          </button>
-        ))}
-      </div>
+      {queue && (
+        <div className="segmented wrap" role="group" aria-label="검수 사유 필터">
+          {(["ALL", "PARSED", "IMAGE_ONLY", "NO_DATE", "PARSE_FAILED"] as const).map((r) => (
+            <button key={r} aria-pressed={filter === r} onClick={() => setFilter(r)}>
+              {r === "ALL" ? "전체" : REASON_LABEL[r]} <span className="n">{counts[r] ?? 0}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
-      {queue === null && !error ? (
-        <div className="empty">불러오는 중…</div>
+      {queue === null ? (
+        !error && <div className="empty">불러오는 중…</div>
       ) : notices.length === 0 ? (
         <div className="empty">검수할 공지가 없어요.</div>
       ) : (
@@ -240,11 +244,11 @@ function FeedbackList() {
           {error}
         </p>
       ) : entries === null ? (
-        <p className="muted" style={{ padding: 16 }}>불러오는 중…</p>
+        <p className="muted">불러오는 중…</p>
       ) : entries.length === 0 ? (
-        <p className="muted" style={{ padding: 16 }}>아직 남긴 말이 없어요.</p>
+        <p className="muted">아직 남긴 말이 없어요.</p>
       ) : (
-        <ul className="plain-list" style={{ padding: "8px 20px 16px" }}>
+        <ul className="plain-list">
           {entries.map((f) => (
             <li key={f.id}>
               <span className="muted">{f.createdAt.slice(0, 10)}</span> {f.message}

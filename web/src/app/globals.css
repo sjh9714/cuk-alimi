@@ -81,6 +81,12 @@ body {
   overflow-wrap: anywhere;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
 h1,
 h2,
 h3 {
@@ -252,6 +258,7 @@ nav.tabs a.active {
 }
 
 .site-footer {
+  width: 100%;
   max-width: 1240px;
   margin: 0 auto;
   padding: 0 32px 40px;
@@ -279,6 +286,8 @@ nav.tabs a.active {
 /* ───── 바탕 ───── */
 
 main {
+  flex: 1 0 auto;
+  width: 100%;
   max-width: 1240px;
   margin: 0 auto;
   padding: 22px 32px 56px;
@@ -455,6 +464,22 @@ legend + * {
   justify-content: space-between;
 }
 
+/* 입력칸과 단추 한 줄. 단추 글자가 접히지 않고 입력칸과 높이가 같다. */
+.row.fit {
+  flex-wrap: nowrap;
+  align-items: stretch;
+}
+
+.row.fit button {
+  flex: none;
+  padding: 10px 16px;
+  white-space: nowrap;
+}
+
+.sr-only + .row.fit {
+  margin-top: 12px;
+}
+
 .grid2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -578,12 +603,11 @@ legend + * {
 /* 분류 고르기 (검수 필터). 홈의 .seg와 같은 모양. */
 .segmented {
   display: flex;
+  flex-wrap: wrap;
   gap: 2px;
   padding: 3px;
   width: fit-content;
   max-width: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
   border-radius: 10px;
   background: var(--seg);
 }
@@ -741,7 +765,7 @@ legend + * {
 }
 
 .cell.now .num {
-  margin-right: 10px;
+  margin: 0 12px 0 2px;
   color: var(--alarm);
 }
 
@@ -764,15 +788,17 @@ legend + * {
 
 .ring {
   position: absolute;
-  left: -17px;
-  top: -13px;
-  width: 56px;
+  left: 50%;
+  top: 50%;
+  width: calc(100% + 30px);
+  min-width: 56px;
   height: 60px;
+  transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
-.cell.quiet .num,
-.cell.quiet .wd {
+.cell.quiet:not(.now) .num,
+.cell.quiet:not(.now) .wd {
   color: #8f97b3;
   font-weight: 600;
 }
@@ -845,6 +871,11 @@ legend + * {
   color: var(--mute);
 }
 
+/* 긴 설명이 종류 글자 옆에서 바로 이어지게 둘을 한 덩어리 글자로 둔다. */
+.it .m .what span {
+  margin-left: 8px;
+}
+
 .it .m b {
   font-weight: 700;
 }
@@ -898,6 +929,11 @@ legend + * {
   color: var(--body);
 }
 
+.it .m .report {
+  display: flex;
+  margin-top: 4px;
+}
+
 .it .m .report,
 .events .report {
   padding: 0;
@@ -916,13 +952,11 @@ legend + * {
   color: var(--alarm);
 }
 
-/* 모든 날짜에 달려 있어서 평소에는 감추고, 행에 마우스를 올리거나 키보드로 닿을 때만 보인다. */
+/* 행사마다 달려 있어서 평소에는 감추고, 마우스를 올리거나 키보드로 닿을 때만 보인다. */
 @media (hover: hover) {
-  .it .m .report,
   .events .report {
     opacity: 0;
   }
-  .it:hover .report,
   .events li:hover .report,
   .report:focus-visible {
     opacity: 1;
@@ -1112,7 +1146,15 @@ details.fold[open] > summary svg {
   transform: rotate(180deg);
 }
 
+.fold-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 10px;
+}
+
 .fold-title {
+  flex: none;
   font-size: 15px;
   font-weight: 800;
   color: var(--pen);
@@ -1185,10 +1227,15 @@ details.fold .note {
   margin-top: 28px;
 }
 
+/* 붙어 있을 때 둥근 모서리 틈으로 아래 칸이 비치지 않게 바깥은 종이색으로 막는다. */
 .band {
   position: sticky;
   top: var(--header-h);
   z-index: 5;
+  background: var(--paper);
+}
+
+.band-in {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -1204,7 +1251,7 @@ details.fold .note {
   color: var(--cat, var(--pen));
 }
 
-.band span {
+.band-in span {
   font-size: 14px;
   font-weight: 700;
 }
@@ -1641,6 +1688,11 @@ details.fold .note {
   border-top: 0;
 }
 
+.item-row > button {
+  flex: none;
+  white-space: nowrap;
+}
+
 .item-form {
   padding: 14px 16px 16px;
   margin: 8px 0;
@@ -1730,8 +1782,19 @@ details.fold .note {
   .cell:last-child {
     border-bottom: 0;
   }
-  .cell.quiet {
+  .cell.quiet:not(.now) {
     display: none;
+  }
+  details.fold > summary {
+    flex-wrap: wrap;
+    gap: 0 10px;
+  }
+  details.fold .note {
+    order: 3;
+    flex-basis: 100%;
+  }
+  details.fold > summary svg {
+    margin-left: auto;
   }
   .spread.two,
   .spread.stats {
@@ -1758,7 +1821,9 @@ details.fold .note {
 /* 손가락으로 누르는 기기에서는 작은 체크와 책갈피의 누르는 면만 넓힌다. */
 @media (pointer: coarse) {
   .box,
-  .keep {
+  .keep,
+  .report,
+  .it .m summary {
     position: relative;
   }
   .box::after,
@@ -1766,6 +1831,12 @@ details.fold .note {
     content: "";
     position: absolute;
     inset: -13px;
+  }
+  .report::after,
+  .it .m summary::after {
+    content: "";
+    position: absolute;
+    inset: -9px -5px;
   }
 }
 

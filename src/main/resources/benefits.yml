@@ -61,7 +61,7 @@
 - slug: microsoft-365-education
   name: Microsoft 365 Education (A1)
   category: TOOL
-  summary: 웹용 Word·Excel·PowerPoint·OneNote·Outlook 무료
+  summary: Word, Excel, PowerPoint 등 웹용 Office 앱 무료
   condition: 적격 교육기관의 학교 메일. 대부분 즉시 승인, 학교 확인이 필요하면 최대 1개월
   how_to: microsoft.com/ko-kr/education/products/office 에서 학교 메일로 시작
   source_name: Microsoft

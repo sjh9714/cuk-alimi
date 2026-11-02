@@ -4,10 +4,10 @@ import "./globals.css";
 import { Header } from "./tabs";
 
 export const metadata: Metadata = {
-  title: "CUK 알리미",
+  title: { default: "CUK 알리미", template: "%s | CUK 알리미" },
   description: "가톨릭대 학생에게 돈이 걸린 공지와 학생 혜택을, 출처와 확인일이 붙은 것만 알려 드립니다.",
   manifest: "/manifest.webmanifest",
-  icons: { icon: "/icon.svg", apple: "/icon.svg" },
+  icons: { icon: "/icon.svg", apple: "/icon-180.png" },
   appleWebApp: { capable: true, title: "CUK 알리미", statusBarStyle: "default" },
 };
 

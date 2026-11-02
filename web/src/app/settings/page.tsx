@@ -151,7 +151,7 @@ export default function Settings() {
             <form onSubmit={requestLogin}>
               <p className="muted">비밀번호는 없어요. 이메일로 온 링크를 누르면 로그인돼요.</p>
               <label htmlFor="email">이메일</label>
-              <div className="row" style={{ flexWrap: "nowrap" }}>
+              <div className="row fit">
                 <input
                   id="email"
                   type="email"
@@ -163,7 +163,7 @@ export default function Settings() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@catholic.ac.kr"
                 />
-                <button className="primary" type="submit" disabled={busy} style={{ padding: "10px 16px" }}>
+                <button className="primary" type="submit" disabled={busy}>
                   {busy ? "보내는 중…" : "링크 받기"}
                 </button>
               </div>
@@ -218,6 +218,7 @@ export default function Settings() {
                   setSecondMajor(e.target.value);
                   setSaved(false);
                 }}
+                placeholder="없으면 비워 두세요"
               />
               <p className="hint">학년은 입학년도로 계산해요. 휴학했다면 실제와 다를 수 있어요.</p>
 
@@ -303,7 +304,7 @@ export default function Settings() {
 
           <section className="panel">
             <div className="row between">
-              <span className="sub">{me.email}</span>
+              <span className="sub">로그인 상태는 30일 동안 유지돼요.</span>
               <button onClick={logout}>로그아웃</button>
             </div>
           </section>
@@ -325,7 +326,7 @@ export default function Settings() {
               </div>
             ) : (
               <p style={{ marginTop: 12 }}>
-                <button className="ghost danger" onClick={() => setConfirmDelete(true)}>
+                <button className="danger" onClick={() => setConfirmDelete(true)}>
                   탈퇴하고 내 정보 지우기
                 </button>
               </p>
@@ -373,7 +374,7 @@ function FeedbackPanel() {
         <label htmlFor="feedback" className="sr-only">
           남길 말
         </label>
-        <div className="row" style={{ flexWrap: "nowrap" }}>
+        <div className="row fit">
           <input
             id="feedback"
             value={message}
@@ -384,12 +385,7 @@ function FeedbackPanel() {
             }}
             placeholder="예: 우리 학과 장학 공지도 보고 싶어요"
           />
-          <button
-            className="primary"
-            type="submit"
-            disabled={busy || !message.trim()}
-            style={{ padding: "10px 16px", whiteSpace: "nowrap", flexShrink: 0 }}
-          >
+          <button className="primary" type="submit" disabled={busy || !message.trim()}>
             {busy ? "보내는 중…" : "보내기"}
           </button>
         </div>

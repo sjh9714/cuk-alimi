@@ -12,8 +12,23 @@ const KINDS: (Kind | "all")[] = ["all", "scholarship", "academic", "career"];
 const WEEKDAY = ["일", "월", "화", "수", "목", "금", "토"];
 const TAG_CLASS = { 시작: "start", 마감: "end", 행사: "event" };
 const DONE_KEY = "cuk-alimi.done";
+const MEMO_MAX = 6;
 
+/** 정적 HTML에는 빌드한 날이 박힌다. 이번 주는 브라우저에서 처음 그릴 때 정한다. */
 export default function Home() {
+  const [today, setToday] = useState<Date | null>(null);
+  useEffect(() => setToday(new Date()), []);
+  if (!today) {
+    return (
+      <main id="main" className="planner">
+        <div className="spread loading" aria-label="불러오는 중" />
+      </main>
+    );
+  }
+  return <Planner today={today} />;
+}
+
+function Planner({ today }: { today: Date }) {
   const [feed, setFeed] = useState<Feed | null>(null);
   const [me, setMe] = useState<Me | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +50,7 @@ export default function Home() {
   }, []);
 
   const toggleSave = async (line: Line) => {
+    setError(null);
     try {
       if (line.saved) await api.unsave(line.id);
       else await api.save(line.id);
@@ -46,6 +62,7 @@ export default function Home() {
 
   const reportDate = async (line: Line) => {
     if (!window.confirm("이 날짜가 학교 원문과 다른가요? 신고하면 운영자가 확인해요.")) return;
+    setError(null);
     try {
       await api.reportDate(line.id);
       setFeed(await api.feed());
@@ -61,7 +78,6 @@ export default function Home() {
     writeDone(next);
   };
 
-  const today = new Date();
   const todayIso = iso(today);
   const monday = mondayOf(today);
   const sections = useMemo(() => feed?.sections ?? [], [feed]);
@@ -72,13 +88,16 @@ export default function Home() {
   const week2 = iso(addDays(monday, 7));
   const after = iso(addDays(monday, 14));
   const open = (t: Task) => !done.has(t.key);
-  const word = kind === "all" ? "일" : KIND_LABEL[kind];
+  const word = kind === "all" ? "일" : `${KIND_LABEL[kind]} 일정`;
   const todayCount = shown.filter((t) => t.date === todayIso && open(t)).length;
   const weekCount = shown.filter((t) => t.date >= todayIso && t.date < week2 && open(t)).length;
   const upcoming = upcomingRows(shown, events, after);
   const others = shown.filter((t) => t.date >= after && t.kind !== "schedule");
-  const undated = sections.find((s) => s.key === "undated")?.cards ?? [];
-  const folded = sections.filter((s) => (s.key === "region" || s.key === "group") && s.cards.length > 0);
+  const undated = (sections.find((s) => s.key === "undated")?.cards ?? []).filter((c) => inKind(c.kind));
+  const folded = sections
+    .filter((s) => s.key === "region" || s.key === "group")
+    .map((s) => ({ ...s, cards: s.cards.filter((c) => inKind(c.kind)) }))
+    .filter((s) => s.cards.length > 0);
   const saved = shown.filter((t) => t.saved);
 
   const board = { todayIso, done, canSave: !!me, onDone: toggleDone, onSave: toggleSave, onReport: reportDate };
@@ -129,14 +148,14 @@ export default function Home() {
               <Day key={iso(d)} date={d} tasks={shown} events={events} {...board} />
             ))}
             <div className="cell memo">
-              <h2>날짜 확인 중 {undated.length}건</h2>
+              <h2>{undated.length ? `날짜 확인 중 ${undated.length}건` : "날짜 확인 중"}</h2>
               {undated.length === 0 ? (
                 <p className="hint">지금은 없어요.</p>
               ) : (
                 <>
                   <p className="hint">날짜가 공지 그림에만 있어요.</p>
                   <ul>
-                    {undated.slice(0, 6).map((c) => (
+                    {undated.slice(0, MEMO_MAX).map((c) => (
                       <li key={c.key}>
                         <a href={c.url} target="_blank" rel="noreferrer">
                           {cleanTitle(c.title)}
@@ -144,6 +163,7 @@ export default function Home() {
                       </li>
                     ))}
                   </ul>
+                  {undated.length > MEMO_MAX && <p className="hint">외 {undated.length - MEMO_MAX}건</p>}
                 </>
               )}
             </div>
@@ -161,7 +181,7 @@ export default function Home() {
               <Day key={iso(d)} date={d} tasks={shown} events={events} {...board} />
             ))}
             <div className="cell memo">
-              <h2>내 저장 {me ? `${saved.length}건` : ""}</h2>
+              <h2>{me ? `내 저장 ${saved.length}건` : "내 저장"}</h2>
               {!me ? (
                 <p className="hint">
                   <Link href="/settings/">로그인</Link>하면 마감을 저장하고 메일로 받을 수 있어요.
@@ -169,16 +189,19 @@ export default function Home() {
               ) : saved.length === 0 ? (
                 <p className="hint">행 끝의 책갈피를 누르면 여기에 모여요.</p>
               ) : (
-                <ul>
-                  {saved.slice(0, 6).map((t) => (
-                    <li key={t.key}>
-                      <a href={t.url} target="_blank" rel="noreferrer">
-                        {t.title}
-                      </a>
-                      <span>{shortDate(t.date)}</span>
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <ul>
+                    {saved.slice(0, MEMO_MAX).map((t) => (
+                      <li key={t.key}>
+                        <a href={t.url} target="_blank" rel="noreferrer">
+                          {t.title}
+                        </a>
+                        <span>{shortDate(t.date)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  {saved.length > MEMO_MAX && <p className="hint">외 {saved.length - MEMO_MAX}건</p>}
+                </>
               )}
             </div>
           </div>
@@ -304,20 +327,22 @@ function Row({ task, done, canSave, onDone, onSave, onReport }: Omit<Board, "tod
           </a>
         </p>
         <div className="m">
-          <b>{KIND_LABEL[task.kind]}</b>
-          {task.from && <span>{task.from}</span>}
+          <span className="what">
+            <b>{KIND_LABEL[task.kind]}</b>
+            {task.from && <span>{task.from}</span>}
+          </span>
           {task.at && <em>{task.at}</em>}
           {task.mine && <i>내게 맞음</i>}
-          {task.excerpt && (
+          {(task.excerpt || canSave) && (
             <details>
-              <summary>자격</summary>
-              <p>{task.excerpt}</p>
+              <summary>자세히</summary>
+              {task.excerpt && <p>{task.excerpt}</p>}
+              {canSave && (
+                <button className="report" onClick={() => onReport(task.line)}>
+                  날짜가 달라요
+                </button>
+              )}
             </details>
-          )}
-          {canSave && (
-            <button className="report" onClick={() => onReport(task.line)}>
-              날짜가 달라요
-            </button>
           )}
         </div>
       </div>
@@ -364,12 +389,13 @@ function FoldList({ tasks, tagged = false }: { tasks: Task[]; tagged?: boolean }
 /** 오늘에 치는 빨간 펜 동그라미. */
 function Ring() {
   return (
-    <svg className="ring" viewBox="0 0 56 60" fill="none" aria-hidden>
+    <svg className="ring" viewBox="0 0 56 60" preserveAspectRatio="none" fill="none" aria-hidden>
       <path
         d="M17 8C31 1 49 7 52 26c3 18-11 31-27 30C9 55 2 41 5 26 8 13 19 5 35 6"
         stroke="currentColor"
         strokeWidth="2.6"
         strokeLinecap="round"
+        vectorEffect="non-scaling-stroke"
       />
     </svg>
   );

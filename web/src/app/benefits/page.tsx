@@ -76,7 +76,9 @@ export default function Benefits() {
         return (
           <section key={c} className={`benefit-group cat-${c.toLowerCase()}`} aria-labelledby={`cat-${c}`}>
             <h2 id={`cat-${c}`} className="band">
-              {CATEGORY[c] ?? c} <span>{list.length}개</span>
+              <span className="band-in">
+                {CATEGORY[c] ?? c} <span>{list.length}개</span>
+              </span>
             </h2>
             <ul className="spread two">
               {list.map((b) => (
