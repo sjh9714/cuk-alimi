@@ -244,7 +244,11 @@ nav.tabs a.active {
 .site-footer {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 20px 24px 40px;
+  padding: 0 24px 40px;
+}
+
+.site-footer .inner {
+  padding-top: 20px;
   border-top: 1px solid var(--hair);
   display: flex;
   flex-wrap: wrap;
@@ -514,7 +518,7 @@ legend + * {
 }
 
 .empty {
-  padding: 24px 0;
+  padding: 8px 0 24px;
   color: var(--body);
 }
 
@@ -627,33 +631,13 @@ legend + * {
   line-height: 1.15;
 }
 
-.hero h1.hot {
-  color: var(--alarm);
-}
-
-.hero .what {
-  margin-top: 8px;
-  font-size: 15px;
-  color: var(--body);
-  max-width: 60ch;
-}
-
-.hero .what a {
-  color: var(--ink);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.hero .what a:hover {
-  text-decoration: underline;
-}
 
 .toolbar {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: 8px 20px;
-  margin-bottom: 28px;
+  margin-bottom: 40px;
   border-bottom: 1px solid var(--hair);
 }
 
@@ -680,8 +664,12 @@ legend + * {
   gap: 0 16px;
 }
 
-.dayg + .day {
-  margin-top: 36px;
+.dayg + .dayg {
+  margin-top: 40px;
+}
+
+.dayg.newmonth {
+  margin-top: 64px;
 }
 
 .gutter {
@@ -694,10 +682,10 @@ legend + * {
 
 .gutter .mon {
   position: absolute;
-  top: -20px;
+  top: -22px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--mute);
+  color: var(--ink);
   line-height: 1;
 }
 
@@ -716,6 +704,18 @@ legend + * {
   color: var(--mute);
 }
 
+.gutter .left {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.dayg.hot .gutter .left {
+  color: var(--alarm);
+}
+
 .gutter .mon {
   position: absolute;
   top: -20px;
@@ -726,24 +726,8 @@ legend + * {
 }
 
 .rule {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 12px;
   height: 36px;
-  padding-bottom: 6px;
   border-bottom: 1px solid var(--hair);
-}
-
-.rule .left {
-  margin-left: auto;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--mute);
-}
-
-.dayg.hot .rule .left {
-  color: var(--alarm);
 }
 
 .rows {
@@ -756,11 +740,11 @@ legend + * {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 0 12px;
-  padding: 12px 0;
+  padding: 7px 0;
 }
 
-.item + .item {
-  border-top: 1px solid var(--hair);
+.rows .item:first-child {
+  padding-top: 12px;
 }
 
 .item.plain {
@@ -833,10 +817,7 @@ legend + * {
 }
 
 .extras {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 16px;
-  margin-top: 6px;
+  display: contents;
 }
 
 details.more {
@@ -853,8 +834,8 @@ details.more summary {
   gap: 3px;
   cursor: pointer;
   list-style: none;
-  font-weight: 600;
-  color: var(--body);
+  font-weight: 500;
+  color: var(--mute);
 }
 
 details.more summary::-webkit-details-marker {
@@ -1044,10 +1025,6 @@ details.fold .dayg .rule {
   font-weight: 500;
   color: var(--mute);
   padding: 6px 0 4px;
-}
-
-.calendar th:first-child {
-  color: var(--alarm);
 }
 
 .calendar td {

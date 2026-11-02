@@ -30,7 +30,9 @@ export function Header() {
               </Link>
             ))}
           </nav>
-          <span className="header-user">{me ? me.email : <Link href="/settings/">로그인</Link>}</span>
+          <span className="header-user">
+            <Link href="/settings/">{me ? "내 계정" : "로그인"}</Link>
+          </span>
         </div>
       </header>
       <nav className="tabs" aria-label="주 메뉴">

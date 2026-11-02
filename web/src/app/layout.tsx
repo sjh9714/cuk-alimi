@@ -27,9 +27,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         {children}
         <footer className="site-footer">
-          <a href="/privacy/">개인정보 처리방침</a>
-          <a href="/quality/">마감 정확도</a>
-          <span>학교 공지는 가톨릭대학교 홈페이지의 공개 글을 옮긴 것이며, 이 서비스는 학교와 관계가 없어요.</span>
+          <div className="inner">
+            <a href="/privacy/">개인정보 처리방침</a>
+            <a href="/quality/">마감 정확도</a>
+            <span>
+              가톨릭대 학사일정과 장학·학사 공지에서 학생이 할 일만 골라 마감 순으로 보여 드려요. 공지는 학교 홈페이지의 공개 글을
+              옮긴 것이며 이 서비스는 학교와 관계가 없어요.
+            </span>
+          </div>
         </footer>
       </body>
     </html>
