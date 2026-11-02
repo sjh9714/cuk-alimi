@@ -61,7 +61,7 @@ public class FeedService {
 
     /**
      * 날짜가 그림에만 있고 운영자가 아직 날짜를 넣지 않은 장학·학사 공지. 검수 큐가 그림 공지를 30일 들고 있으니 같은 기간만 보여준다.
-     * 그림에서 읽은 후보 날짜만 있는 공지도 승인 전까지는 여기에 둔다.
+     * 그림에서 읽은 후보 날짜만 있는 공지도 승인 전까지는 여기에 둔다. 후보가 모두 지났으면 학생에게는 내리고 검수 큐에만 남긴다.
      */
     private List<Notice> undated(LocalDate today) {
         List<Notice> imageOnly = notices.findByStatusAndReviewReasonAndPostedOnGreaterThanEqual(Notice.STATUS_NEEDS_REVIEW,
@@ -73,7 +73,13 @@ public class FeedService {
         // 공지마다 묻지 않고 한 번에 묻는다. 아침 메일은 사용자마다 피드를 만든다.
         Set<Long> dated = dateItems.findNoticeIdsWithItemsNotIn(imageOnly.stream().map(Notice::getId).toList(),
                 DateItem.STATUS_CANDIDATE);
-        return imageOnly.stream().filter(n -> !dated.contains(n.getId())).toList();
+        Map<Long, List<DateItem>> candidates = dateItems.findByNoticeIdIn(imageOnly.stream().map(Notice::getId).toList())
+                .stream().collect(Collectors.groupingBy(DateItem::getNoticeId));
+        return imageOnly.stream()
+                .filter(n -> !dated.contains(n.getId()))
+                .filter(n -> !candidates.containsKey(n.getId())
+                        || candidates.get(n.getId()).stream().anyMatch(i -> !i.getEndsOn().isBefore(today)))
+                .toList();
     }
 
     /** 취업 공지는 기업 포스터가 많아 넣지 않는다. 그림 받아 적기도 같은 공지만 본다 (ADR 010). */

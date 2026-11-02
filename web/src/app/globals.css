@@ -23,7 +23,6 @@
   --select-2: #e8ebff;
   --c-jang: #0f7f55;
   --c-hak: #2b55d6;
-  --c-il: #7a45cc;
   --c-chwi: #bf540b;
   --soon: #a35a00;
   --soon-2: #fdf1e1;
@@ -881,7 +880,7 @@ legend + * {
 }
 
 .it.schedule .m b {
-  color: var(--c-il);
+  color: var(--c-hak);
 }
 
 .it.career .m b {
@@ -1375,6 +1374,28 @@ details.fold .note {
   background: var(--sheet);
   border: 1px solid var(--hair);
   border-radius: 14px;
+}
+
+/* 그림에서 읽은 날짜를 목록에서 바로 승인한다. 원문을 함께 둬서 맞춰 본 뒤 누르게 한다. */
+.quick {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 0 16px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--soon);
+}
+
+.quick a {
+  color: var(--pen);
+}
+
+.quick button {
+  margin-left: auto;
+  padding: 5px 10px;
+  font-size: 13px;
 }
 
 .review-group-title {

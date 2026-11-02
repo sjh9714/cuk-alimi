@@ -105,6 +105,8 @@ class ApiFlowTest {
     @Autowired
     LoginTokenRepository loginTokens;
     @Autowired
+    com.campusalimi.feed.FeedService feeds;
+    @Autowired
     NoticeStore store;
     @Autowired
     NoticeRepository notices;
@@ -327,6 +329,12 @@ class ApiFlowTest {
 
         // 후보는 학생에게 나가지 않는다. 승인 전까지 "날짜 확인 중"에 남는다.
         assertThat(undatedKeys()).contains("notice:" + noticeId);
+        // 후보가 모두 지나면 학생 화면에서는 내려가고 검수 큐에는 남는다.
+        assertThat(feeds.build(null, LocalDate.of(2026, 8, 1)).view().sections()).noneMatch(section -> "undated".equals(section.key())
+                && section.cards().stream().anyMatch(c -> ("notice:" + noticeId).equals(c.key())));
+        assertThat(digest.sendReviewReminder()).isTrue();
+        assertThat(mail.lastTo()).isEqualTo("admin@catholic.ac.kr");
+        assertThat(mail.lastBody()).contains("http://localhost:3000/admin/");
         assertThat(itemIds()).doesNotContain(itemId);
 
         // 같은 그림은 다시 받아 적지 않는다.

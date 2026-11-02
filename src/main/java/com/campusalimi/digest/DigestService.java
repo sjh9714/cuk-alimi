@@ -3,6 +3,8 @@ package com.campusalimi.digest;
 import com.campusalimi.auth.MailSender;
 import com.campusalimi.config.AppProperties;
 import com.campusalimi.domain.AppUser;
+import com.campusalimi.domain.DateItemRepository;
+import com.campusalimi.domain.DateItem;
 import com.campusalimi.domain.AppUserRepository;
 import com.campusalimi.domain.Benefit;
 import com.campusalimi.domain.BenefitRepository;
@@ -52,10 +54,12 @@ public class DigestService {
     private final UserBenefitRepository userBenefits;
     private final SentNotificationRepository sent;
     private final MailSender mail;
+    private final DateItemRepository dateItems;
     private final Clock clock;
 
     public DigestService(AppProperties props, AppUserRepository users, FeedService feeds, BenefitRepository benefits,
-            UserBenefitRepository userBenefits, SentNotificationRepository sent, MailSender mail, Clock clock) {
+            UserBenefitRepository userBenefits, SentNotificationRepository sent, MailSender mail,
+            DateItemRepository dateItems, Clock clock) {
         this.props = props;
         this.users = users;
         this.feeds = feeds;
@@ -63,6 +67,7 @@ public class DigestService {
         this.userBenefits = userBenefits;
         this.sent = sent;
         this.mail = mail;
+        this.dateItems = dateItems;
         this.clock = clock;
     }
 
@@ -95,6 +100,26 @@ public class DigestService {
         } catch (RuntimeException e) {
             log.error("digest failed", e);
         }
+        try {
+            sendReviewReminder();
+        } catch (RuntimeException e) {
+            log.error("review reminder failed", e);
+        }
+    }
+
+    /** 승인을 기다리는 그림 공지가 있으면 운영자에게 알린다. 승인이 밀리면 학생이 날짜를 못 보기 때문이다. */
+    public boolean sendReviewReminder() {
+        if (props.adminEmail() == null || props.adminEmail().isBlank()) {
+            return false;
+        }
+        long pending = dateItems.countNoticesWithOpenItems(DateItem.STATUS_CANDIDATE, LocalDate.now(clock));
+        if (pending == 0) {
+            return false;
+        }
+        mail.send(props.adminEmail(), "[CUK-Alimi] 승인 대기 " + pending + "건",
+                "그림에서 읽은 날짜가 승인을 기다리는 공지가 " + pending + "건 있어요. 승인 전에는 학생에게 날짜가 보이지 않아요.\n\n"
+                        + "검수하기: " + props.publicUrl() + "/admin/\n");
+        return true;
     }
 
     /** 한 사람이 실패해도 나머지는 간다. */

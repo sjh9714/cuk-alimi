@@ -6,8 +6,9 @@ import { api, dday, type Feed, type Line, type Me } from "@/lib/api";
 import { boardCards, cleanTitle, eventsOf, iso, tasksOf, type CampusEvent, type Kind, type Task } from "@/lib/tasks";
 import { BookmarkIcon, CheckIcon, ChevronIcon } from "./icons";
 
-const KIND_LABEL: Record<Kind, string> = { schedule: "학사일정", scholarship: "장학", academic: "학사", career: "취업" };
-const KINDS: (Kind | "all")[] = ["all", "scholarship", "academic", "schedule", "career"];
+/** 학사일정 표와 학사 공지는 출처만 다르다. 학생에게는 둘 다 학사다. */
+const KIND_LABEL: Record<Kind, string> = { schedule: "학사", scholarship: "장학", academic: "학사", career: "취업" };
+const KINDS: (Kind | "all")[] = ["all", "scholarship", "academic", "career"];
 const WEEKDAY = ["일", "월", "화", "수", "목", "금", "토"];
 const DONE_KEY = "campus-alimi.done";
 
@@ -54,8 +55,9 @@ export default function Home() {
   const monday = mondayOf(today);
   const sections = useMemo(() => feed?.sections ?? [], [feed]);
   const tasks = useMemo(() => tasksOf(boardCards(sections), todayIso), [sections, todayIso]);
-  const shown = tasks.filter((t) => kind === "all" || t.kind === kind);
-  const events = eventsOf(sections).filter((e) => kind === "all" || e.kind === kind);
+  const inKind = (k: Kind) => kind === "all" || k === kind || (kind === "academic" && k === "schedule");
+  const shown = tasks.filter((t) => inKind(t.kind));
+  const events = eventsOf(sections).filter((e) => inKind(e.kind));
   const week2 = iso(addDays(monday, 7));
   const after = iso(addDays(monday, 14));
   const open = (t: Task) => !done.has(t.key);

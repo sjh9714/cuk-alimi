@@ -53,6 +53,7 @@ export default function Admin() {
   const [forbidden, setForbidden] = useState(false);
   const [filter, setFilter] = useState<Reason | "ALL">("ALL");
   const [selected, setSelected] = useState<number | null>(null);
+  const [approving, setApproving] = useState<number | null>(null);
 
   const load = () =>
     api
@@ -70,6 +71,18 @@ export default function Admin() {
   useEffect(() => {
     load();
   }, []);
+
+  const approve = async (id: number) => {
+    setApproving(id);
+    try {
+      await api.markReviewed(id);
+      await load();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setApproving(null);
+    }
+  };
 
   const notices = queue?.notices ?? [];
   const counts = useMemo(() => {
@@ -155,6 +168,23 @@ export default function Admin() {
                           <span className="review-title">{n.shortTitle}</span>
                           {n.items.length > 0 && <span className="muted">날짜 항목 {n.items.length}개</span>}
                         </button>
+                        {n.items.some((i) => i.fromImage) && (
+                          <p className="quick">
+                            <span>
+                              그림에서 읽음{" "}
+                              {n.items
+                                .filter((i) => i.fromImage)
+                                .map((i) => i.endsOn.slice(5).replace("-", "."))
+                                .join(", ")}
+                            </span>
+                            <a href={n.url} target="_blank" rel="noreferrer">
+                              원문과 맞춰 보기
+                            </a>
+                            <button onClick={() => approve(n.id)} disabled={approving === n.id}>
+                              {approving === n.id ? "승인 중…" : "이 날짜로 승인"}
+                            </button>
+                          </p>
+                        )}
                       </li>
                     ))}
                   </ul>
