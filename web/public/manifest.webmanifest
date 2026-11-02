@@ -4,8 +4,8 @@
   "description": "가톨릭대 학생에게 돈이 걸린 공지와 학생 혜택을 알려 드립니다.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#fcfcfa",
+  "theme_color": "#fcfcfa",
   "lang": "ko",
   "icons": [
     { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
