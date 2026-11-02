@@ -17,6 +17,7 @@ import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.regex.Pattern;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,10 @@ public class AuthService {
     public static final String COOKIE = "ca_session";
     static final Duration LINK_TTL = Duration.ofMinutes(15);
     static final Duration SESSION_TTL = Duration.ofDays(30);
+    /** 같은 주소로 한 시간에 보내는 링크 수. 남의 주소로 메일 폭탄을 보내지 못하게. */
+    static final int HOURLY_PER_ADDRESS = 3;
+    /** 하루에 보내는 링크 전체 수. Gmail 한도에 닿아 계정이 정지되지 않게. */
+    static final int DAILY_TOTAL = 100;
     private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
     private final AppProperties props;
@@ -63,6 +68,13 @@ public class AuthService {
         if (!EMAIL.matcher(email).matches()) {
             throw new IllegalArgumentException("이메일 형식이 아닙니다");
         }
+        OffsetDateTime now = OffsetDateTime.now();
+        if (tokens.countByEmailAndCreatedAtAfter(email, now.minusHours(1)) >= HOURLY_PER_ADDRESS) {
+            throw new AuthException(HttpStatus.TOO_MANY_REQUESTS, "링크를 너무 많이 요청했어요. 받은 메일을 확인하거나 한 시간 뒤에 다시 시도해 주세요");
+        }
+        if (tokens.countByCreatedAtAfter(now.minusDays(1)) >= DAILY_TOTAL) {
+            throw new AuthException(HttpStatus.TOO_MANY_REQUESTS, "오늘 보낼 수 있는 로그인 메일을 다 썼어요. 내일 다시 시도해 주세요");
+        }
         String token = Tokens.random();
         tokens.save(new LoginToken(email, Tokens.hash(token), OffsetDateTime.now().plus(LINK_TTL)));
         String link = props.apiUrlOrPublic() + "/api/auth/consume?token=" + token;
@@ -80,7 +92,7 @@ public class AuthService {
         OffsetDateTime now = OffsetDateTime.now();
         LoginToken login = tokens.findByTokenHash(Tokens.hash(token))
                 .filter(t -> t.isUsable(now))
-                .orElseThrow(() -> new AuthException(org.springframework.http.HttpStatus.UNAUTHORIZED,
+                .orElseThrow(() -> new AuthException(HttpStatus.UNAUTHORIZED,
                         "링크가 만료됐거나 이미 사용됐습니다"));
         login.markUsed();
         AppUser user = users.findByEmail(login.getEmail()).orElseGet(() -> users.save(new AppUser(login.getEmail())));

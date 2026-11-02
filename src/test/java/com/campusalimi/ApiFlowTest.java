@@ -9,6 +9,8 @@ import com.campusalimi.domain.AppUserRepository;
 import com.campusalimi.domain.DateItem;
 import com.campusalimi.domain.DateItemRepository;
 import com.campusalimi.domain.ImageTranscriptRepository;
+import com.campusalimi.domain.LoginToken;
+import com.campusalimi.domain.LoginTokenRepository;
 import com.campusalimi.domain.ReviewEvent;
 import com.campusalimi.domain.ReviewEventRepository;
 import com.campusalimi.domain.Notice;
@@ -23,6 +25,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -99,6 +102,8 @@ class ApiFlowTest {
     TestRestTemplate rest;
     @Autowired
     ConsoleMailSender mail;
+    @Autowired
+    LoginTokenRepository loginTokens;
     @Autowired
     NoticeStore store;
     @Autowired
@@ -416,6 +421,37 @@ class ApiFlowTest {
         List<Map> sections = (List<Map>) rest.getForEntity("/api/feed", Map.class).getBody().get("sections");
         return sections.stream().filter(s -> "undated".equals(s.get("key")))
                 .flatMap(s -> ((List<Map>) s.get("cards")).stream()).map(c -> (String) c.get("key")).toList();
+    }
+
+    @Test
+    void loginMailStopsAtThreePerAddressPerHour() {
+        String email = "limit@catholic.ac.kr";
+        for (int i = 0; i < 3; i++) {
+            assertThat(rest.postForEntity("/api/auth/request", Map.of("email", email), Map.class).getStatusCode())
+                    .isEqualTo(HttpStatus.OK);
+        }
+        String lastBody = mail.lastBody();
+
+        ResponseEntity<Map> fourth = rest.postForEntity("/api/auth/request", Map.of("email", " LIMIT@catholic.ac.kr "), Map.class);
+
+        assertThat(fourth.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+        assertThat(mail.lastBody()).isEqualTo(lastBody);
+    }
+
+    @Test
+    void loginMailStopsAtDailyTotal() {
+        List<LoginToken> flood = new java.util.ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            flood.add(new LoginToken("flood" + i + "@catholic.ac.kr", "flood-hash-" + i, OffsetDateTime.now().plusMinutes(15)));
+        }
+        loginTokens.saveAll(flood);
+        try {
+            ResponseEntity<Map> blocked = rest.postForEntity("/api/auth/request", Map.of("email", "after-flood@catholic.ac.kr"), Map.class);
+            assertThat(blocked.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+            assertThat(mail.lastTo()).isNotEqualTo("after-flood@catholic.ac.kr");
+        } finally {
+            loginTokens.deleteAll(flood);
+        }
     }
 
     private String login(String email) {
