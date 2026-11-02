@@ -908,6 +908,22 @@ legend + * {
   color: var(--body);
 }
 
+.it .m .report {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mute);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.it .m .report:hover {
+  background: transparent;
+  color: var(--alarm);
+}
+
 .it.done .do,
 .it.done .m {
   opacity: 0.4;

@@ -43,6 +43,15 @@ export default function Home() {
     }
   };
 
+  const reportDate = async (line: Line) => {
+    try {
+      await api.reportDate(line.id);
+      setFeed(await api.feed());
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
   const toggleDone = (key: string) => {
     const next = new Set(done);
     if (!next.delete(key)) next.add(key);
@@ -69,7 +78,7 @@ export default function Home() {
   const folded = sections.filter((s) => (s.key === "region" || s.key === "group") && s.cards.length > 0);
   const saved = shown.filter((t) => t.saved);
 
-  const board = { todayIso, done, canSave: !!me, onDone: toggleDone, onSave: toggleSave };
+  const board = { todayIso, done, canSave: !!me, onDone: toggleDone, onSave: toggleSave, onReport: reportDate };
 
   return (
     <main id="main" className="planner">
@@ -199,6 +208,7 @@ type Board = {
   canSave: boolean;
   onDone: (key: string) => void;
   onSave: (line: Line) => void;
+  onReport: (line: Line) => void;
 };
 
 function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; tasks: Task[]; events: CampusEvent[] }) {
@@ -246,7 +256,7 @@ function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; 
   );
 }
 
-function Row({ task, done, canSave, onDone, onSave }: Omit<Board, "todayIso"> & { task: Task }) {
+function Row({ task, done, canSave, onDone, onSave, onReport }: Omit<Board, "todayIso"> & { task: Task }) {
   const finished = done.has(task.key);
   return (
     <li className={`it ${task.kind} ${finished ? "done" : ""}`}>
@@ -270,6 +280,11 @@ function Row({ task, done, canSave, onDone, onSave }: Omit<Board, "todayIso"> & 
               <summary>자격</summary>
               <p>{task.excerpt}</p>
             </details>
+          )}
+          {canSave && task.reportable && (
+            <button className="report" onClick={() => onReport(task.line)}>
+              날짜가 달라요
+            </button>
           )}
         </div>
       </div>

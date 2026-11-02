@@ -188,7 +188,8 @@ public class AdminController {
         notice.markReviewed(admin.getEmail());
         // 공지를 검수 완료로 두면 그 아래 자동 항목과 그림에서 읽은 후보도 확인한 것으로 본다.
         for (DateItem item : dateItems.findByNoticeIdOrderByEndsOnAsc(noticeId)) {
-            if (DateItem.STATUS_AUTO.equals(item.getStatus()) || DateItem.STATUS_CANDIDATE.equals(item.getStatus())) {
+            if (DateItem.STATUS_AUTO.equals(item.getStatus()) || DateItem.STATUS_CANDIDATE.equals(item.getStatus())
+                    || DateItem.STATUS_AUTO_IMAGE.equals(item.getStatus())) {
                 ItemSnapshot before = ItemSnapshot.of(item);
                 item.markReviewed(admin.getEmail());
                 record(noticeId, item.getId(), ReviewEvent.APPROVE, before, ItemSnapshot.of(item), admin.getEmail());

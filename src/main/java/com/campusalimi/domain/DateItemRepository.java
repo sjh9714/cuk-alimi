@@ -25,6 +25,13 @@ public interface DateItemRepository extends JpaRepository<DateItem, Long> {
 
     List<DateItem> findByNoticeIdIn(java.util.Collection<Long> noticeIds);
 
+    /** 아직 지나지 않은 날짜가 status인 공지. 30일이 지나도 후보 날짜가 남은 공지를 놓치지 않으려고 쓴다. */
+    @org.springframework.data.jpa.repository.Query("select distinct d.noticeId from DateItem d where d.status = :status and d.endsOn >= :day")
+    java.util.Set<Long> findNoticeIdsWithOpenItems(@org.springframework.data.repository.query.Param("status") String status,
+            @org.springframework.data.repository.query.Param("day") java.time.LocalDate day);
+
+    long countByStatus(String status);
+
     /** 아직 지나지 않은 날짜가 status인 공지 수. 운영자의 승인을 기다리는 그림 공지를 센다. */
     @org.springframework.data.jpa.repository.Query("select count(distinct d.noticeId) from DateItem d where d.status = :status and d.endsOn >= :day")
     long countNoticesWithOpenItems(@org.springframework.data.repository.query.Param("status") String status,

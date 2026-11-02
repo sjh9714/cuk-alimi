@@ -3,6 +3,7 @@ package com.campusalimi.auth;
 import com.campusalimi.config.AppProperties;
 import com.campusalimi.domain.AppUser;
 import com.campusalimi.domain.AppUserRepository;
+import com.campusalimi.domain.DateReportRepository;
 import com.campusalimi.domain.LoginToken;
 import com.campusalimi.domain.LoginTokenRepository;
 import com.campusalimi.domain.SavedItemRepository;
@@ -46,6 +47,7 @@ public class AuthService {
     private final LoginTokenRepository tokens;
     private final LoginIpLimiter ipLimiter;
     private final TransactionTemplate transaction;
+    private final DateReportRepository reports;
     private final UserSessionRepository sessions;
     private final SavedItemRepository savedItems;
     private final UserBenefitRepository userBenefits;
@@ -53,7 +55,7 @@ public class AuthService {
     private final FeedbackRepository feedback;
 
     public AuthService(AppProperties props, MailSender mail, AppUserRepository users, LoginTokenRepository tokens, LoginIpLimiter ipLimiter,
-            TransactionTemplate transaction,
+            TransactionTemplate transaction, DateReportRepository reports,
             UserSessionRepository sessions, SavedItemRepository savedItems, UserBenefitRepository userBenefits,
             SentNotificationRepository sentNotifications, FeedbackRepository feedback) {
         this.savedItems = savedItems;
@@ -66,6 +68,7 @@ public class AuthService {
         this.tokens = tokens;
         this.ipLimiter = ipLimiter;
         this.transaction = transaction;
+        this.reports = reports;
         this.sessions = sessions;
     }
 
@@ -137,6 +140,7 @@ public class AuthService {
         userBenefits.deleteByUserId(user.getId());
         sentNotifications.deleteByUserId(user.getId());
         feedback.deleteByUserId(user.getId());
+        reports.deleteByUserId(user.getId());
         tokens.deleteByEmail(user.getEmail());
         users.deleteById(user.getId());
     }

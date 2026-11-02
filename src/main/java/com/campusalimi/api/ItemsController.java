@@ -6,6 +6,8 @@ import com.campusalimi.domain.Benefit;
 import com.campusalimi.domain.BenefitRepository;
 import com.campusalimi.domain.DateItem;
 import com.campusalimi.domain.DateItemRepository;
+import com.campusalimi.domain.DateReport;
+import com.campusalimi.domain.DateReportRepository;
 import com.campusalimi.domain.Notice;
 import com.campusalimi.domain.NoticeRepository;
 import com.campusalimi.domain.SavedItem;
@@ -13,6 +15,8 @@ import com.campusalimi.domain.SavedItemRepository;
 import com.campusalimi.domain.UserBenefit;
 import com.campusalimi.domain.UserBenefitRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.OffsetDateTime;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Comparator;
@@ -36,6 +40,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class ItemsController {
 
+    /** 한 사람이 하루에 남길 수 있는 신고 수. 한 사람이 날짜를 다 내리지 못하게. */
+    static final int DAILY_REPORTS = 10;
+
+    private final DateReportRepository reports;
+    private final Clock clock;
     private final AuthService auth;
     private final DateItemRepository dateItems;
     private final NoticeRepository notices;
@@ -44,7 +53,10 @@ public class ItemsController {
     private final UserBenefitRepository userBenefits;
 
     public ItemsController(AuthService auth, DateItemRepository dateItems, NoticeRepository notices,
-            BenefitRepository benefits, SavedItemRepository saved, UserBenefitRepository userBenefits) {
+            BenefitRepository benefits, SavedItemRepository saved, UserBenefitRepository userBenefits,
+            DateReportRepository reports, Clock clock) {
+        this.reports = reports;
+        this.clock = clock;
         this.auth = auth;
         this.dateItems = dateItems;
         this.notices = notices;
@@ -102,7 +114,7 @@ public class ItemsController {
         return new ItemView(i.getId(), i.getTitle(), i.getStartsOn(), i.getEndsOn(), i.getStartsAt(), i.getEndsAt(),
                 i.getSourceKind(), DateItem.STATUS_REVIEWED.equals(i.getStatus()), i.getTargetGrade(), i.getTargetDept(),
                 i.getTargetNote(), i.getCampus(), ref, bucket(i, grade, major, second), isSaved,
-                DateItem.STATUS_CANDIDATE.equals(i.getStatus()));
+                DateItem.STATUS_CANDIDATE.equals(i.getStatus()) || DateItem.STATUS_AUTO_IMAGE.equals(i.getStatus()));
     }
 
     static int bucket(DateItem i, Integer grade, String major, String second) {
@@ -134,6 +146,23 @@ public class ItemsController {
                         b.getCondition(), b.getHowTo(), b.getPrice(), b.getSourceName(), b.getSourceUrl(),
                         b.getVerifiedOn(), b.getRenewalRule(), b.getEndsOn(), b.isStale(today), checked.contains(b.getId())))
                 .toList();
+    }
+
+    /** 자동 공개한 그림 날짜가 원문과 다르다는 신고. 바로 내려 운영자에게 넘긴다. 사람이 확인한 날짜는 기록만 한다. */
+    @PostMapping("/items/{itemId}/report")
+    @Transactional
+    public ResponseEntity<Void> report(HttpServletRequest request, @PathVariable long itemId) {
+        AppUser user = auth.requireUser(request);
+        DateItem item = dateItems.findById(itemId).orElseThrow();
+        if (reports.existsByDateItemIdAndUserId(itemId, user.getId())) {
+            return ResponseEntity.noContent().build();
+        }
+        if (reports.countByUserIdAndCreatedAtAfter(user.getId(), OffsetDateTime.now(clock).minusDays(1)) >= DAILY_REPORTS) {
+            throw new IllegalArgumentException("오늘은 더 신고할 수 없어요. 내일 다시 시도해 주세요");
+        }
+        reports.save(new DateReport(itemId, user.getId()));
+        item.withdrawFromImage();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/me/saved/{itemId}")

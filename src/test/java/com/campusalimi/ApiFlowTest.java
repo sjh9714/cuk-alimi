@@ -128,6 +128,8 @@ class ApiFlowTest {
     /** 1로 표시한 그림에는 기간 한 줄을, 나머지에는 빈 글을 돌려준다. 몇 번 불렸는지 센다. */
     static class FakeTranscriber implements ImageTranscriber {
         int calls;
+        /** 참이면 읽을 때마다 날짜가 달라져 두 번 읽기가 어긋난다. */
+        boolean disagree = true;
 
         @Override
         public boolean enabled() {
@@ -137,7 +139,8 @@ class ApiFlowTest {
         @Override
         public Result transcribe(byte[] image, String mediaType) {
             calls++;
-            String text = image[0] == 1 ? "<p>신청기간</p><p>2026. 7. 20.(월) ~ 7. 31.(금)</p>" : "";
+            int day = disagree && calls % 2 == 0 ? 30 : 31;
+            String text = image[0] == 1 ? "<p>신청기간</p><p>2026. 7. 20.(월) ~ 7. " + day + ".(금)</p>" : "";
             return new Result(text, "fake", 10, 5);
         }
     }
@@ -499,6 +502,36 @@ class ApiFlowTest {
         }
 
         assertThat(requestLink("six10@catholic.ac.kr", "2001:db8:1:2::ff").getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+    }
+
+    @Test
+    void imageDatesThatReadTheSameTwiceGoPublicAndAReportTakesThemDown() {
+        transcriber.disagree = false;
+        try {
+            store.save(new NoticeSummary(999101L, "장학", "", LocalDate.of(2026, 7, 8)),
+                    Fixtures.read("notice-274128.html").replace("274128", "999101").replace("editor-image/", "editor-image/copy-twice-")
+                            .replace("[학사지원팀] 2026-2학기 제1전공생 우선 수강신청 시행 안내", "[학생지원팀] 두 번 읽기 장학생 선발 안내"));
+            imageReader.readPending(LocalDate.of(2026, 7, 10));
+            long noticeId = notices.findByArticleNo(999101L).orElseThrow().getId();
+            List<DateItem> items = dateItems.findByNoticeIdOrderByEndsOnAsc(noticeId);
+            assertThat(items).singleElement().satisfies(i -> assertThat(i.getStatus()).isEqualTo(DateItem.STATUS_AUTO_IMAGE));
+            long itemId = items.get(0).getId();
+            assertThat(itemIds()).contains(itemId);
+            assertThat(undatedKeys()).doesNotContain("notice:" + noticeId);
+
+            assertThat(rest.postForEntity("/api/items/" + itemId + "/report", null, String.class).getStatusCode())
+                    .isEqualTo(HttpStatus.UNAUTHORIZED);
+            String cookie = login("reporter@catholic.ac.kr");
+            assertThat(rest.exchange("/api/items/" + itemId + "/report", HttpMethod.POST, withCookie(cookie, null), Void.class)
+                    .getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+            assertThat(itemIds()).doesNotContain(itemId);
+            assertThat(undatedKeys()).contains("notice:" + noticeId);
+            imageReader.readPending(LocalDate.of(2026, 7, 10));
+            assertThat(dateItems.findById(itemId).orElseThrow().getStatus()).isEqualTo(DateItem.STATUS_CANDIDATE);
+        } finally {
+            transcriber.disagree = true;
+        }
     }
 
     private ResponseEntity<Map> requestLink(String email, String forwardedFor) {

@@ -19,6 +19,7 @@ export type Task = {
   /** 저장 대상. 한 줄로 합친 경우 첫 줄이다. */
   line: Line;
   saved: boolean;
+  reportable: boolean;
 };
 
 const EMPTY_LABEL = /^(마감 기한|마감|기간|신청기간|접수기간|모집기간|조사기간|내용|일정)$/;
@@ -128,6 +129,7 @@ export function tasksOf(cards: Card[], today: string): Task[] {
         excerpt: card.audience.excerpt,
         line,
         saved: group.some((l) => l.saved),
+        reportable: group.some((l) => l.reportable),
       });
     }
   }

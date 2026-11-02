@@ -1,13 +1,16 @@
 package com.campusalimi.notice;
 
 import com.campusalimi.config.AppProperties;
+import com.campusalimi.domain.DateItem;
 import com.campusalimi.domain.DateItemRepository;
+import com.campusalimi.domain.DateReportRepository;
 import com.campusalimi.domain.ImageTranscript;
 import com.campusalimi.domain.ImageTranscriptRepository;
 import com.campusalimi.domain.Notice;
 import com.campusalimi.domain.NoticeRawRepository;
 import com.campusalimi.domain.NoticeRepository;
 import com.campusalimi.feed.FeedService;
+import com.campusalimi.feed.ItemKind;
 import com.campusalimi.fetch.JsoupPageFetcher;
 import com.campusalimi.fetch.PageFetcher;
 import java.net.URI;
@@ -15,9 +18,14 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +44,8 @@ public class ImageNoticeReader {
     private static final ZoneId SEOUL = ZoneId.of("Asia/Seoul");
     /** 공지 하나에서 받아 적는 그림 수의 상한. 그림이 수십 장인 공지(강의 변경표 묶음)가 하루치를 다 쓰지 않게. */
     static final int MAX_IMAGES_PER_NOTICE = 6;
+    /** 두 번째 받아 적기는 그림 주소에 이 꼬리를 붙여 같은 표에 둔다. 비용과 하루 상한이 함께 세어진다. */
+    static final String SECOND_READ = "#second";
 
     private final AppProperties props;
     private final NoticeRepository notices;
@@ -45,11 +55,12 @@ public class ImageNoticeReader {
     private final PageFetcher fetcher;
     private final ImageTranscriber transcriber;
     private final NoticeStore store;
+    private final DateReportRepository reports;
     private final Clock clock;
 
     public ImageNoticeReader(AppProperties props, NoticeRepository notices, NoticeRawRepository raws,
             DateItemRepository dateItems, ImageTranscriptRepository transcripts, PageFetcher fetcher,
-            ImageTranscriber transcriber, NoticeStore store, Clock clock) {
+            ImageTranscriber transcriber, NoticeStore store, DateReportRepository reports, Clock clock) {
         this.props = props;
         this.notices = notices;
         this.raws = raws;
@@ -58,6 +69,7 @@ public class ImageNoticeReader {
         this.fetcher = fetcher;
         this.transcriber = transcriber;
         this.store = store;
+        this.reports = reports;
         this.clock = clock;
     }
 
@@ -84,9 +96,14 @@ public class ImageNoticeReader {
         int seen = 0;
         int fresh = 0;
         int candidates = 0;
-        for (Notice n : notices.findByStatusAndReviewReasonAndPostedOnGreaterThanEqual(Notice.STATUS_NEEDS_REVIEW,
-                Notice.REASON_IMAGE_ONLY, today.minusDays(FeedService.UNDATED_DAYS))) {
-            if (!FeedService.undatedCategory(n) || dateItems.existsByNoticeId(n.getId())) {
+        Map<Long, Notice> targets = new LinkedHashMap<>();
+        notices.findByStatusAndReviewReasonAndPostedOnGreaterThanEqual(Notice.STATUS_NEEDS_REVIEW, Notice.REASON_IMAGE_ONLY,
+                today.minusDays(FeedService.UNDATED_DAYS)).forEach(n -> targets.put(n.getId(), n));
+        // 30일이 지나도 후보 날짜가 남은 공지는 계속 본다. 조용히 사라지면 마감 전 공지를 놓친다.
+        notices.findAllById(dateItems.findNoticeIdsWithOpenItems(DateItem.STATUS_CANDIDATE, today))
+                .forEach(n -> targets.putIfAbsent(n.getId(), n));
+        for (Notice n : targets.values()) {
+            if (!FeedService.undatedCategory(n) || !waitingForImageRead(n)) {
                 continue;
             }
             seen++;
@@ -107,42 +124,79 @@ public class ImageNoticeReader {
     private record Read(int newTranscripts, int candidates, boolean limitReached) {
     }
 
+    /** 항목이 없거나 후보만 있는 공지만 본다. 신고된 공지는 다시 올리지 않고 운영자에게 맡긴다. */
+    private boolean waitingForImageRead(Notice n) {
+        List<DateItem> items = dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId());
+        if (items.isEmpty()) {
+            return true;
+        }
+        return items.stream().allMatch(i -> DateItem.STATUS_CANDIDATE.equals(i.getStatus()))
+                && !reports.existsByDateItemIdIn(items.stream().map(DateItem::getId).toList());
+    }
+
     private Read read(Notice n, LocalDate today) {
         NoticeView view = NoticeViewParser.parse(raws.findById(n.getArticleNo()).orElseThrow().getHtml());
         List<String> texts = new ArrayList<>();
+        List<String> secondTexts = new ArrayList<>();
         int fresh = 0;
         // 이번에 읽지 못한 그림(학교 서버나 API의 일시 오류)이 있으면 후보를 저장하지 않고 다음 차례에 다시 본다.
         // 그 사이 받아 적은 그림은 캐시에 남으니 다시 돈이 들지 않는다.
         boolean pending = false;
         for (String url : imageUrls(view)) {
-            Optional<ImageTranscript> cached = transcripts.findById(url);
-            if (cached.isPresent()) {
-                texts.add(cached.get().getText());
-                continue;
+            for (String key : List.of(url, url + SECOND_READ)) {
+                List<String> into = key.equals(url) ? texts : secondTexts;
+                Optional<ImageTranscript> cached = transcripts.findById(key);
+                if (cached.isPresent()) {
+                    into.add(cached.get().getText());
+                    continue;
+                }
+                String skip = skipReason(url);
+                if (skip == null && transcripts.countByCreatedAtAfterAndInputTokensGreaterThan(
+                        today.atStartOfDay(SEOUL).toOffsetDateTime(), 0L) >= props.transcribe().dailyLimit()) {
+                    return new Read(fresh, 0, true);
+                }
+                ImageTranscriber.Result r;
+                try {
+                    r = skip != null ? new ImageTranscriber.Result("", skip, 0, 0) : transcribe(url);
+                } catch (RuntimeException e) {
+                    log.warn("image {} will be retried: {}", url, e.getMessage());
+                    pending = true;
+                    continue;
+                }
+                transcripts.save(new ImageTranscript(key, n.getArticleNo(), r.text(), r.model(), r.inputTokens(),
+                        r.outputTokens()));
+                into.add(r.text());
+                fresh += skip == null ? 1 : 0;
             }
-            String skip = skipReason(url);
-            if (skip == null && transcripts.countByCreatedAtAfterAndInputTokensGreaterThan(
-                    today.atStartOfDay(SEOUL).toOffsetDateTime(), 0L) >= props.transcribe().dailyLimit()) {
-                return new Read(fresh, 0, true);
-            }
-            ImageTranscriber.Result r;
-            try {
-                r = skip != null ? new ImageTranscriber.Result("", skip, 0, 0) : transcribe(url);
-            } catch (RuntimeException e) {
-                log.warn("image {} will be retried: {}", url, e.getMessage());
-                pending = true;
-                continue;
-            }
-            transcripts.save(new ImageTranscript(url, n.getArticleNo(), r.text(), r.model(), r.inputTokens(),
-                    r.outputTokens()));
-            texts.add(r.text());
-            fresh += skip == null ? 1 : 0;
         }
         if (pending) {
             return new Read(fresh, 0, false);
         }
-        return new Read(fresh, store.saveImageItems(n.getId(), view.articleNo(), extractFromTranscripts(view, texts)),
+        List<ExtractedItem> first = extractFromTranscripts(view, texts);
+        List<ExtractedItem> second = extractFromTranscripts(view, secondTexts);
+        return new Read(fresh, store.saveImageItems(n.getId(), view.articleNo(), first, agreedDates(first, second, view.postedOn())),
                 false);
+    }
+
+    /**
+     * 공개해도 되는 날짜. 두 번 읽은 할 일 날짜가 모두 같고 게시일부터 1년 안이어야 한다. 하나라도 어긋나면 비어 있다.
+     * 할 일이 있는 공지에서는 두 번 모두 나온 안내 날짜도 함께 공개한다. 2026-11-02 시험은 docs/verification/2026-11-02-dual-read.md.
+     */
+    static Set<LocalDate> agreedDates(List<ExtractedItem> first, List<ExtractedItem> second, LocalDate postedOn) {
+        Set<LocalDate> actions = actionDates(first);
+        if (actions.isEmpty() || !actions.equals(actionDates(second))
+                || actions.stream().anyMatch(d -> d.isBefore(postedOn) || d.isAfter(postedOn.plusYears(1)))) {
+            return Set.of();
+        }
+        Set<LocalDate> agreed = new TreeSet<>(actions);
+        Set<LocalDate> inSecond = second.stream().map(i -> i.range().end()).collect(Collectors.toSet());
+        first.stream().map(i -> i.range().end()).filter(inSecond::contains).forEach(agreed::add);
+        return agreed;
+    }
+
+    private static Set<LocalDate> actionDates(List<ExtractedItem> items) {
+        return items.stream().filter(i -> ItemKind.ACTION.equals(ItemKind.of(i.title()))).map(i -> i.range().end())
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     /** 본문 그림 주소. 학교 주소의 http는 https로 맞춘다(학교가 https로 넘기고, 넘기는 응답은 따라가지 않는다). 깨진 주소는 뺀다. */

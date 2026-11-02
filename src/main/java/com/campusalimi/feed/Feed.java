@@ -27,8 +27,9 @@ public final class Feed {
     }
 
     /** label은 공지 안에서 이 날짜가 무엇인지("트리니티 신청", "서류 합격자 발표"). 공지 제목과 같으면 비운다. */
+    /** reportable은 자동 공개한 그림 날짜라 학생이 신고할 수 있다는 뜻이다. */
     public record Line(long id, String label, LocalDate startsOn, LocalDate endsOn, LocalTime startsAt, LocalTime endsAt,
-            String kind, boolean saved) {
+            String kind, boolean saved, boolean reportable) {
     }
 
     /** grade는 제목과 자격 문단에 적힌 학년("2~4학년", "졸업예정자"). 없으면 null. */
@@ -227,7 +228,7 @@ public final class Feed {
     private static Line line(DateItem i, String noticeTitle, Set<Long> saved) {
         String label = noticeTitle == null || sameThing(i.getTitle(), noticeTitle) ? null : tidyLabel(i.getTitle());
         return new Line(i.getId(), label, i.getStartsOn(), i.getEndsOn(), i.getStartsAt(), i.getEndsAt(),
-                ItemKind.of(i.getTitle()), saved.contains(i.getId()));
+                ItemKind.of(i.getTitle()), saved.contains(i.getId()), DateItem.STATUS_AUTO_IMAGE.equals(i.getStatus()));
     }
 
     /** 표의 칸을 이어 붙인 이름("서강대학교 · 서강대학교 · 서울 · 첨부파일 참조")에서 겹친 칸과 안내 문구를 뺀다. */

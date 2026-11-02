@@ -1,6 +1,8 @@
 package com.campusalimi.api;
 
 import com.campusalimi.domain.DateItem;
+import com.campusalimi.domain.DateItemRepository;
+import com.campusalimi.domain.DateReportRepository;
 import com.campusalimi.domain.ImageTranscriptRepository;
 import com.campusalimi.domain.ReviewEvent;
 import com.campusalimi.domain.ReviewEventRepository;
@@ -32,13 +34,18 @@ public class QualityController {
 
     private final ReviewEventRepository reviewEvents;
     private final ImageTranscriptRepository transcripts;
+    private final DateItemRepository dateItems;
+    private final DateReportRepository reports;
     private final ObjectMapper json;
     private final JsonNode backtest;
     private volatile Quality cached;
     private volatile long cachedAt;
     static final long CACHE_MILLIS = 60_000;
 
-    public QualityController(ReviewEventRepository reviewEvents, ImageTranscriptRepository transcripts, ObjectMapper json) {
+    public QualityController(ReviewEventRepository reviewEvents, ImageTranscriptRepository transcripts,
+            DateItemRepository dateItems, DateReportRepository reports, ObjectMapper json) {
+        this.dateItems = dateItems;
+        this.reports = reports;
         this.reviewEvents = reviewEvents;
         this.transcripts = transcripts;
         this.json = json;
@@ -57,11 +64,15 @@ public class QualityController {
             int fromImageApprovedAsIs, int noticesReviewed) {
     }
 
-    /** images는 받아 적은 그림 수, skipped는 형식·크기·주소 때문에 건너뛰었거나 실패한 수. */
+    /** images는 받아 적은 횟수(그림 한 장을 두 번 읽는다), skipped는 형식·크기·주소 때문에 건너뛰었거나 실패한 수. */
     public record Transcription(int images, int skipped, long inputTokens, long outputTokens, double costUsd) {
     }
 
-    public record Quality(JsonNode backtest, Review review, Transcription transcription) {
+    /** published는 두 번 읽기가 일치해 지금 공개 중인 그림 날짜 수, waiting은 어긋나 운영자를 기다리는 수, reports는 학생 신고 수. */
+    public record AutoPublish(long published, long waiting, long reports) {
+    }
+
+    public record Quality(JsonNode backtest, Review review, Transcription transcription, AutoPublish autoPublish) {
     }
 
     @GetMapping("/quality")
@@ -70,7 +81,8 @@ public class QualityController {
         long now = System.currentTimeMillis();
         Quality q = cached;
         if (q == null || now - cachedAt > CACHE_MILLIS) {
-            q = new Quality(backtest, review(), transcription());
+            q = new Quality(backtest, review(), transcription(), new AutoPublish(dateItems.countByStatus(DateItem.STATUS_AUTO_IMAGE),
+                    dateItems.countByStatus(DateItem.STATUS_CANDIDATE), reports.count()));
             cached = q;
             cachedAt = now;
         }
@@ -96,12 +108,13 @@ public class QualityController {
                 continue;
             }
             String before = beforeStatus(e);
-            boolean automatic = DateItem.STATUS_AUTO.equals(before) || DateItem.STATUS_CANDIDATE.equals(before);
+            boolean automatic = DateItem.STATUS_AUTO.equals(before) || DateItem.STATUS_CANDIDATE.equals(before)
+                    || DateItem.STATUS_AUTO_IMAGE.equals(before);
             // 자동 항목마다 첫 판단만 센다. 사람이 고친 뒤의 수정은 추출 정확도와 상관없다.
             if (!automatic || !judgedItems.add(e.getDateItemId())) {
                 continue;
             }
-            boolean image = DateItem.STATUS_CANDIDATE.equals(before);
+            boolean image = DateItem.STATUS_CANDIDATE.equals(before) || DateItem.STATUS_AUTO_IMAGE.equals(before);
             switch (e.getAction()) {
                 case ReviewEvent.APPROVE -> {
                     approved++;

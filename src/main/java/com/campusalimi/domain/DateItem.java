@@ -22,6 +22,8 @@ public class DateItem {
     public static final String STATUS_REVIEWED = "REVIEWED";
     /** 공지 그림을 AI가 받아 적은 글에서 읽은 날짜. 운영자가 승인하기 전까지 학생에게 보이지 않는다 (ADR 010). */
     public static final String STATUS_CANDIDATE = "CANDIDATE";
+    /** 그림을 두 번 받아 적어 날짜가 일치해 자동으로 공개한 항목 (ADR 010). */
+    public static final String STATUS_AUTO_IMAGE = "AUTO_IMAGE";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -86,6 +88,24 @@ public class DateItem {
         DateItem item = fromNotice(noticeId, naturalKey, title, startsOn, endsOn, startsAt, endsAt, targetGrade);
         item.status = STATUS_CANDIDATE;
         return item;
+    }
+
+    /** 두 번 읽기가 일치해 학생에게 공개한다. 사람이 이미 판단한 항목은 건드리지 않는다. */
+    public void publishFromImage() {
+        if (STATUS_CANDIDATE.equals(status)) {
+            status = STATUS_AUTO_IMAGE;
+            updatedAt = OffsetDateTime.now();
+        }
+    }
+
+    /** 신고가 온 자동 공개 날짜를 내려 운영자에게 넘긴다. 내렸으면 true. */
+    public boolean withdrawFromImage() {
+        if (!STATUS_AUTO_IMAGE.equals(status)) {
+            return false;
+        }
+        status = STATUS_CANDIDATE;
+        updatedAt = OffsetDateTime.now();
+        return true;
     }
 
     /** 운영자가 손으로 넣은 항목. 이미지에만 날짜가 있는 공지가 여기로 온다. */

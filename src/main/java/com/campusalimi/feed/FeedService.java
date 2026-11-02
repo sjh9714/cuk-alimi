@@ -64,9 +64,13 @@ public class FeedService {
      * 그림에서 읽은 후보 날짜만 있는 공지도 승인 전까지는 여기에 둔다. 후보가 모두 지났으면 학생에게는 내리고 검수 큐에만 남긴다.
      */
     private List<Notice> undated(LocalDate today) {
-        List<Notice> imageOnly = notices.findByStatusAndReviewReasonAndPostedOnGreaterThanEqual(Notice.STATUS_NEEDS_REVIEW,
-                Notice.REASON_IMAGE_ONLY, today.minusDays(UNDATED_DAYS)).stream()
-                .filter(FeedService::undatedCategory).toList();
+        Map<Long, Notice> byId = new java.util.LinkedHashMap<>();
+        notices.findByStatusAndReviewReasonAndPostedOnGreaterThanEqual(Notice.STATUS_NEEDS_REVIEW, Notice.REASON_IMAGE_ONLY,
+                today.minusDays(UNDATED_DAYS)).forEach(n -> byId.put(n.getId(), n));
+        // 후보 날짜가 남아 있으면 30일이 지나도 보여 준다. 승인이 밀려도 마감 전 공지가 사라지지 않게.
+        notices.findAllById(dateItems.findNoticeIdsWithOpenItems(DateItem.STATUS_CANDIDATE, today))
+                .forEach(n -> byId.putIfAbsent(n.getId(), n));
+        List<Notice> imageOnly = byId.values().stream().filter(FeedService::undatedCategory).toList();
         if (imageOnly.isEmpty()) {
             return imageOnly;
         }

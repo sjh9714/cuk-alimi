@@ -7,6 +7,7 @@ import com.campusalimi.domain.Notice;
 import com.campusalimi.domain.NoticeRaw;
 import com.campusalimi.domain.NoticeRawRepository;
 import com.campusalimi.domain.NoticeRepository;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -64,7 +65,8 @@ public class NoticeStore {
             // 학교가 공지를 고쳤으면(기간 연장 등) 옛 그림에서 읽은 후보를 지운다. 받아 적기가 새 그림으로 다시 읽는다.
             if (changed) {
                 dateItems.findByNoticeIdOrderByEndsOnAsc(notice.getId()).stream()
-                        .filter(i -> DateItem.STATUS_CANDIDATE.equals(i.getStatus())).forEach(dateItems::delete);
+                        .filter(i -> DateItem.STATUS_CANDIDATE.equals(i.getStatus()) || DateItem.STATUS_AUTO_IMAGE.equals(i.getStatus()))
+                        .forEach(dateItems::delete);
             }
         }
 
@@ -92,19 +94,26 @@ public class NoticeStore {
         return new Saved(notice.getId(), extracted.size(), reason);
     }
 
-    /** 그림을 받아 적은 글에서 읽은 날짜를 후보로 넣는다. 같은 자리의 항목이 이미 있으면 건드리지 않는다. 새로 넣은 수. */
+    /**
+     * 그림을 받아 적은 글에서 읽은 날짜를 후보로 넣는다. 같은 자리의 항목이 이미 있으면 내용은 건드리지 않는다.
+     * agreedDates에 든 날짜는 두 번 읽기가 일치한 것이라 바로 공개한다. 새로 넣은 수.
+     */
     @Transactional
-    public int saveImageItems(long noticeId, long articleNo, List<ExtractedItem> extracted) {
+    public int saveImageItems(long noticeId, long articleNo, List<ExtractedItem> extracted, Set<LocalDate> agreedDates) {
         int added = 0;
         for (ExtractedItem item : extracted) {
             String key = "notice:" + articleNo + ":img." + item.where();
-            if (dateItems.findByNaturalKey(key).isEmpty()) {
-                dateItems.save(DateItem.fromImage(noticeId, key, item.title(), item.range().start(), item.range().end(),
+            DateItem row = dateItems.findByNaturalKey(key).orElse(null);
+            if (row == null) {
+                row = dateItems.save(DateItem.fromImage(noticeId, key, item.title(), item.range().start(), item.range().end(),
                         item.range().startsAt(), item.range().endsAt(), item.targetGrade()));
                 added++;
             }
+            if (agreedDates.contains(item.range().end())) {
+                row.publishFromImage();
+            }
         }
-        log.info("notice {} image -> {} candidates", articleNo, added);
+        log.info("notice {} image -> {} new, {} agreed dates", articleNo, added, agreedDates.size());
         return added;
     }
 

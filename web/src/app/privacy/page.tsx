@@ -48,6 +48,11 @@ export default function Privacy() {
               <td>마감 전에 알려 주려고</td>
             </tr>
             <tr>
+              <td>&lsquo;날짜가 달라요&rsquo; 신고</td>
+              <td>누를 때</td>
+              <td>틀린 날짜를 내리고 고치려고</td>
+            </tr>
+            <tr>
               <td>보낸 알림 기록</td>
               <td>메일을 보낼 때</td>
               <td>같은 알림을 두 번 보내지 않으려고</td>

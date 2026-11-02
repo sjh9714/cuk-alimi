@@ -311,7 +311,7 @@ export default function Settings() {
           <section className="panel danger-zone">
             <h2 className="panel-title">탈퇴</h2>
             <p className="muted">
-              이메일, 입학년도, 전공, 연고 지역, 저장한 마감, 체크한 혜택, 알림 기록, 남긴 의견을 모두 지워요. 되돌릴 수
+              이메일, 입학년도, 전공, 연고 지역, 저장한 마감, 체크한 혜택, 알림 기록, 남긴 의견, 날짜 신고를 모두 지워요. 되돌릴 수
               없어요.
             </p>
             {confirmDelete ? (
