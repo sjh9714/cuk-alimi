@@ -84,7 +84,7 @@ public class AuthService {
         String token = Tokens.random();
         tokens.save(new LoginToken(email, Tokens.hash(token), OffsetDateTime.now().plus(LINK_TTL)));
         String link = props.apiUrlOrPublic() + "/api/auth/consume?token=" + token;
-        mail.send(email, "[캠퍼스 알리미] 로그인 링크",
+        mail.send(email, "[CUK-Alimi] 로그인 링크",
                 "아래 링크를 15분 안에 누르면 로그인됩니다. 한 번만 쓸 수 있습니다.\n\n" + link
                         + "\n\n본인이 요청하지 않았다면 이 메일은 무시해도 됩니다.");
     }

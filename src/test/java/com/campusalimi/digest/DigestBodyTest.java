@@ -48,7 +48,7 @@ class DigestBodyTest {
                 .contains("https://school/notice:1")
                 .contains("/api/digest/unsubscribe?token=");
         assertThat(d.keys()).containsExactly("notice:1", "saved:11");
-        assertThat(DigestService.subject(TODAY)).isEqualTo("[캠퍼스 알리미] 10월 28일 아침 알림");
+        assertThat(DigestService.subject(TODAY)).isEqualTo("[CUK-Alimi] 10월 28일 아침 알림");
     }
 
     @Test

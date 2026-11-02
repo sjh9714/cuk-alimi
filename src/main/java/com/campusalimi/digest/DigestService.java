@@ -177,7 +177,7 @@ public class DigestService {
     }
 
     static String subject(LocalDate today) {
-        return "[캠퍼스 알리미] " + today.getMonthValue() + "월 " + today.getDayOfMonth() + "일 아침 알림";
+        return "[CUK-Alimi] " + today.getMonthValue() + "월 " + today.getDayOfMonth() + "일 아침 알림";
     }
 
     String body(AppUser user, Digest d, LocalDate today) {

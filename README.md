@@ -1,4 +1,4 @@
-# 캠퍼스 알리미 (campus-alimi)
+# CUK-Alimi
 
 > A deadline tracker for Catholic University of Korea students. It collects school notices every hour, extracts the deadlines students must act on, and sends one morning email. Deadlines that only exist inside images are transcribed by Claude Haiku, parsed by the same rules, and published only after an operator approves them. Extraction accuracy is measured on an 89-notice gold set in CI (precision and recall 0.977) and published on a public page.
 

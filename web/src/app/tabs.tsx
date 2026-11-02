@@ -21,7 +21,7 @@ export function Header() {
       <header className="site-header">
         <div className="inner">
           <Link href="/" className="brand">
-            캠퍼스 알리미
+            CUK-Alimi
           </Link>
           <nav className="top-nav" aria-label="주 메뉴">
             {links.map((l) => (

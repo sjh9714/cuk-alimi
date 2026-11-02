@@ -1,6 +1,6 @@
 {
-  "name": "캠퍼스 알리미",
-  "short_name": "캠퍼스알리미",
+  "name": "CUK-Alimi",
+  "short_name": "CUK-Alimi",
   "description": "가톨릭대 학생에게 돈이 걸린 공지와 학생 혜택을 알려 드립니다.",
   "start_url": "/",
   "display": "standalone",

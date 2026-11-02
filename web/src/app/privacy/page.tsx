@@ -18,7 +18,7 @@ export default function Privacy() {
     <main id="main" className="narrow prose">
       <div className="page-head">
         <h1>개인정보 처리방침</h1>
-        <p className="sub">2026년 10월 28일부터 적용해요. 캠퍼스 알리미는 가톨릭대 학생에게 학교 공지의 마감과 학생 혜택을 알려 주는 개인 운영 서비스예요.</p>
+        <p className="sub">2026년 10월 28일부터 적용해요. CUK-Alimi는 가톨릭대 학생에게 학교 공지의 마감과 학생 혜택을 알려 주는 개인 운영 서비스예요.</p>
       </div>
 
       <section className="panel">
