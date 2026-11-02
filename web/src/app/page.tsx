@@ -248,6 +248,11 @@ function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; 
                 {e.title}
               </a>
               {e.at && <span>{e.at}</span>}
+              {board.canSave && e.line.reportable && (
+                <button className="report" onClick={() => board.onReport(e.line)}>
+                  날짜가 달라요
+                </button>
+              )}
             </li>
           ))}
         </ul>

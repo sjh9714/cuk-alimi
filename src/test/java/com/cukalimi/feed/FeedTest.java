@@ -67,6 +67,30 @@ class FeedTest {
     }
 
     @Test
+    void generalLectureWithAWhenLineIsAnEventButCareerLectureIsNot() {
+        item(notice("학사", "[교양교육팀] 2026학년도 인간학 가을 특강 안내", ""), "일시", 3);
+        item(notice("취창업", "[경력개발팀] 취업 특강 안내", ""), "일시", 4);
+
+        assertThat(section(build(Feed.Viewer.ANONYMOUS), "events").cards()).extracting(Feed.Card::title)
+                .containsExactly("2026학년도 인간학 가을 특강 안내");
+    }
+
+    @Test
+    void noticeWithAnApplicationAlsoShowsItsEventDay() {
+        Notice briefing = notice("학사", "[학사행정팀] 겨울 계절학기 안내", "");
+        item(briefing, "신청기간", 2);
+        DateItem day = item(briefing, "수강 설명회", 5);
+
+        Feed.View v = build(Feed.Viewer.ANONYMOUS);
+
+        assertThat(section(v, "open").cards()).hasSize(1);
+        assertThat(section(v, "events").cards()).singleElement().satisfies(c -> {
+            assertThat(c.title()).isEqualTo("수강 설명회");
+            assertThat(c.deadline().id()).isEqualTo(day.getId());
+        });
+    }
+
+    @Test
     void scheduleCeremonyIsAnEventButTermDatesAreNot() {
         schedule("봄 학위수여식", 3);
         schedule("수업기간", 4);

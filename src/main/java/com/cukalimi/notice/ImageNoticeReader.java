@@ -172,24 +172,38 @@ public class ImageNoticeReader {
         }
         List<ExtractedItem> first = extractFromTranscripts(view, texts);
         List<ExtractedItem> second = extractFromTranscripts(view, secondTexts);
-        return new Read(fresh, store.saveImageItems(n.getId(), view.articleNo(), first, agreedDates(first, second, view.postedOn())),
-                false);
+        return new Read(fresh, store.saveImageItems(n.getId(), view.articleNo(), first,
+                agreedDates(first, second, view.postedOn(), view.cleanTitle())), false);
     }
 
     /**
      * 공개해도 되는 날짜. 두 번 읽은 할 일 날짜가 모두 같고 게시일부터 1년 안이어야 한다. 하나라도 어긋나면 비어 있다.
-     * 할 일이 있는 공지에서는 두 번 모두 나온 안내 날짜도 함께 공개한다. 2026-11-02 시험은 docs/verification/2026-11-02-dual-read.md.
+     * 할 일이 있는 공지에서는 두 번 모두 나온 안내 날짜도 함께 공개한다. 할 일이 없으면 행사 날짜를 같은 기준으로 본다.
+     * 2026-11-02 시험은 docs/verification/2026-11-02-dual-read.md. 행사 날짜는 이 시험에 들어 있지 않다.
      */
-    static Set<LocalDate> agreedDates(List<ExtractedItem> first, List<ExtractedItem> second, LocalDate postedOn) {
+    static Set<LocalDate> agreedDates(List<ExtractedItem> first, List<ExtractedItem> second, LocalDate postedOn, String noticeTitle) {
         Set<LocalDate> actions = actionDates(first);
-        if (actions.isEmpty() || !actions.equals(actionDates(second))
-                || actions.stream().anyMatch(d -> d.isBefore(postedOn) || d.isAfter(postedOn.plusYears(1)))) {
+        if (actions.isEmpty() && actionDates(second).isEmpty()) {
+            Set<LocalDate> events = eventDates(first, noticeTitle);
+            return !events.isEmpty() && events.equals(eventDates(second, noticeTitle)) && inWindow(events, postedOn) ? events : Set.of();
+        }
+        if (actions.isEmpty() || !actions.equals(actionDates(second)) || !inWindow(actions, postedOn)) {
             return Set.of();
         }
         Set<LocalDate> agreed = new TreeSet<>(actions);
         Set<LocalDate> inSecond = second.stream().map(i -> i.range().end()).collect(Collectors.toSet());
         first.stream().map(i -> i.range().end()).filter(inSecond::contains).forEach(agreed::add);
         return agreed;
+    }
+
+    private static boolean inWindow(Set<LocalDate> dates, LocalDate postedOn) {
+        return dates.stream().noneMatch(d -> d.isBefore(postedOn) || d.isAfter(postedOn.plusYears(1)));
+    }
+
+    private static Set<LocalDate> eventDates(List<ExtractedItem> items, String noticeTitle) {
+        return items.stream()
+                .filter(i -> ItemKind.isEvent(i.title(), noticeTitle, i.range().start() == null || i.range().isSingleDay()))
+                .map(i -> i.range().end()).collect(Collectors.toCollection(TreeSet::new));
     }
 
     private static Set<LocalDate> actionDates(List<ExtractedItem> items) {

@@ -908,7 +908,8 @@ legend + * {
   color: var(--body);
 }
 
-.it .m .report {
+.it .m .report,
+.events .report {
   padding: 0;
   border: 0;
   background: transparent;
@@ -919,7 +920,8 @@ legend + * {
   text-underline-offset: 2px;
 }
 
-.it .m .report:hover {
+.it .m .report:hover,
+.events .report:hover {
   background: transparent;
   color: var(--alarm);
 }

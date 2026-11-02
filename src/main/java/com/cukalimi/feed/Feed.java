@@ -100,13 +100,14 @@ public final class Feed {
             }
             String title = Titles.clean(notice.getTitle());
             List<DateItem> actions = items.stream().filter(i -> ItemKind.ACTION.equals(ItemKind.of(i.getTitle()))).toList();
+            // 모두가 알아 둘 행사는 할 일이 있든 없든 날짜를 따로 올린다. 취업 공지의 "일시"는 특강이 많아 올리지 않는다.
+            if (Audience.GENERAL.equals(audience.scope())) {
+                String named = "career".equals(kind(notice)) ? null : title;
+                items.stream().filter(i -> isEvent(i, named)).forEach(i -> events.add(
+                        new Card("event:" + i.getId(), kind(notice), ItemKind.isWhenOnly(i.getTitle()) ? title : tidyLabel(i.getTitle()),
+                                notice.getTitle(), notice.getUrl(), AudienceView.of(audience), false, line(i, title, saved), List.of())));
+            }
             if (actions.isEmpty()) {
-                // 할 일이 없는 공지는 카드가 없다. 모두가 알아 둘 행사만 날짜를 따로 올린다.
-                if (Audience.GENERAL.equals(audience.scope())) {
-                    items.stream().filter(i -> isEvent(i, title)).findFirst().ifPresent(i -> events.add(
-                            new Card(entry.getKey(), kind(notice), title, notice.getTitle(), notice.getUrl(),
-                                    AudienceView.of(audience), false, line(i, title, saved), List.of())));
-                }
                 continue;
             }
             DateItem deadline = actions.get(0);
