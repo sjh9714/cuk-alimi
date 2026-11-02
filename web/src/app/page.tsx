@@ -2,29 +2,45 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { api, dday, formatRange, type Benefit, type Card, type Feed, type Line, type Me, type Section } from "@/lib/api";
+import {
+  api,
+  dday,
+  type Card,
+  type Feed,
+  type Line,
+  type Me,
+  type Section,
+} from "@/lib/api";
 import { MonthCalendar } from "./calendar";
-import { BookmarkIcon, ChevronIcon, ExternalIcon } from "./icons";
+import { CheckIcon, ChevronIcon, ExternalIcon } from "./icons";
 
 type Kind = Card["kind"];
-const KIND_LABEL: Record<Kind, string> = { schedule: "학사일정", scholarship: "장학", academic: "학사", career: "취업" };
+const KIND_LABEL: Record<Kind, string> = {
+  schedule: "학사일정",
+  scholarship: "장학",
+  academic: "학사",
+  career: "취업",
+};
 const WEEKDAY = ["일", "월", "화", "수", "목", "금", "토"];
+
+/** 같은 날 마감인 카드 묶음. date가 null이면 날짜 확인 중인 카드들이다. */
+type DayGroup = { date: string | null; cards: Card[] };
 
 export default function Home() {
   const [feed, setFeed] = useState<Feed | null>(null);
-  const [benefits, setBenefits] = useState<Benefit[]>([]);
   const [me, setMe] = useState<Me | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [kind, setKind] = useState<Kind | "all">("all");
-  const [month, setMonth] = useState(() => new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+  const [month, setMonth] = useState(
+    () => new Date(new Date().getFullYear(), new Date().getMonth(), 1),
+  );
   const [day, setDay] = useState<string | null>(null);
 
   const load = () =>
-    Promise.all([api.feed(), api.me(), api.benefits()])
-      .then(([f, m, b]) => {
+    Promise.all([api.feed(), api.me()])
+      .then(([f, m]) => {
         setFeed(f);
         setMe(m);
-        setBenefits(b);
         setError(null);
       })
       .catch((e) => setError(e.message));
@@ -43,84 +59,159 @@ export default function Home() {
     }
   };
 
-  const allCards = useMemo(() => (feed?.sections ?? []).flatMap((s) => s.cards), [feed]);
+  const sections = useMemo(() => feed?.sections ?? [], [feed]);
+  const allCards = useMemo(() => sections.flatMap((s) => s.cards), [sections]);
   const counts = useMemo(() => {
-    const c: Record<Kind, number> = { schedule: 0, scholarship: 0, academic: 0, career: 0 };
+    const c: Record<Kind, number> = {
+      schedule: 0,
+      scholarship: 0,
+      academic: 0,
+      career: 0,
+    };
     allCards.forEach((card) => c[card.kind]++);
     return c;
   }, [allCards]);
   const marked = useMemo(
-    () => new Set(allCards.flatMap((c) => lines(c).filter((l) => l.kind === "ACTION").map((l) => l.endsOn))),
+    () =>
+      new Set(
+        allCards.flatMap((c) =>
+          lines(c)
+            .filter((l) => l.kind === "ACTION")
+            .map((l) => l.endsOn),
+        ),
+      ),
     [allCards],
   );
   const saved = useMemo(
     () =>
       allCards
-        .flatMap((c) => lines(c).filter((l) => l.saved).map((l) => ({ card: c, line: l })))
+        .flatMap((c) =>
+          lines(c)
+            .filter((l) => l.saved)
+            .map((l) => ({ card: c, line: l })),
+        )
         .sort((a, b) => a.line.endsOn.localeCompare(b.line.endsOn)),
     [allCards],
   );
-  const soonBenefits = benefits
-    .filter((b) => b.endsOn && dday(b.endsOn) >= 0 && dday(b.endsOn) <= 60)
-    .sort((a, b) => a.endsOn!.localeCompare(b.endsOn!));
 
-  const filtered = (s: Section): Card[] =>
-    s.cards.filter(
-      (c) =>
-        (kind === "all" || c.kind === kind) &&
-        (!day || lines(c).some((l) => l.kind === "ACTION" && l.endsOn === day)),
-    );
   const filtering = kind !== "all" || day !== null;
-  const visibleSections = (feed?.sections ?? []).map((s) => ({ section: s, cards: filtered(s) })).filter((s) => s.cards.length > 0);
+  const keep = (c: Card) =>
+    (kind === "all" || c.kind === kind) &&
+    (!day || lines(c).some((l) => l.kind === "ACTION" && l.endsOn === day));
+
+  // 열린 구간은 날짜 한 줄기로 합치고, 접힌 구간은 아래에 둔다 (ADR 012).
+  const open = useMemo(
+    () =>
+      groupByDay(
+        sections
+          .filter((s) => !s.collapsed)
+          .flatMap((s) => s.cards)
+          .filter(keep),
+      ),
+    [sections, kind, day],
+  ); // eslint-disable-line react-hooks/exhaustive-deps
+  const folded = sections
+    .filter((s) => s.collapsed)
+    .map((s) => ({ section: s, groups: groupByDay(s.cards.filter(keep)) }));
+  const nearest = open[0]?.date
+    ? { date: open[0].date, card: open[0].cards[0] }
+    : null;
+  const today = new Date();
 
   return (
     <main id="main">
-      <div className="page-head">
-        <h1>다가오는 마감</h1>
-        <p className="sub">{subtitle(me)}</p>
-      </div>
+      <header className="hero">
+        <p className="today">
+          {today.getMonth() + 1}월 {today.getDate()}일 {WEEKDAY[today.getDay()]}
+          요일
+        </p>
+        {feed === null ? (
+          <h1>다가오는 마감</h1>
+        ) : nearest ? (
+          <>
+            <h1 className={dday(nearest.date) <= 3 ? "hot" : ""}>
+              {headline(dday(nearest.date))}
+            </h1>
+            <p className="what">
+              <a href={nearest.card.url} target="_blank" rel="noreferrer">
+                {nearest.card.title}
+              </a>
+              {nearest.card.deadline?.label
+                ? ` ${nearest.card.deadline.label}`
+                : ""}
+              {open[0].cards.length > 1 &&
+                `, 같은 날 ${open[0].cards.length - 1}건 더`}
+            </p>
+          </>
+        ) : (
+          <h1>
+            {filtering ? "조건에 맞는 마감이 없어요" : "남은 마감이 없어요"}
+          </h1>
+        )}
+        {!me && feed && <p className="what">{subtitle(me)}</p>}
+      </header>
 
       {feed === null ? (
         error ? (
-          <div className="empty" role="alert">
-            <p>{error}</p>
-            <button onClick={load}>다시 시도</button>
-          </div>
+          <p className="error-line" role="alert">
+            {error}
+            <button className="text" onClick={load}>
+              다시 시도
+            </button>
+          </p>
         ) : (
-          <div className="empty">불러오는 중…</div>
+          <div className="loading" aria-label="불러오는 중">
+            <div className="bar" />
+            <div className="bar" />
+            <div className="bar" />
+          </div>
         )
       ) : (
         <div className="home">
           <div className="feed">
             {error && (
-              <div className="msg error" role="alert">
+              <p className="error-line" role="alert">
                 {error}
-              </div>
+              </p>
             )}
             <div className="toolbar">
               <div className="segmented" role="group" aria-label="종류">
-                <button aria-pressed={kind === "all"} onClick={() => setKind("all")}>
-                  전체 <span className="n">{allCards.length}</span>
+                <button
+                  aria-pressed={kind === "all"}
+                  onClick={() => setKind("all")}
+                >
+                  전체<span className="n">{allCards.length}</span>
                 </button>
-                {(Object.keys(KIND_LABEL) as Kind[]).filter((k) => k !== "career" || counts.career > 0).map((k) => (
-                  <button key={k} aria-pressed={kind === k} onClick={() => setKind(k)}>
-                    {KIND_LABEL[k]} <span className="n">{counts[k]}</span>
-                  </button>
-                ))}
+                {(Object.keys(KIND_LABEL) as Kind[])
+                  .filter((k) => k !== "career" || counts.career > 0)
+                  .map((k) => (
+                    <button
+                      key={k}
+                      aria-pressed={kind === k}
+                      onClick={() => setKind(k)}
+                    >
+                      {KIND_LABEL[k]}
+                      <span className="n">{counts[k]}</span>
+                    </button>
+                  ))}
               </div>
               {day && (
-                <button className="filter-pill" onClick={() => setDay(null)}>
-                  {shortDate(day)} 마감만 보는 중 · 전체 보기
-                </button>
+                <p className="filtering">
+                  {shortDate(day)} 마감만 보는 중{" "}
+                  <button className="text" onClick={() => setDay(null)}>
+                    전체 보기
+                  </button>
+                </p>
               )}
             </div>
 
-            {visibleSections.length === 0 && (
+            {open.length === 0 && (
               <div className="empty">
                 {filtering ? (
                   <>
                     <p>조건에 맞는 마감이 없어요.</p>
                     <button
+                      className="text"
                       onClick={() => {
                         setKind("all");
                         setDay(null);
@@ -130,66 +221,76 @@ export default function Home() {
                     </button>
                   </>
                 ) : (
-                  "지금 남은 마감이 없어요."
+                  <p>지금 남은 마감이 없어요.</p>
                 )}
               </div>
             )}
 
-            {visibleSections.map(({ section, cards }) => (
-              <SectionBlock
-                key={section.key}
-                section={section}
-                cards={cards}
-                open={!section.collapsed || filtering}
-                canSave={!!me}
-                onToggle={toggleSave}
-              />
-            ))}
+            <Groups groups={open} canSave={!!me} onToggle={toggleSave} />
+
+            {folded.some((f) => f.groups.length > 0) && (
+              <div className="folds">
+                {folded
+                  .filter((f) => f.groups.length > 0)
+                  .map(({ section, groups }) => (
+                    <Fold
+                      key={section.key}
+                      section={section}
+                      groups={groups}
+                      open={filtering}
+                      canSave={!!me}
+                      onToggle={toggleSave}
+                    />
+                  ))}
+              </div>
+            )}
           </div>
 
-          <aside className="rail" aria-label="달력과 요약">
-            <div className="panel">
-              <MonthCalendar month={month} onMonth={setMonth} marked={marked} selected={day} onSelect={setDay} />
+          <aside className="rail" aria-label="달력과 내 저장">
+            <div className="calendar-wrap calendar">
+              <MonthCalendar
+                month={month}
+                onMonth={setMonth}
+                marked={marked}
+                selected={day}
+                onSelect={setDay}
+              />
             </div>
-            <div className="panel">
-              <h2 className="panel-title">내 저장</h2>
+            <section aria-labelledby="saved-title">
+              <h2 id="saved-title">
+                내 저장{" "}
+                {me && saved.length > 0 && (
+                  <span className="count">{saved.length}</span>
+                )}
+              </h2>
               {!me ? (
-                <p className="muted">
-                  <Link href="/settings/">로그인</Link>하면 마감을 저장해 두고 한곳에서 볼 수 있어요.
+                <p className="note">
+                  <Link href="/settings/">로그인</Link>하면 마감을 저장해 두고
+                  여기서 볼 수 있어요.
                 </p>
               ) : saved.length === 0 ? (
-                <p className="muted">저장한 마감이 없어요. 목록에서 저장을 눌러 보세요.</p>
+                <p className="note">
+                  저장한 마감이 없어요. 행 앞의 네모를 눌러 보세요.
+                </p>
               ) : (
                 <ul className="side-list">
                   {saved.slice(0, 8).map(({ card, line }) => (
                     <li key={line.id}>
-                      <span className="name">{line.label ? `${card.title} · ${line.label}` : card.title}</span>
-                      <Dday endsOn={line.endsOn} />
+                      <span className="name">
+                        {line.label
+                          ? `${card.title} ${line.label}`
+                          : card.title}
+                      </span>
+                      <span
+                        className={`left ${dday(line.endsOn) <= 3 ? "hot" : ""}`}
+                      >
+                        {leftText(dday(line.endsOn))}
+                      </span>
                     </li>
                   ))}
                 </ul>
               )}
-            </div>
-            <div className="panel">
-              <h2 className="panel-title">
-                곧 끝나는 학생 혜택
-                <Link href="/benefits/" className="panel-link">
-                  전체 {benefits.length}
-                </Link>
-              </h2>
-              {soonBenefits.length === 0 ? (
-                <p className="muted">60일 안에 끝나는 혜택이 없어요.</p>
-              ) : (
-                <ul className="side-list">
-                  {soonBenefits.map((b) => (
-                    <li key={b.id}>
-                      <span className="name">{b.name}</span>
-                      <Dday endsOn={b.endsOn!} />
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+            </section>
           </aside>
         </div>
       )}
@@ -202,190 +303,268 @@ function lines(c: Card): Line[] {
   return c.deadline ? [c.deadline, ...c.next] : c.next;
 }
 
-function subtitle(me: Me | null): string {
-  if (!me) return "가톨릭대 학사일정과 장학·학사 공지에서 학생이 해야 할 일만 골라 마감 순으로 보여 드려요.";
-  const parts = [me.grade ? `${me.grade}학년` : "", me.major ?? "", me.homeRegion ? `${me.homeRegion} 연고` : ""].filter(Boolean);
-  if (parts.length === 0) return "설정에서 입학년도·전공·연고 지역을 넣으면 내게 맞는 공지가 위로 올라와요.";
-  return `${parts.join(" · ")} 기준으로 내게 맞는 공지를 위로 올렸어요.`;
+/** 대표 마감일로 묶어 날짜순. 같은 날은 내게 맞는 공지, 마감 시각, 제목 순. 날짜 없는 카드는 맨 뒤 한 묶음. */
+function groupByDay(cards: Card[]): DayGroup[] {
+  const byDate = new Map<string, Card[]>();
+  const undated: Card[] = [];
+  for (const c of cards) {
+    if (!c.deadline) undated.push(c);
+    else
+      byDate.set(c.deadline.endsOn, [
+        ...(byDate.get(c.deadline.endsOn) ?? []),
+        c,
+      ]);
+  }
+  const groups: DayGroup[] = [...byDate.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([date, list]) => ({
+      date,
+      cards: list.sort(
+        (a, b) =>
+          Number(b.mine) - Number(a.mine) ||
+          (a.deadline!.endsAt ?? "99").localeCompare(
+            b.deadline!.endsAt ?? "99",
+          ) ||
+          a.title.localeCompare(b.title, "ko"),
+      ),
+    }));
+  if (undated.length > 0) groups.push({ date: null, cards: undated });
+  return groups;
 }
 
-function SectionBlock({
+function subtitle(me: Me | null): string {
+  if (!me)
+    return "가톨릭대 학사일정과 장학·학사 공지에서 학생이 해야 할 일만 골라 마감 순으로 보여 드려요.";
+  return "";
+}
+
+function headline(d: number): string {
+  if (d < 0) return "지난 마감이 남아 있어요";
+  if (d === 0) return "오늘 마감이 있어요";
+  if (d === 1) return "내일 마감이 있어요";
+  return `가장 가까운 마감까지 ${d}일`;
+}
+
+function leftText(d: number): string {
+  return d < 0 ? "지남" : d === 0 ? "오늘" : d === 1 ? "내일" : `${d}일 남음`;
+}
+
+function shortDate(isoDate: string): string {
+  const [, m, d] = isoDate.split("-");
+  return `${Number(m)}월 ${Number(d)}일`;
+}
+
+function Groups({
+  groups,
+  canSave,
+  onToggle,
+}: {
+  groups: DayGroup[];
+  canSave: boolean;
+  onToggle: (l: Line) => void;
+}) {
+  let lastMonth = -1;
+  const thisYear = new Date().getFullYear();
+  return (
+    <>
+      {groups.map((g) => {
+        if (!g.date) {
+          return (
+            <section key="undated" className="dayg" aria-label="날짜 확인 중">
+              <div className="gutter" aria-hidden />
+              <div>
+                <div className="rule" />
+                <ul className="rows">
+                  {g.cards.map((c) => (
+                    <Row
+                      key={c.key}
+                      card={c}
+                      canSave={false}
+                      onToggle={onToggle}
+                    />
+                  ))}
+                </ul>
+              </div>
+            </section>
+          );
+        }
+        const date = new Date(g.date + "T00:00:00");
+        const d = dday(g.date);
+        const showMonth = date.getMonth() !== lastMonth;
+        lastMonth = date.getMonth();
+        const label = `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일 ${WEEKDAY[date.getDay()]}요일, ${leftText(d)}`;
+        return (
+          <section
+            key={g.date}
+            className={`dayg ${d <= 3 ? "hot" : ""}`}
+            aria-label={label}
+          >
+            <div className="gutter" aria-hidden>
+              {showMonth && (
+                <span className="mon">
+                  {date.getFullYear() !== thisYear &&
+                    `${date.getFullYear()}년 `}
+                  {date.getMonth() + 1}월
+                </span>
+              )}
+              <span className="num">{date.getDate()}</span>
+              <span className="wd">{WEEKDAY[date.getDay()]}요일</span>
+            </div>
+            <div>
+              <div className="rule">
+                <span className="left" aria-hidden>
+                  {leftText(d)}
+                </span>
+              </div>
+              <ul className="rows">
+                {g.cards.map((c) => (
+                  <Row
+                    key={c.key}
+                    card={c}
+                    canSave={canSave}
+                    onToggle={onToggle}
+                  />
+                ))}
+              </ul>
+            </div>
+          </section>
+        );
+      })}
+    </>
+  );
+}
+
+function Fold({
   section,
-  cards,
+  groups,
   open,
   canSave,
   onToggle,
 }: {
   section: Section;
-  cards: Card[];
+  groups: DayGroup[];
   open: boolean;
   canSave: boolean;
   onToggle: (l: Line) => void;
 }) {
-  const rows = (
-    <ul className="rows">
-      {cards.map((c) => (
-        <CardRow key={c.key} card={c} canSave={canSave} onToggle={onToggle} />
-      ))}
-    </ul>
-  );
-  if (section.collapsed) {
-    return (
-      <details className="block fold" open={open}>
-        <summary>
-          <span className="fold-head">
-            <span className="fold-title">
-              {section.title} <span className="count">{cards.length}건</span>
-            </span>
-            <span className="note">{section.note}</span>
-          </span>
-          <ChevronIcon />
-        </summary>
-        {rows}
-      </details>
-    );
-  }
-  const id = `section-${section.key}`;
+  const n = groups.reduce((s, g) => s + g.cards.length, 0);
   return (
-    <section className={`block ${section.key}`} aria-labelledby={id}>
-      <header className="block-head">
-        <h2 id={id}>
-          {section.title} <span className="count">{cards.length}</span>
-        </h2>
-        <p className="note">{section.note}</p>
-      </header>
-      {rows}
-    </section>
+    <details className="fold" open={open}>
+      <summary>
+        <span className="fold-head">
+          <span className="fold-title">
+            {section.title} <span className="count">{n}</span>
+          </span>{" "}
+          <span className="note">{section.note}</span>
+        </span>
+        <ChevronIcon />
+      </summary>
+      <div className="fold-body">
+        <Groups groups={groups} canSave={canSave} onToggle={onToggle} />
+      </div>
+    </details>
   );
 }
 
-function CardRow({ card, canSave, onToggle }: { card: Card; canSave: boolean; onToggle: (l: Line) => void }) {
-  if (!card.deadline) return <UndatedRow card={card} />;
+function Row({
+  card,
+  canSave,
+  onToggle,
+}: {
+  card: Card;
+  canSave: boolean;
+  onToggle: (l: Line) => void;
+}) {
   const line = card.deadline;
-  const d = dday(line.endsOn);
-  const tone = d <= 3 ? "urgent" : d <= 7 ? "soon" : "";
-  const date = new Date(line.endsOn + "T00:00:00");
-  const audience = card.audience.scope === "GENERAL" ? null : card.audience.label;
+  const audience =
+    card.audience.scope === "GENERAL" ? null : card.audience.label;
   return (
-    <li className={`row-card ${tone}`}>
-      <div className="when">
-        <span className="sr-only">
-          마감 {date.getFullYear()}년 {date.getMonth() + 1}월 {date.getDate()}일 {WEEKDAY[date.getDay()]}요일, {ddayText(d)}
-        </span>
-        <span className="md" aria-hidden>
-          {date.getMonth() + 1}.{date.getDate()}
-        </span>
-        <span className="wd" aria-hidden>
-          {date.getFullYear() !== new Date().getFullYear() && `${date.getFullYear()} · `}
-          {WEEKDAY[date.getDay()]}
-        </span>
-        <span className={`dday ${tone}`} aria-hidden>
-          {ddayText(d)}
-        </span>
-      </div>
-      <div className="body">
-        <h3 className="title">
-          <a href={card.url} target="_blank" rel="noreferrer" title={card.sourceTitle}>
+    <li className={`item ${canSave && line ? "" : "plain"}`}>
+      {canSave && line && (
+        <button
+          className="mark"
+          aria-pressed={line.saved}
+          aria-label={line.saved ? "저장 해제" : "저장"}
+          onClick={() => onToggle(line)}
+        >
+          {line.saved && <CheckIcon size={14} />}
+        </button>
+      )}
+      <div>
+        <h3 className="t">
+          <a
+            href={card.url}
+            target="_blank"
+            rel="noreferrer"
+            title={card.sourceTitle}
+          >
             {card.title}
             <span className="ext">
-              <ExternalIcon size={14} />
-              <span className="sr-only">(학교 {card.kind === "schedule" ? "학사일정" : "공지"} 새 창)</span>
+              <ExternalIcon size={13} />
+              <span className="sr-only">
+                (학교 {card.kind === "schedule" ? "학사일정" : "공지"} 새 창)
+              </span>
             </span>
           </a>
         </h3>
-        <p className="due">
-          <strong>{line.label ?? (line.startsOn ? "기간" : "마감")}</strong> {formatRange(line)}
+        <p className="m">
+          <span className="kind">{KIND_LABEL[card.kind]}</span>
+          {audience && <span>{audience}</span>}
+          {card.audience.grade && <span>{card.audience.grade}</span>}
+          {line ? (
+            <span>{when(line)}</span>
+          ) : (
+            <span>날짜는 원문 그림에만 있어요</span>
+          )}
+          {card.mine && <span className="mine">내게 맞음</span>}
         </p>
-        <p className="meta">
-          <span className={`kind ${card.kind}`}>{KIND_LABEL[card.kind]}</span>
-          {audience && <span className="aud">{audience}</span>}
-          {card.audience.grade && <span className="aud">{card.audience.grade}</span>}
-        </p>
-        {card.audience.excerpt && <Excerpt text={card.audience.excerpt} />}
-        {card.next.length > 0 && (
-          <details className="next">
-            <summary>
-              이후 일정 {card.next.length}개 <ChevronIcon size={14} />
-            </summary>
-            <ul>
-              {card.next.map((l) => (
-                <li key={l.id} className={l.kind === "INFO" ? "info" : ""}>
-                  <span className="md">{shortDate(l.endsOn)}</span>
-                  <span>
-                    {l.label ?? "마감"}
-                    {l.kind === "INFO" && <span className="muted"> · 안내</span>}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </details>
+        {(card.audience.excerpt || card.next.length > 0) && (
+          <div className="extras">
+            {card.audience.excerpt && (
+              <details className="more">
+                <summary>
+                  자격 보기 <ChevronIcon size={13} />
+                </summary>
+                <p className="excerpt">{card.audience.excerpt}</p>
+              </details>
+            )}
+            {card.next.length > 0 && (
+              <details className="more">
+                <summary>
+                  이후 일정 {card.next.length} <ChevronIcon size={13} />
+                </summary>
+                <ul>
+                  {card.next.map((l) => (
+                    <li key={l.id} className={l.kind === "INFO" ? "info" : ""}>
+                      <span className="d">{numDate(l.endsOn)}</span>
+                      <span>
+                        {l.label ?? "마감"}
+                        {l.kind === "INFO" && " (안내)"}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            )}
+          </div>
         )}
       </div>
-      {canSave && (
-        <button className="save" aria-pressed={line.saved} onClick={() => onToggle(line)}>
-          <BookmarkIcon filled={line.saved} />
-          {line.saved ? "저장됨" : "저장"}
-        </button>
-      )}
     </li>
   );
 }
 
-/** 날짜가 그림에만 있어 아직 날짜를 넣지 못한 공지. 날짜를 추측해 적지 않고 원문으로 보낸다 (ADR 003). */
-function UndatedRow({ card }: { card: Card }) {
-  return (
-    <li className="row-card undated">
-      <div className="when">
-        <span className="pending">확인 중</span>
-      </div>
-      <div className="body">
-        <h3 className="title">
-          <a href={card.url} target="_blank" rel="noreferrer" title={card.sourceTitle}>
-            {card.title}
-            <span className="ext">
-              <ExternalIcon size={14} />
-              <span className="sr-only">(학교 공지 새 창)</span>
-            </span>
-          </a>
-        </h3>
-        <p className="due">날짜가 공지 그림에만 있어요. 원문에서 확인해 주세요.</p>
-        <p className="meta">
-          <span className={`kind ${card.kind}`}>{KIND_LABEL[card.kind]}</span>
-          {card.audience.scope !== "GENERAL" && card.audience.label && <span className="aud">{card.audience.label}</span>}
-          {card.audience.grade && <span className="aud">{card.audience.grade}</span>}
-        </p>
-      </div>
-    </li>
-  );
+/** 날짜는 홈통에 있으니 행에는 이름, 시작일, 시각만 적는다. */
+function when(line: Line): string {
+  const parts: string[] = [];
+  if (line.label) parts.push(line.label);
+  if (line.startsOn && line.startsOn !== line.endsOn)
+    parts.push(`${numDate(line.startsOn)}부터`);
+  if (line.endsAt) parts.push(`${line.endsAt.slice(0, 5)}까지`);
+  if (parts.length === 0) parts.push("마감");
+  return parts.join(" ");
 }
 
-/** 지원 자격 원문 발췌. 길면 두 줄만 보이고 펼칠 수 있다. */
-function Excerpt({ text }: { text: string }) {
-  const [open, setOpen] = useState(false);
-  const long = text.length > 70;
-  return (
-    <div className={`excerpt ${long && !open ? "clamped" : ""}`}>
-      <span className="excerpt-label">지원 자격 · 원문 발췌</span>
-      <p>{text}</p>
-      {long && (
-        <button className="more" aria-expanded={open} onClick={() => setOpen(!open)}>
-          {open ? "접기" : "더 보기"}
-        </button>
-      )}
-    </div>
-  );
-}
-
-function Dday({ endsOn }: { endsOn: string }) {
-  const d = dday(endsOn);
-  return <span className={`badge ${d <= 3 ? "urgent" : d <= 7 ? "warn" : ""}`}>{ddayText(d)}</span>;
-}
-
-function ddayText(d: number): string {
-  return d < 0 ? "지남" : d === 0 ? "오늘" : `D-${d}`;
-}
-
-function shortDate(isoDate: string): string {
+function numDate(isoDate: string): string {
   const [, m, d] = isoDate.split("-");
   return `${Number(m)}.${Number(d)}`;
 }

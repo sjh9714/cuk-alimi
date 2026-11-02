@@ -21,8 +21,6 @@ export function Header() {
       <header className="site-header">
         <div className="inner">
           <Link href="/" className="brand">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/icon.svg" alt="" width={28} height={28} />
             캠퍼스 알리미
           </Link>
           <nav className="top-nav" aria-label="주 메뉴">
@@ -32,9 +30,7 @@ export function Header() {
               </Link>
             ))}
           </nav>
-          <span className="header-user">
-            {me ? me.email : <Link href="/settings/">로그인</Link>}
-          </span>
+          <span className="header-user">{me ? me.email : <Link href="/settings/">로그인</Link>}</span>
         </div>
       </header>
       <nav className="tabs" aria-label="주 메뉴">
