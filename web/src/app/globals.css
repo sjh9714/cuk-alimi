@@ -1,6 +1,6 @@
 /*
  * CUK 알리미 화면 규칙. 값은 docs/design.md가 기준이다.
- * 점 찍힌 종이에 볼펜 파랑. 형광펜은 이틀 안의 일에만, 빨강은 오늘과 이틀 안의 표시에만.
+ * 점 찍힌 종이에 볼펜 파랑. 빨강은 오늘과 이틀 안의 표시에만.
  */
 
 :root {
@@ -15,7 +15,6 @@
   --hair: #cfd5e6;
   --hair-2: #b3bbd2;
   --seg: #ebedf4;
-  --hl: #ffe94d;
   --today: #fffbe3;
   --alarm: #e5281e;
   --alarm-2: #fdecea;
@@ -836,15 +835,6 @@ legend + * {
   text-decoration: underline;
 }
 
-.cell.hot .do a > span:first-child {
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  margin-left: -4px;
-  padding: 1px 4px;
-  border-radius: 3px 6px 5px 3px;
-  background: var(--hl);
-}
-
 .it .m {
   display: flex;
   flex-wrap: wrap;
@@ -948,10 +938,6 @@ legend + * {
   text-decoration: line-through;
 }
 
-.it.done .do a > span:first-child {
-  background: none;
-}
-
 .keep {
   padding: 3px 0 0;
   border: 0;
@@ -968,7 +954,7 @@ legend + * {
   color: var(--pen);
 }
 
-/* 행사. 할 일이 아니라서 체크와 형광펜 없이 흐린 글자로만 적는다. */
+/* 행사. 할 일이 아니라서 체크 없이 흐린 글자로만 적는다. */
 .events {
   display: grid;
   gap: 4px;
@@ -1274,13 +1260,6 @@ details.fold .note {
   letter-spacing: -0.3px;
   line-height: 1.45;
   color: var(--cat, var(--ink));
-}
-
-.benefit.hot .name span {
-  padding: 1px 4px;
-  margin-left: -4px;
-  border-radius: 3px 6px 5px 3px;
-  background: var(--hl);
 }
 
 .benefit .desc {
