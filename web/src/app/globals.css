@@ -420,6 +420,11 @@ select {
   padding: 10px 12px;
 }
 
+/* 같은 줄의 입력칸과 높이를 맞춘다. */
+select {
+  height: 48px;
+}
+
 input:focus,
 select:focus {
   outline: none;
