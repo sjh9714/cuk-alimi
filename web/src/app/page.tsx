@@ -211,7 +211,7 @@ export default function Home() {
                   <ChevronIcon size={15} />
                 </summary>
                 <div className="fold-body">
-                  <FoldList tasks={others} />
+                  <FoldList tasks={others} tagged />
                 </div>
               </details>
             )}
@@ -345,12 +345,13 @@ function Fold({ title, count, note, children }: { title: string; count: number; 
   );
 }
 
-function FoldList({ tasks }: { tasks: Task[] }) {
+function FoldList({ tasks, tagged = false }: { tasks: Task[]; tagged?: boolean }) {
   return (
     <ul className="fold-list">
       {tasks.map((t) => (
         <li key={t.key}>
           <span className="d">{shortDate(t.date)}</span>
+          {tagged && <span className="tag end">마감</span>}
           <a href={t.url} target="_blank" rel="noreferrer">
             {t.title}
           </a>
