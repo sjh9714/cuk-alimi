@@ -99,6 +99,26 @@ public class DateItem {
         }
     }
 
+    /** 학교가 공지를 고치면 자동 공개를 거두고 다시 읽을 때까지 기다린다. 항목을 지우지 않으니 학생의 저장이 남는다. */
+    public void awaitReread() {
+        if (STATUS_AUTO_IMAGE.equals(status)) {
+            status = STATUS_CANDIDATE;
+            updatedAt = OffsetDateTime.now();
+        }
+    }
+
+    /** 다시 읽은 그림의 값으로 후보를 고친다. */
+    public void refreshCandidate(String title, LocalDate startsOn, LocalDate endsOn, LocalTime startsAt, LocalTime endsAt) {
+        if (STATUS_CANDIDATE.equals(status)) {
+            this.title = title;
+            this.startsOn = startsOn;
+            this.endsOn = endsOn;
+            this.startsAt = startsAt;
+            this.endsAt = endsAt;
+            updatedAt = OffsetDateTime.now();
+        }
+    }
+
     /** 신고가 온 자동 공개 날짜를 내려 운영자에게 넘긴다. 내렸으면 true. */
     public boolean withdrawFromImage() {
         if (!STATUS_AUTO_IMAGE.equals(status)) {

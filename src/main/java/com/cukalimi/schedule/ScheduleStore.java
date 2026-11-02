@@ -54,6 +54,10 @@ public class ScheduleStore {
                 updated++;
             }
         }
+        // 표가 비어 있으면 학교 페이지가 바뀌었거나 읽기에 실패한 것이다. 있던 일정을 지우지 않는다.
+        if (kept == 0) {
+            return new Result(entries.size(), 0, inserted, updated, 0);
+        }
         int removed = 0;
         for (DateItem old : dateItems.findByNaturalKeyStartingWith("schedule:" + academicYear + ":")) {
             if (!seen.contains(old.getNaturalKey()) && DateItem.SOURCE_SCHEDULE.equals(old.getSourceKind())) {

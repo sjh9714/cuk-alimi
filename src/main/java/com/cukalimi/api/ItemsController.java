@@ -1,6 +1,8 @@
 package com.cukalimi.api;
 
 import com.cukalimi.auth.AuthService;
+import com.cukalimi.config.AppProperties;
+import com.cukalimi.auth.MailSender;
 import com.cukalimi.domain.AppUser;
 import com.cukalimi.domain.Benefit;
 import com.cukalimi.domain.BenefitRepository;
@@ -25,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,6 +47,10 @@ public class ItemsController {
     /** 한 사람이 하루에 남길 수 있는 신고 수. 한 사람이 날짜를 다 내리지 못하게. */
     static final int DAILY_REPORTS = 10;
 
+    private static final Logger log = LoggerFactory.getLogger(ItemsController.class);
+
+    private final MailSender mail;
+    private final AppProperties props;
     private final DateReportRepository reports;
     private final Clock clock;
     private final AuthService auth;
@@ -54,7 +62,10 @@ public class ItemsController {
 
     public ItemsController(AuthService auth, DateItemRepository dateItems, NoticeRepository notices,
             BenefitRepository benefits, SavedItemRepository saved, UserBenefitRepository userBenefits,
-            DateReportRepository reports, Clock clock) {
+            DateReportRepository reports, Clock clock,
+            MailSender mail, AppProperties props) {
+        this.mail = mail;
+        this.props = props;
         this.reports = reports;
         this.clock = clock;
         this.auth = auth;
@@ -148,21 +159,37 @@ public class ItemsController {
                 .toList();
     }
 
-    /** 자동 공개한 그림 날짜가 원문과 다르다는 신고. 바로 내려 운영자에게 넘긴다. 다른 날짜의 신고는 받지 않는다. */
+    /** 날짜가 원문과 다르다는 신고. 자동 공개한 그림 날짜는 바로 내리고, 다른 날짜는 운영자가 확인하도록 메일로 알린다. */
     @PostMapping("/items/{itemId}/report")
     @Transactional
     public ResponseEntity<Void> report(HttpServletRequest request, @PathVariable long itemId) {
         AppUser user = auth.requireUser(request);
         DateItem item = dateItems.findById(itemId).orElseThrow();
-        if (!DateItem.STATUS_AUTO_IMAGE.equals(item.getStatus()) || reports.existsByDateItemIdAndUserId(itemId, user.getId())) {
+        if (DateItem.STATUS_CANDIDATE.equals(item.getStatus()) || reports.existsByDateItemIdAndUserId(itemId, user.getId())) {
             return ResponseEntity.noContent().build();
         }
         if (reports.countByUserIdAndCreatedAtAfter(user.getId(), OffsetDateTime.now(clock).minusDays(1)) >= DAILY_REPORTS) {
             throw new IllegalArgumentException("오늘은 더 신고할 수 없어요. 내일 다시 시도해 주세요");
         }
         reports.save(new DateReport(itemId, user.getId()));
-        item.withdrawFromImage();
+        boolean withdrawn = item.withdrawFromImage();
+        notifyOperator(item, withdrawn);
         return ResponseEntity.noContent().build();
+    }
+
+    /** 메일이 실패해도 신고는 남는다. */
+    private void notifyOperator(DateItem item, boolean withdrawn) {
+        if (props.adminEmail() == null || props.adminEmail().isBlank()) {
+            return;
+        }
+        try {
+            mail.send(props.adminEmail(), "[CUK 알리미] 날짜 신고: " + item.getTitle(),
+                    item.getTitle() + " (" + item.getEndsOn() + ")\n"
+                            + (withdrawn ? "자동 공개한 날짜라 학생 화면에서 내렸어요." : "학생 화면에는 그대로 있어요. 원문과 맞춰 봐 주세요.")
+                            + "\n\n검수하기: " + props.publicUrl() + "/admin/\n");
+        } catch (RuntimeException e) {
+            log.warn("date report mail failed for item {}: {}", item.getId(), e.getMessage());
+        }
     }
 
     @PostMapping("/me/saved/{itemId}")

@@ -73,8 +73,6 @@ export type Line = {
   endsAt: string | null;
   kind: "ACTION" | "INFO";
   saved: boolean;
-  /** 자동 공개한 그림 날짜. 학생이 "날짜가 달라요"로 신고할 수 있다. */
-  reportable: boolean;
 };
 
 /** deadline은 날짜가 그림에만 있어 확인 중인 카드(undated 구간)에서만 null이다. */

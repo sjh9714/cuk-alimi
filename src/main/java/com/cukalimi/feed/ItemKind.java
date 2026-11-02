@@ -25,6 +25,9 @@ public final class ItemKind {
     private static final Pattern WHEN_ONLY = Pattern.compile("^((행사|특강|강연)\\s*)?일\\s*시$");
     private static final Pattern LECTURE = Pattern.compile("특강");
 
+    /** 끝이 할 일이면 앞에 "결과", "면접", "설명회"가 있어도 할 일이다. "결과보고서 제출", "면접 신청" 같은 것. */
+    private static final Pattern ACTION_ENDING = Pattern.compile("(신청|제출|접수|등록|납부|변경)(\\s*(기간|마감|기한|일))?\\s*$");
+
     private ItemKind() {
     }
 
@@ -43,6 +46,9 @@ public final class ItemKind {
     }
 
     public static String of(String itemTitle) {
-        return itemTitle != null && INFO_TITLE.matcher(itemTitle).find() ? INFO : ACTION;
+        if (itemTitle == null || ACTION_ENDING.matcher(itemTitle).find()) {
+            return ACTION;
+        }
+        return INFO_TITLE.matcher(itemTitle).find() ? INFO : ACTION;
     }
 }

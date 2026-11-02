@@ -926,6 +926,19 @@ legend + * {
   color: var(--alarm);
 }
 
+/* 모든 날짜에 달려 있어서 평소에는 감추고, 행에 마우스를 올리거나 키보드로 닿을 때만 보인다. */
+@media (hover: hover) {
+  .it .m .report,
+  .events .report {
+    opacity: 0;
+  }
+  .it:hover .report,
+  .events li:hover .report,
+  .report:focus-visible {
+    opacity: 1;
+  }
+}
+
 .it.done .do,
 .it.done .m {
   opacity: 0.4;
@@ -1046,10 +1059,21 @@ legend + * {
   color: var(--mute);
 }
 
+.upcoming .fold-list {
+  padding: 4px 0 8px;
+}
+
+.upcoming em {
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--pen);
+}
+
 .folds {
   display: grid;
   gap: 2px;
-  margin-top: 24px;
+  margin-top: 12px;
 }
 
 details.fold > summary {

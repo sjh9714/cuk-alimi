@@ -1,9 +1,18 @@
 package com.cukalimi.notice;
 
 import com.cukalimi.config.AppProperties;
+import com.cukalimi.domain.DateItem;
+import com.cukalimi.domain.DateItemRepository;
+import com.cukalimi.domain.Notice;
 import com.cukalimi.domain.NoticeRepository;
 import com.cukalimi.fetch.PageFetcher;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,8 +32,13 @@ public class NoticeCollector {
     private final PageFetcher fetcher;
     private final NoticeRepository notices;
     private final NoticeStore store;
+    private final DateItemRepository dateItems;
+    private final Clock clock;
 
-    public NoticeCollector(AppProperties props, PageFetcher fetcher, NoticeRepository notices, NoticeStore store) {
+    public NoticeCollector(AppProperties props, PageFetcher fetcher, NoticeRepository notices, NoticeStore store,
+            DateItemRepository dateItems, Clock clock) {
+        this.dateItems = dateItems;
+        this.clock = clock;
         this.props = props;
         this.fetcher = fetcher;
         this.notices = notices;
@@ -93,6 +107,37 @@ public class NoticeCollector {
             }
         }
         return new Result(summaries.size(), fetched, items, needsManual, failed);
+    }
+
+    /**
+     * 아직 지나지 않은 날짜가 있는 공지를 하루 한 번 다시 읽는다. 학교는 제목을 그대로 두고 본문의 기간만 고치기도 한다.
+     * 본문이 바뀐 공지만 다시 처리한다. 고친 수.
+     */
+    public int recheckOpenNotices(LocalDate today) {
+        Set<Long> ids = dateItems.findByEndsOnGreaterThanEqual(today).stream().map(DateItem::getNoticeId)
+                .filter(Objects::nonNull).collect(Collectors.toSet());
+        int changed = 0;
+        for (Notice n : notices.findAllById(ids)) {
+            try {
+                String html = fetcher.get(n.getUrl());
+                if (!normalize(NoticeViewParser.parse(html).bodyText()).equals(normalize(n.getBodyText()))) {
+                    store.save(new NoticeSummary(n.getArticleNo(), n.getCategory(), n.getTitle(), n.getPostedOn()), html);
+                    changed++;
+                }
+            } catch (RuntimeException e) {
+                log.warn("notice {} recheck failed: {}", n.getArticleNo(), e.getMessage());
+            }
+        }
+        return changed;
+    }
+
+    @Scheduled(cron = "${app.notice.recheck-cron}", zone = "Asia/Seoul")
+    public void recheckScheduled() {
+        try {
+            log.info("notice recheck changed={}", recheckOpenNotices(LocalDate.now(clock.withZone(ZoneId.of("Asia/Seoul")))));
+        } catch (RuntimeException e) {
+            log.error("notice recheck failed", e);
+        }
     }
 
     /** 공백과 보이지 않는 글자는 무시한다. 목록과 본문 페이지가 제목을 조금 다르게 찍어도 매시간 다시 읽지 않게. */

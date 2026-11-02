@@ -546,6 +546,46 @@ class ApiFlowTest {
         }
     }
 
+    @Test
+    void reportOnATextDateTellsTheOperatorAndKeepsTheDate() {
+        DateItem item = dateItems.findByEndsOnGreaterThanEqualAndStatusNot(LocalDate.of(2026, 7, 10), DateItem.STATUS_CANDIDATE).stream()
+                .filter(i -> DateItem.STATUS_AUTO.equals(i.getStatus())).findFirst().orElseThrow();
+        String cookie = login("text-report@catholic.ac.kr");
+
+        assertThat(rest.exchange("/api/items/" + item.getId() + "/report", HttpMethod.POST, withCookie(cookie, null), Void.class)
+                .getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        assertThat(mail.lastTo()).isEqualTo("admin@catholic.ac.kr");
+        assertThat(mail.lastBody()).contains("원문과 맞춰 봐 주세요");
+        assertThat(itemIds()).contains(item.getId());
+    }
+
+    @Test
+    void changedImageNoticeKeepsStudentSaves() {
+        transcriber.disagree = false;
+        try {
+            String html = Fixtures.read("notice-274128.html").replace("274128", "999102").replace("editor-image/", "editor-image/copy-saved-")
+                    .replace("[학사지원팀] 2026-2학기 제1전공생 우선 수강신청 시행 안내", "[학생지원팀] 저장 유지 장학생 선발 안내");
+            NoticeSummary summary = new NoticeSummary(999102L, "장학", "", LocalDate.of(2026, 7, 8));
+            store.save(summary, html);
+            imageReader.readPending(LocalDate.of(2026, 7, 10));
+            long noticeId = notices.findByArticleNo(999102L).orElseThrow().getId();
+            long itemId = dateItems.findByNoticeIdOrderByEndsOnAsc(noticeId).get(0).getId();
+            String cookie = login("saved-keeps@catholic.ac.kr");
+            rest.exchange("/api/me/saved/" + itemId, HttpMethod.POST, withCookie(cookie, null), Void.class);
+
+            store.save(summary, html.replace("저장 유지 장학생 선발 안내", "저장 유지 장학생 선발 안내(기간 연장)"));
+
+            assertThat(dateItems.findById(itemId)).isPresent();
+            assertThat(itemIds()).doesNotContain(itemId);
+            imageReader.readPending(LocalDate.of(2026, 7, 10));
+            assertThat(dateItems.findById(itemId).orElseThrow().getStatus()).isEqualTo(DateItem.STATUS_AUTO_IMAGE);
+            assertThat(itemIds()).contains(itemId);
+        } finally {
+            transcriber.disagree = true;
+        }
+    }
+
     private ResponseEntity<Map> requestLink(String email, String forwardedFor) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");

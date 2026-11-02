@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { api, dday, type Feed, type Line, type Me } from "@/lib/api";
-import { boardCards, cleanTitle, eventsOf, iso, tasksOf, type CampusEvent, type Kind, type Task } from "@/lib/tasks";
+import { boardCards, cleanTitle, eventsOf, iso, startsOf, tasksOf, type CampusEvent, type Kind, type Task } from "@/lib/tasks";
 import { BookmarkIcon, CheckIcon, ChevronIcon } from "./icons";
 
 /** 학사일정 표와 학사 공지는 출처만 다르다. 학생에게는 둘 다 학사다. */
@@ -44,6 +44,7 @@ export default function Home() {
   };
 
   const reportDate = async (line: Line) => {
+    if (!window.confirm("이 날짜가 학교 원문과 다른가요? 신고하면 운영자가 확인해요.")) return;
     try {
       await api.reportDate(line.id);
       setFeed(await api.feed());
@@ -66,14 +67,15 @@ export default function Home() {
   const tasks = useMemo(() => tasksOf(boardCards(sections), todayIso), [sections, todayIso]);
   const inKind = (k: Kind) => kind === "all" || k === kind || (kind === "academic" && k === "schedule");
   const shown = tasks.filter((t) => inKind(t.kind));
-  const events = eventsOf(sections).filter((e) => inKind(e.kind));
+  const events = [...eventsOf(sections), ...startsOf(sections, todayIso)].filter((e) => inKind(e.kind));
   const week2 = iso(addDays(monday, 7));
   const after = iso(addDays(monday, 14));
   const open = (t: Task) => !done.has(t.key);
   const word = kind === "all" ? "일" : KIND_LABEL[kind];
   const todayCount = shown.filter((t) => t.date === todayIso && open(t)).length;
   const weekCount = shown.filter((t) => t.date >= todayIso && t.date < week2 && open(t)).length;
-  const later = shown.filter((t) => t.date >= after).slice(0, 5);
+  const upcoming = upcomingRows(shown, events, after);
+  const others = shown.filter((t) => t.date >= after && t.kind !== "schedule");
   const undated = sections.find((s) => s.key === "undated")?.cards ?? [];
   const folded = sections.filter((s) => (s.key === "region" || s.key === "group") && s.cards.length > 0);
   const saved = shown.filter((t) => t.saved);
@@ -158,12 +160,16 @@ export default function Home() {
               <Day key={iso(d)} date={d} tasks={shown} events={events} {...board} />
             ))}
             <div className="cell memo">
-              <h2>그다음 일정</h2>
-              {later.length === 0 ? (
-                <p className="hint">아직 없어요.</p>
+              <h2>내 저장 {me ? `${saved.length}건` : ""}</h2>
+              {!me ? (
+                <p className="hint">
+                  <Link href="/settings/">로그인</Link>하면 마감을 저장하고 메일로 받을 수 있어요.
+                </p>
+              ) : saved.length === 0 ? (
+                <p className="hint">행 끝의 책갈피를 누르면 여기에 모여요.</p>
               ) : (
                 <ul>
-                  {later.map((t) => (
+                  {saved.slice(0, 6).map((t) => (
                     <li key={t.key}>
                       <a href={t.url} target="_blank" rel="noreferrer">
                         {t.title}
@@ -176,20 +182,41 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="folds">
-            {me ? (
-              <Fold title="내 저장" count={saved.length} note="마감 3일 전에 메일로 알려 드려요.">
-                {saved.length === 0 ? (
-                  <p className="hint">행 끝의 책갈피를 누르면 여기에 모여요.</p>
-                ) : (
-                  <FoldList tasks={saved} />
-                )}
-              </Fold>
+          <section className="upcoming" aria-labelledby="upcoming-title">
+            <div className="next">
+              <h2 id="upcoming-title">앞으로의 일정</h2>
+            </div>
+            {upcoming.length === 0 ? (
+              <p className="hint">앞으로 남은 일정이 없어요.</p>
             ) : (
-              <p className="hint">
-                <Link href="/settings/">로그인</Link>하면 마감을 저장하고 메일로 받을 수 있어요.
-              </p>
+              <ul className="fold-list">
+                {upcoming.map((r) => (
+                  <li key={r.key}>
+                    <span className="d">{shortDate(r.date)}</span>
+                    <a href={r.url} target="_blank" rel="noreferrer">
+                      {r.title}
+                      {r.tag && <em> {r.tag}</em>}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             )}
+            {others.length > 0 && (
+              <details className="fold">
+                <summary>
+                  <span className="fold-title">
+                    다른 공지 일정 <span className="count">{others.length}</span>
+                  </span>
+                  <ChevronIcon size={15} />
+                </summary>
+                <div className="fold-body">
+                  <FoldList tasks={others} />
+                </div>
+              </details>
+            )}
+          </section>
+
+          <div className="folds">
             {folded.map((s) => (
               <Fold key={s.key} title={s.title} count={s.cards.length} note={s.note}>
                 <FoldList tasks={tasksOf(s.cards, todayIso)} />
@@ -243,12 +270,12 @@ function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; 
         <ul className="events">
           {ownEvents.map((e) => (
             <li key={e.key}>
-              <b>행사</b>
+              <b>{e.tag}</b>
               <a href={e.url} target="_blank" rel="noreferrer">
                 {e.title}
               </a>
               {e.at && <span>{e.at}</span>}
-              {board.canSave && e.line.reportable && (
+              {board.canSave && e.tag === "행사" && (
                 <button className="report" onClick={() => board.onReport(e.line)}>
                   날짜가 달라요
                 </button>
@@ -286,7 +313,7 @@ function Row({ task, done, canSave, onDone, onSave, onReport }: Omit<Board, "tod
               <p>{task.excerpt}</p>
             </details>
           )}
-          {canSave && task.reportable && (
+          {canSave && (
             <button className="report" onClick={() => onReport(task.line)}>
               날짜가 달라요
             </button>
@@ -344,6 +371,15 @@ function Ring() {
       />
     </svg>
   );
+}
+
+/** 2주 뒤 일정. 학사일정 표 항목과 행사, 시작일을 날짜순으로 항상 보여 준다. */
+function upcomingRows(tasks: Task[], events: CampusEvent[], after: string) {
+  const rows = [
+    ...tasks.filter((t) => t.date >= after && t.kind === "schedule").map((t) => ({ key: t.key, date: t.date, title: t.title, url: t.url, tag: "" })),
+    ...events.filter((e) => e.date >= after).map((e) => ({ key: e.key, date: e.date, title: e.title, url: e.url, tag: e.tag })),
+  ];
+  return rows.sort((a, b) => a.date.localeCompare(b.date));
 }
 
 function addDays(d: Date, n: number): Date {

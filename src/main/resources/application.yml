@@ -54,6 +54,8 @@ app:
     years: ${SCHEDULE_YEARS:2026,2027}
   notice:
     cron: "0 7 * * * *"
+    # 날짜가 남은 공지의 본문이 바뀌었는지 하루 한 번 본다.
+    recheck-cron: "0 30 5 * * *"
     page-size: 30
     categories:
       - name: 학사

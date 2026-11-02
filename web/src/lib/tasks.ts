@@ -19,7 +19,6 @@ export type Task = {
   /** 저장 대상. 한 줄로 합친 경우 첫 줄이다. */
   line: Line;
   saved: boolean;
-  reportable: boolean;
 };
 
 const EMPTY_LABEL = /^(마감 기한|마감|기간|신청기간|접수기간|모집기간|조사기간|내용|일정)$/;
@@ -72,7 +71,7 @@ function nameOf(card: Card, line: Line): Named {
   const label = line.label ?? "";
   const exchange = clean.includes("학점교류");
 
-  if (RECOMMEND_TAG.test(card.title) || label.includes("추천")) {
+  if (RECOMMEND_TAG.test(card.title) || /추천(자|마감)/.test(label)) {
     return {
       title: `${companyOf(card.title)} 추천 신청`,
       from: RECOMMEND_TAG.test(card.title) ? "대플 추천채용" : "추천채용",
@@ -129,14 +128,13 @@ export function tasksOf(cards: Card[], today: string): Task[] {
         excerpt: card.audience.excerpt,
         line,
         saved: group.some((l) => l.saved),
-        reportable: group.some((l) => l.reportable),
       });
     }
   }
   return tasks.sort((a, b) => a.date.localeCompare(b.date) || Number(b.mine) - Number(a.mine) || a.title.localeCompare(b.title, "ko"));
 }
 
-export type CampusEvent = { key: string; date: string; title: string; at: string; kind: Kind; url: string; line: Line };
+export type CampusEvent = { key: string; date: string; title: string; at: string; kind: Kind; url: string; line: Line; tag: "행사" | "시작" };
 
 /** 신청할 것 없이 날짜만 알아 두면 되는 행사 (학위수여식 등). */
 export function eventsOf(sections: Section[]): CampusEvent[] {
@@ -146,7 +144,18 @@ export function eventsOf(sections: Section[]): CampusEvent[] {
     .flatMap((c) => {
       if (!c.deadline) return [];
       const time = c.deadline.startsAt ?? c.deadline.endsAt;
-      return [{ key: c.key, date: c.deadline.endsOn, title: cleanTitle(c.title), at: time ? time.slice(0, 5) : "", kind: c.kind, url: c.url, line: c.deadline }];
+      return [{ key: c.key, date: c.deadline.endsOn, title: cleanTitle(c.title), at: time ? time.slice(0, 5) : "", kind: c.kind, url: c.url, line: c.deadline, tag: "행사" }];
+    });
+}
+
+/** 학사일정 표 항목의 시작일. 수강신청처럼 시작하는 날이 마감만큼 중요한 일정이다. 지난 시작일은 뺀다. */
+export function startsOf(sections: Section[], today: string): CampusEvent[] {
+  return boardCards(sections)
+    .filter((c) => c.kind === "schedule")
+    .flatMap((c) => {
+      const line = c.deadline;
+      if (!line?.startsOn || line.startsOn === line.endsOn || line.startsOn < today) return [];
+      return [{ key: `start:${c.key}`, date: line.startsOn, title: c.title, at: "", kind: c.kind, url: c.url, line, tag: "시작" as const }];
     });
 }
 

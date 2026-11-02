@@ -167,6 +167,12 @@ class CollectorsIntegrationTest {
         assertThat(dateItems.findByNaturalKey("schedule:2026:재학생 수강신청#1")).get()
                 .satisfies(i -> assertThat(i.getStartsOn()).isEqualTo(LocalDate.of(2026, 8, 5)));
         assertThat(dateItems.countBySourceKind(DateItem.SOURCE_SCHEDULE)).isEqualTo(stored);
+
+        // 학교 페이지가 바뀌어 표를 하나도 못 읽어도 있던 일정을 지우지 않는다.
+        ScheduleStore.Result empty = ((com.cukalimi.schedule.ScheduleStore) org.springframework.test.util.ReflectionTestUtils
+                .getField(scheduleCollector, "store")).apply(2026, "성심", List.of());
+        assertThat(empty.removed()).isZero();
+        assertThat(dateItems.countBySourceKind(DateItem.SOURCE_SCHEDULE)).isEqualTo(stored);
     }
 
     @Test

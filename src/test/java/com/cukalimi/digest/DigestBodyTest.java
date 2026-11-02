@@ -23,7 +23,7 @@ class DigestBodyTest {
     }
 
     static Feed.Line line(long id, String label, LocalDate ends, LocalTime at, boolean saved) {
-        return new Feed.Line(id, label, null, ends, null, at, "ACTION", saved, false);
+        return new Feed.Line(id, label, null, ends, null, at, "ACTION", saved);
     }
 
     DigestService service() {

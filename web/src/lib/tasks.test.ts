@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { Card, Line, Section } from "./api";
-import { boardCards, cleanTitle, eventsOf, schoolName, tasksOf } from "./tasks";
+import { boardCards, cleanTitle, eventsOf, schoolName, startsOf, tasksOf } from "./tasks";
 
 const TODAY = "2026-11-02";
 let nextId = 1;
 
 function line(endsOn: string, label: string | null, extra: Partial<Line> = {}): Line {
-  return { id: nextId++, label, startsOn: null, endsOn, startsAt: null, endsAt: null, kind: "ACTION", saved: false, reportable: false, ...extra };
+  return { id: nextId++, label, startsOn: null, endsOn, startsAt: null, endsAt: null, kind: "ACTION", saved: false, ...extra };
 }
 
 function card(title: string, lines: Line[], extra: Partial<Card> = {}): Card {
@@ -71,6 +71,11 @@ describe("tasksOf", () => {
     expect(tasksOf([card("이노진 – 품질관리 및 제형업무 채용", [line("2026-11-12", "추천자 마감일")])], TODAY)[0].title).toBe("이노진 추천 신청");
   });
 
+  it("장학 공지의 추천서는 추천채용이 아니다", () => {
+    const t = tasksOf([card("2026학년도 교외장학생 선발 안내", [line("2026-11-08", "학과장 추천서 제출")])], TODAY)[0];
+    expect(t.title).toBe("학과장 추천서 제출");
+  });
+
   it("뜻이 있는 라벨은 살리고 뜻 없는 말은 버린다", () => {
     const t = tasksOf([card("2026학년도 2학기 연구인턴 신청 안내", [line("2026-11-08", "신청기간 · 트리니티 신청 및 근로지 자기소개서 제출")])], TODAY)[0];
     expect(t.title).toBe("트리니티 신청 및 근로지 자기소개서 제출");
@@ -129,6 +134,17 @@ describe("eventsOf", () => {
   it("행사는 할 일로 세지 않는다", () => {
     const section: Section = { key: "events", title: "행사 일정", note: "", collapsed: true, cards: [card("봄 학위수여식", [line("2027-02-18", null, { kind: "INFO" })])] };
     expect(boardCards([section])).toEqual([]);
+  });
+});
+
+describe("startsOf", () => {
+  const section = (cards: Card[]): Section => ({ key: "must", title: "", note: "", collapsed: false, cards });
+
+  it("학사일정 표 항목의 앞으로 올 시작일만 적는다", () => {
+    const enroll = card("수강신청", [line("2027-02-04", null, { startsOn: "2027-02-02" })], { kind: "schedule" });
+    const past = card("재학생 등록기간", [line("2026-11-20", null, { startsOn: "2026-10-30" })], { kind: "schedule" });
+    const notice = card("장학 신청", [line("2026-11-20", "신청", { startsOn: "2026-11-10" })], { kind: "scholarship" });
+    expect(startsOf([section([enroll, past, notice])], TODAY)).toEqual([expect.objectContaining({ title: "수강신청", date: "2027-02-02", tag: "시작" })]);
   });
 });
 

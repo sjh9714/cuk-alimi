@@ -63,10 +63,15 @@ public class NoticeStore {
             boolean changed = notice.reparsed(view.title(), view.bodyText(), view.hasImages(),
                     String.join("\n", view.attachments()), reason);
             // 학교가 공지를 고쳤으면(기간 연장 등) 옛 그림에서 읽은 후보를 지운다. 받아 적기가 새 그림으로 다시 읽는다.
+            // 공개했던 날짜는 지우지 않고 거두어 둔다. 지우면 학생의 저장과 마감 알림이 함께 사라진다.
             if (changed) {
-                dateItems.findByNoticeIdOrderByEndsOnAsc(notice.getId()).stream()
-                        .filter(i -> DateItem.STATUS_CANDIDATE.equals(i.getStatus()) || DateItem.STATUS_AUTO_IMAGE.equals(i.getStatus()))
-                        .forEach(dateItems::delete);
+                for (DateItem i : dateItems.findByNoticeIdOrderByEndsOnAsc(notice.getId())) {
+                    if (DateItem.STATUS_CANDIDATE.equals(i.getStatus())) {
+                        dateItems.delete(i);
+                    } else {
+                        i.awaitReread();
+                    }
+                }
             }
         }
 
@@ -101,18 +106,29 @@ public class NoticeStore {
     @Transactional
     public int saveImageItems(long noticeId, long articleNo, List<ExtractedItem> extracted, Set<LocalDate> agreedDates) {
         int added = 0;
+        Set<String> seen = new HashSet<>();
         for (ExtractedItem item : extracted) {
             String key = "notice:" + articleNo + ":img." + item.where();
+            seen.add(key);
             DateItem row = dateItems.findByNaturalKey(key).orElse(null);
             if (row == null) {
                 row = dateItems.save(DateItem.fromImage(noticeId, key, item.title(), item.range().start(), item.range().end(),
                         item.range().startsAt(), item.range().endsAt(), item.targetGrade()));
                 added++;
+            } else {
+                row.refreshCandidate(item.title(), item.range().start(), item.range().end(), item.range().startsAt(),
+                        item.range().endsAt());
             }
             if (agreedDates.contains(item.range().end())) {
                 row.publishFromImage();
             }
         }
+        // 다시 읽었더니 사라진 후보는 지운다.
+        String prefix = "notice:" + articleNo + ":img.";
+        dateItems.findByNoticeIdOrderByEndsOnAsc(noticeId).stream()
+                .filter(i -> DateItem.STATUS_CANDIDATE.equals(i.getStatus()) && i.getNaturalKey().startsWith(prefix)
+                        && !seen.contains(i.getNaturalKey()))
+                .forEach(dateItems::delete);
         log.info("notice {} image -> {} new, {} agreed dates", articleNo, added, agreedDates.size());
         return added;
     }
