@@ -427,12 +427,12 @@ class ApiFlowTest {
     void loginMailStopsAtThreePerAddressPerHour() {
         String email = "limit@catholic.ac.kr";
         for (int i = 0; i < 3; i++) {
-            assertThat(rest.postForEntity("/api/auth/request", Map.of("email", email), Map.class).getStatusCode())
+            assertThat(requestLink(email, "10.1.0.1").getStatusCode())
                     .isEqualTo(HttpStatus.OK);
         }
         String lastBody = mail.lastBody();
 
-        ResponseEntity<Map> fourth = rest.postForEntity("/api/auth/request", Map.of("email", " LIMIT@catholic.ac.kr "), Map.class);
+        ResponseEntity<Map> fourth = requestLink(" LIMIT@catholic.ac.kr ", "10.1.0.1");
 
         assertThat(fourth.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
         assertThat(mail.lastBody()).isEqualTo(lastBody);
@@ -444,18 +444,38 @@ class ApiFlowTest {
         for (int i = 0; i < 100; i++) {
             flood.add(new LoginToken("flood" + i + "@catholic.ac.kr", "flood-hash-" + i, OffsetDateTime.now().plusMinutes(15)));
         }
+        login("regular@catholic.ac.kr");
         loginTokens.saveAll(flood);
         try {
-            ResponseEntity<Map> blocked = rest.postForEntity("/api/auth/request", Map.of("email", "after-flood@catholic.ac.kr"), Map.class);
+            ResponseEntity<Map> blocked = requestLink("after-flood@catholic.ac.kr", "10.1.0.2");
             assertThat(blocked.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
             assertThat(mail.lastTo()).isNotEqualTo("after-flood@catholic.ac.kr");
+
+            assertThat(requestLink("regular@catholic.ac.kr", "10.1.0.3").getStatusCode()).isEqualTo(HttpStatus.OK);
         } finally {
             loginTokens.deleteAll(flood);
         }
     }
 
+    @Test
+    void loginMailStopsAtTenPerIpPerHour() {
+        for (int i = 0; i < 10; i++) {
+            assertThat(requestLink("ip" + i + "@catholic.ac.kr", "10.1.0.4").getStatusCode()).isEqualTo(HttpStatus.OK);
+        }
+
+        assertThat(requestLink("ip10@catholic.ac.kr", "10.1.0.4").getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+        assertThat(requestLink("ip10@catholic.ac.kr", "10.1.0.5").getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    private ResponseEntity<Map> requestLink(String email, String forwardedFor) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+        headers.add("X-Forwarded-For", forwardedFor);
+        return rest.postForEntity("/api/auth/request", new HttpEntity<>(Map.of("email", email), headers), Map.class);
+    }
+
     private String login(String email) {
-        ResponseEntity<Map> requested = rest.postForEntity("/api/auth/request", Map.of("email", email), Map.class);
+        ResponseEntity<Map> requested = requestLink(email, "10.2.0." + Math.abs(email.hashCode() % 250));
         assertThat(requested.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(mail.lastTo()).isEqualTo(email);
         ResponseEntity<Void> consumed = rest.getForEntity(URI.create(lastLink()), Void.class);

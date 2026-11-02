@@ -52,8 +52,9 @@ public class AuthController {
     }
 
     @PostMapping("/auth/request")
-    public Map<String, String> request(@RequestBody LoginRequest body) {
-        auth.requestLogin(body.email());
+    public Map<String, String> request(HttpServletRequest request, @RequestBody LoginRequest body) {
+        // Caddy가 X-Forwarded-For를 실제 접속 주소로 덮어쓰고, ForwardedHeaderFilter가 그 값을 getRemoteAddr()로 준다.
+        auth.requestLogin(body.email(), request.getRemoteAddr());
         return Map.of("message", "메일을 보냈습니다. 15분 안에 링크를 눌러 주세요.");
     }
 

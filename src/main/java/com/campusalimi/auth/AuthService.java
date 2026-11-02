@@ -33,7 +33,7 @@ public class AuthService {
     static final Duration SESSION_TTL = Duration.ofDays(30);
     /** 같은 주소로 한 시간에 보내는 링크 수. 남의 주소로 메일 폭탄을 보내지 못하게. */
     static final int HOURLY_PER_ADDRESS = 3;
-    /** 하루에 보내는 링크 전체 수. Gmail 한도에 닿아 계정이 정지되지 않게. */
+    /** 새 주소로 보내는 링크의 하루 전체 수. Gmail 한도에 닿아 계정이 정지되지 않게. 이미 가입한 사람은 막지 않는다. */
     static final int DAILY_TOTAL = 100;
     private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
@@ -41,13 +41,14 @@ public class AuthService {
     private final MailSender mail;
     private final AppUserRepository users;
     private final LoginTokenRepository tokens;
+    private final LoginIpLimiter ipLimiter;
     private final UserSessionRepository sessions;
     private final SavedItemRepository savedItems;
     private final UserBenefitRepository userBenefits;
     private final SentNotificationRepository sentNotifications;
     private final FeedbackRepository feedback;
 
-    public AuthService(AppProperties props, MailSender mail, AppUserRepository users, LoginTokenRepository tokens,
+    public AuthService(AppProperties props, MailSender mail, AppUserRepository users, LoginTokenRepository tokens, LoginIpLimiter ipLimiter,
             UserSessionRepository sessions, SavedItemRepository savedItems, UserBenefitRepository userBenefits,
             SentNotificationRepository sentNotifications, FeedbackRepository feedback) {
         this.savedItems = savedItems;
@@ -58,21 +59,26 @@ public class AuthService {
         this.mail = mail;
         this.users = users;
         this.tokens = tokens;
+        this.ipLimiter = ipLimiter;
         this.sessions = sessions;
     }
 
     /** 링크를 보낸다. 가입 여부와 상관없이 같은 응답을 준다. 주소가 있는지 밖에서 알 수 없게. */
     @Transactional
-    public void requestLogin(String rawEmail) {
+    public void requestLogin(String rawEmail, String clientIp) {
         String email = normalize(rawEmail);
         if (!EMAIL.matcher(email).matches()) {
             throw new IllegalArgumentException("이메일 형식이 아닙니다");
         }
         OffsetDateTime now = OffsetDateTime.now();
+        if (!ipLimiter.allow(clientIp, now.toInstant())) {
+            throw new AuthException(HttpStatus.TOO_MANY_REQUESTS, "요청이 너무 많아요. 한 시간 뒤에 다시 시도해 주세요");
+        }
+        tokens.lockLoginRequests();
         if (tokens.countByEmailAndCreatedAtAfter(email, now.minusHours(1)) >= HOURLY_PER_ADDRESS) {
             throw new AuthException(HttpStatus.TOO_MANY_REQUESTS, "링크를 너무 많이 요청했어요. 받은 메일을 확인하거나 한 시간 뒤에 다시 시도해 주세요");
         }
-        if (tokens.countByCreatedAtAfter(now.minusDays(1)) >= DAILY_TOTAL) {
+        if (users.findByEmail(email).isEmpty() && tokens.countByCreatedAtAfter(now.minusDays(1)) >= DAILY_TOTAL) {
             throw new AuthException(HttpStatus.TOO_MANY_REQUESTS, "오늘 보낼 수 있는 로그인 메일을 다 썼어요. 내일 다시 시도해 주세요");
         }
         String token = Tokens.random();
