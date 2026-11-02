@@ -1228,23 +1228,6 @@ details.fold .note {
   color: var(--body);
 }
 
-.b-top .value {
-  display: grid;
-  justify-items: end;
-  gap: 2px;
-  max-width: 190px;
-  text-align: right;
-}
-
-.b-top .value strong {
-  text-wrap: balance;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-  line-height: 1.35;
-  color: var(--ink);
-}
-
 .b-top .left {
   font-size: 14px;
   font-weight: 800;
@@ -1258,7 +1241,7 @@ details.fold .note {
 
 .benefit.ended h3,
 .benefit.ended .b-top p,
-.benefit.ended .value {
+.benefit.ended .left {
   opacity: 0.5;
 }
 
@@ -1724,11 +1707,8 @@ details.fold .note {
   .b-top.plain {
     grid-template-columns: minmax(0, 1fr);
   }
-  .b-top .value {
+  .b-top .left {
     grid-column: -2 / -1;
-    justify-items: start;
-    max-width: none;
-    text-align: left;
   }
   .band {
     top: 52px;

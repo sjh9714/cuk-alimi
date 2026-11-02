@@ -108,18 +108,19 @@ function BenefitCell({ benefit: b, canCheck, onToggle }: { benefit: Benefit; can
           </h3>
           <p>{b.summary}</p>
         </div>
-        {(b.price || d !== null) && (
-          <div className="value">
-            {b.price && <strong>{b.price}</strong>}
-            {d !== null && <span className="left">{ddayLabel(b.endsOn!)}</span>}
-          </div>
-        )}
+        {d !== null && <span className="left">{ddayLabel(b.endsOn!)}</span>}
       </div>
       <div className="m">
         {b.stale && <b className="stale">재확인 필요</b>}
         <details>
           <summary>조건과 방법</summary>
           <dl>
+            {b.price && (
+              <>
+                <dt>가격</dt>
+                <dd>{b.price}</dd>
+              </>
+            )}
             <dt>조건</dt>
             <dd>{b.condition}</dd>
             <dt>방법</dt>

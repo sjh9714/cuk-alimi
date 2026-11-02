@@ -4,7 +4,6 @@
 # - 출처 페이지를 사람이 직접 열어 확인한 것만 적는다. 블로그·기사만 있는 것은 적지 않는다.
 # - verified_on 은 출처를 연 날이다. 90일이 지나면 화면에 "재확인 필요"가 붙는다.
 # - 가격·조건은 출처에 적힌 그대로. 출처에 없는 것은 적지 않는다.
-# - price는 혜택 탭 오른쪽에 크게 보이는 값이다. "무료", "월 6,600원"처럼 짧게 쓰고, 값이 정해지지 않은 항목은 비운다.
 # - 2026-10-26 기준 확인했지만 넣지 않은 것: 청년도약계좌(신규 가입 종료 여부 공식 확인 못 함),
 #   청년월세 지원(복지로 공식 안내 못 찾음), KTX 힘내라 청춘(코레일 페이지 접근 불가),
 #   삼성 캠퍼스 스토어(페이지 접근 불가), 유튜브 프리미엄 학생(한국 미제공), Cursor 학생(현재 공식 혜택 없음).
@@ -18,7 +17,6 @@
 - slug: github-student-pack
   name: GitHub Student Developer Pack
   category: TOOL
-  price: 무료
   summary: 재학 중 GitHub Pro, Copilot, Codespaces와 수십 개 개발 도구를 무료로
   condition: 재학 중인 학생. GitHub 계정에서 학생 인증. Azure 같은 일부 혜택은 18세 이상
   how_to: github.com/settings/education/benefits 에서 학교 메일이나 학생증으로 신청
@@ -30,7 +28,6 @@
 - slug: jetbrains-student
   name: JetBrains 학생 라이선스
   category: TOOL
-  price: 무료
   summary: IntelliJ IDEA Ultimate 등 JetBrains 전 제품 무료
   condition: 학생·교사. 상업 작업에는 쓸 수 없음. 졸업 후 2년간 개인 구독 40% 할인
   how_to: jetbrains.com/shop/eform/students 에서 학교 메일이나 GitHub Student Pack으로 신청
@@ -42,7 +39,6 @@
 - slug: notion-education
   name: Notion Education Plan
   category: TOOL
-  price: 무료
   summary: 개인 워크스페이스 무제한 페이지와 30일 버전 기록을 무료로
   condition: 인가 대학의 학생·교직원. 학교 메일이 계정의 기본 메일이어야 함. 학생증은 안 됨
   how_to: 설정 > 요금제 업그레이드 > Get free education plan. 학교 메일 한 개당 한 번
@@ -54,7 +50,6 @@
 - slug: figma-education
   name: Figma Education
   category: TOOL
-  price: 무료
   summary: Figma·FigJam Professional 무료, AI 기능 포함
   condition: 13세 이상 학생·교육자. 대학·부트캠프·온라인 과정 포함
   how_to: figma.com/education/apply 에서 교육 상태 인증 후 Education 팀 생성
@@ -66,7 +61,6 @@
 - slug: microsoft-365-education
   name: Microsoft 365 Education (A1)
   category: TOOL
-  price: 무료
   summary: 웹용 Word·Excel·PowerPoint·OneNote·Outlook 무료
   condition: 적격 교육기관의 학교 메일. 대부분 즉시 승인, 학교 확인이 필요하면 최대 1개월
   how_to: microsoft.com/ko-kr/education/products/office 에서 학교 메일로 시작
@@ -195,7 +189,6 @@
 - slug: cuk-hospital-discount
   name: 가톨릭대 부속병원 진료비 감면
   category: SCHOOL
-  price: 진찰료 100% 감면
   summary: 서울성모병원 등 부속병원 8곳에서 진찰료 100%, 총 진료비 중 개인부담금 30% 감면
   condition: 학부·대학원 재학생과 휴학생. 졸업생·수료생 제외. 종합검진은 감면 대상 아님. 대전성모병원은 개인부담금 감면 예외
   how_to: 트리니티에서 '제3자 개인정보이용 동의'를 하면 다음 날부터 감면번호 적용. 대상 병원은 부천·인천·서울·여의도·의정부·은평성모병원, 성빈센트병원, 대전성모병원
@@ -218,7 +211,6 @@
 - slug: kosaf-blue-lighthouse
   name: 푸른등대 기부장학금
   category: SCHOLARSHIP
-  price: 학기당 150만~400만 원
   summary: 기부처별 저소득층 우수 학생 장학금. 2026년 2학기 기준 학기당 150만~400만 원
   condition: 기부처마다 자격이 다름. 대부분 학자금 지원구간(예 6구간 이하)과 학과·진로 조건을 봄
   how_to: kosaf.go.kr 에서 기부처별 '자세히보기'를 확인하고 신청. 2026년 2학기 신청은 9월 10일 마감, 선발·지급은 10월 말 예정
@@ -230,7 +222,6 @@
 - slug: cuk-office365
   name: 가톨릭대 Microsoft Office 365
   category: TOOL
-  price: 무료
   summary: 학번@catholic.ac.kr 계정으로 MS Office 무상 사용. 다운로드 횟수 제한 없음
   condition: 재학생(휴학생 포함)과 교직원만. 졸업생·수료생 불가. 학교 웹메일이나 다른 메일로는 인증 불가. 설치 기기 수는 제한 있음
   how_to: 트리니티 접속 → 사용자 사진 하단 클릭 → 학번@catholic.ac.kr 계정 생성 후 로그인
@@ -253,7 +244,6 @@
 - slug: cuk-counseling
   name: 가톨릭대 학생생활상담소
   category: SCHOOL
-  price: 무료
   summary: 개인상담, 집단상담, 심리검사와 해석상담. 비밀 보장, 모든 비용 무료
   condition: 본교 재학생이면 누구나
   how_to: 니콜스관 N121호, 02-2164-4640. 일반대학원 대학원상담실(N314호, 10시~17시)도 재학생에게 무료 심리서비스 제공
@@ -277,7 +267,6 @@
 - slug: azure-for-students
   name: Azure for Students
   category: TOOL
-  price: 크레딧 USD$100
   summary: Azure 크레딧 USD$100 (12개월 이내 사용), 신용 카드 필요 없음
   condition: 정규 대학생만 사용 가능. 학교 메일로 등록
   how_to: azure.microsoft.com/ko-kr/free/students 에서 학교 메일로 등록
@@ -289,7 +278,6 @@
 - slug: autodesk-education
   name: Autodesk 교육용 플랜
   category: TOOL
-  price: 1년 무료
   summary: AutoCAD, Fusion, Revit, Inventor, 3ds Max 등 오토데스크 제품을 무료로 1년
   condition: 최소 연령 요구사항을 충족하고 인가된 교육 기관에 등록된 학생. 교육용으로만, 상업·영리 목적 불가
   how_to: autodesk.com/kr/education/edu-software/overview 에서 제품을 선택해 자격 확인
