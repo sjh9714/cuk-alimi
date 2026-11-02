@@ -66,7 +66,8 @@ public class NoticeStore {
             // 공개했던 날짜는 지우지 않고 거두어 둔다. 지우면 학생의 저장과 마감 알림이 함께 사라진다.
             if (changed) {
                 for (DateItem i : dateItems.findByNoticeIdOrderByEndsOnAsc(notice.getId())) {
-                    if (DateItem.STATUS_CANDIDATE.equals(i.getStatus())) {
+                    // 신고로 내린 날짜는 남긴다. 지우면 사람이 보기 전에 다시 자동 공개된다.
+                    if (DateItem.STATUS_CANDIDATE.equals(i.getStatus()) && !i.isWithdrawn()) {
                         dateItems.delete(i);
                     } else {
                         i.awaitReread();

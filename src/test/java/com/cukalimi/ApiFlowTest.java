@@ -530,6 +530,13 @@ class ApiFlowTest {
             imageReader.readPending(LocalDate.of(2026, 7, 10));
             assertThat(dateItems.findById(itemId).orElseThrow().getStatus()).isEqualTo(DateItem.STATUS_CANDIDATE);
 
+            // 학교가 공지를 고쳐도 신고로 내린 날짜는 사람이 볼 때까지 다시 공개되지 않는다.
+            store.save(new NoticeSummary(999101L, "장학", "", LocalDate.of(2026, 7, 8)),
+                    Fixtures.read("notice-274128.html").replace("274128", "999101").replace("editor-image/", "editor-image/copy-twice-")
+                            .replace("[학사지원팀] 2026-2학기 제1전공생 우선 수강신청 시행 안내", "[학생지원팀] 두 번 읽기 장학생 선발 안내(수정)"));
+            imageReader.readPending(LocalDate.of(2026, 7, 10));
+            assertThat(dateItems.findById(itemId).orElseThrow().getStatus()).isEqualTo(DateItem.STATUS_CANDIDATE);
+
             // 신고한 사람이 탈퇴해도 내린 날짜는 다시 공개되지 않는다.
             assertThat(rest.exchange("/api/me", HttpMethod.DELETE, withCookie(cookie, null), Void.class).getStatusCode())
                     .isEqualTo(HttpStatus.NO_CONTENT);
