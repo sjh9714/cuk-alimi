@@ -32,13 +32,22 @@ class LoginIpLimiterTest {
     }
 
     @Test
-    void refusesNewIpsWhenTableIsFullThenRecovers() {
+    void bracketedIpv6SharesThePrefix() {
+        assertThat(LoginIpLimiter.keyOf("[2001:db8:1:2::1]")).isEqualTo(LoginIpLimiter.keyOf("2001:db8:1:2:ffff::9"));
+    }
+
+    @Test
+    void fullTableForgetsTheLeastRecentIpInsteadOfRefusingNewOnes() {
         LoginIpLimiter limiter = new LoginIpLimiter();
-        for (int i = 0; i < LoginIpLimiter.MAX_TRACKED; i++) {
-            assertThat(limiter.allow("ip-" + i, NOW)).isTrue();
+        for (int i = 0; i < LoginIpLimiter.HOURLY_PER_IP; i++) {
+            limiter.allow("first", NOW);
         }
-        assertThat(limiter.allow("newcomer", NOW)).isFalse();
-        assertThat(limiter.allow("ip-1", NOW)).isTrue();
-        assertThat(limiter.allow("newcomer", NOW.plus(Duration.ofMinutes(61)))).isTrue();
+        assertThat(limiter.allow("first", NOW)).isFalse();
+        for (int i = 0; i < LoginIpLimiter.MAX_TRACKED; i++) {
+            limiter.allow("ip-" + i, NOW);
+        }
+
+        assertThat(limiter.allow("newcomer", NOW)).isTrue();
+        assertThat(limiter.allow("first", NOW)).isTrue();
     }
 }

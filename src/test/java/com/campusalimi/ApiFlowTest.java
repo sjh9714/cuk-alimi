@@ -484,6 +484,15 @@ class ApiFlowTest {
         assertThat(requestLink("ip10@catholic.ac.kr", "10.1.0.5").getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
+    @Test
+    void ipv6AddressesInOnePrefixShareTheIpLimit() {
+        for (int i = 0; i < 10; i++) {
+            assertThat(requestLink("six" + i + "@catholic.ac.kr", "2001:db8:1:2::" + (i + 1)).getStatusCode()).isEqualTo(HttpStatus.OK);
+        }
+
+        assertThat(requestLink("six10@catholic.ac.kr", "2001:db8:1:2::ff").getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+    }
+
     private ResponseEntity<Map> requestLink(String email, String forwardedFor) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
