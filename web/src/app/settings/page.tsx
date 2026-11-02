@@ -280,7 +280,7 @@ export default function Settings() {
             </form>
           </section>
 
-          <section className="panel" style={{ marginTop: 16 }}>
+          <section className="panel">
             <h2 className="panel-title">아침 알림 메일</h2>
             <label className="switch">
               <input
@@ -301,14 +301,14 @@ export default function Settings() {
 
           <FeedbackPanel />
 
-          <section className="panel" style={{ marginTop: 16 }}>
+          <section className="panel">
             <div className="row between">
               <span className="sub">{me.email}</span>
               <button onClick={logout}>로그아웃</button>
             </div>
           </section>
 
-          <section className="panel danger-zone" style={{ marginTop: 16 }}>
+          <section className="panel danger-zone">
             <h2 className="panel-title">탈퇴</h2>
             <p className="muted">
               이메일, 입학년도, 전공, 연고 지역, 저장한 마감, 체크한 혜택, 알림 기록, 남긴 의견을 모두 지워요. 되돌릴 수
@@ -366,7 +366,7 @@ function FeedbackPanel() {
   };
 
   return (
-    <section className="panel" style={{ marginTop: 16 }}>
+    <section className="panel">
       <h2 className="panel-title">이건 왜 없나요?</h2>
       <p className="muted">찾던 공지나 혜택이 없으면 한 줄 남겨 주세요. 모아서 수집 범위를 정할 때 봐요.</p>
       <form onSubmit={submit}>

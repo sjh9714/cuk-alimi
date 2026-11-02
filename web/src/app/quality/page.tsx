@@ -54,6 +54,23 @@ export default function QualityPage() {
 
       {q && (
         <>
+          <div className="spread stats">
+            <div className="cell">
+              <strong>{percent(q.backtest.all.precision)}</strong>
+              <span>보여 준 마감 가운데 맞은 비율</span>
+            </div>
+            <div className="cell">
+              <strong>{percent(q.backtest.all.recall)}</strong>
+              <span>있어야 할 마감 가운데 찾은 비율</span>
+            </div>
+            <div className="cell">
+              <strong>
+                {q.backtest.all.exactNotices}/{q.backtest.all.notices}
+              </strong>
+              <span>마감을 모두 맞게 뽑은 공지</span>
+            </div>
+          </div>
+
           <section className="panel">
             <h2>정답셋으로 잰 정확도</h2>
             <p>
