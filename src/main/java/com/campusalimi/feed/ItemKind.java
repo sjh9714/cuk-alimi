@@ -18,7 +18,22 @@ public final class ItemKind {
                     + "|지급(\\s*(예정|일|일정))?$|^((행사|특강|강연|교육)\\s*)?일\\s*시$"
                     + "|(운영|근무|진행)\\s*기간|특강(?!\\s*신청)|(^|[^A-Za-z])OT([^A-Za-z]|$)|조회$");
 
+    /** 날짜만 알아 두면 되는 행사. 특강과 면접은 넣지 않는다. 대상이 좁거나 수가 많아 판을 덮는다. */
+    private static final Pattern EVENT = Pattern.compile(
+            "수여식|전달식|시상식|입학미사|개교기념|축제|개강|종강|설명회|오리엔테이션|(^|[^A-Za-z])OT([^A-Za-z]|$)");
+    /** 표의 칸 이름이 "일시"뿐이면 무슨 행사인지는 공지 제목에 있다. */
+    private static final Pattern WHEN_ONLY = Pattern.compile("^(행사\\s*)?일\\s*시$");
+
     private ItemKind() {
+    }
+
+    /** 행사 날짜인가. 수업기간처럼 긴 일정이 판을 덮지 않게 하루짜리만 본다. */
+    public static boolean isEvent(String itemTitle, String noticeTitle, boolean singleDay) {
+        if (!singleDay || !INFO.equals(of(itemTitle))) {
+            return false;
+        }
+        return EVENT.matcher(itemTitle).find()
+                || (noticeTitle != null && WHEN_ONLY.matcher(itemTitle).find() && EVENT.matcher(noticeTitle).find());
     }
 
     public static String of(String itemTitle) {

@@ -90,7 +90,7 @@ export type Card = {
 };
 
 export type Section = {
-  key: "must" | "mine" | "open" | "undated" | "career" | "region" | "group";
+  key: "must" | "mine" | "open" | "undated" | "career" | "region" | "group" | "events";
   title: string;
   note: string;
   collapsed: boolean;

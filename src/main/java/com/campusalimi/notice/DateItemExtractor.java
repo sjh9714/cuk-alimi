@@ -36,6 +36,7 @@ public final class DateItemExtractor {
     private static final Pattern RECORD_DATE_COLUMN = Pattern.compile("적용\\s*일|시행\\s*일|개정\\s*일|게시\\s*일|작성\\s*일");
     /** 표가 있어도 문단에서 읽는 줄. 학생이 할 일의 기간이 분명한 이름만 둔다. */
     private static final Pattern PERIOD_LINE = Pattern.compile("(신청|접수|모집|조사|제출)\\s*기간");
+    private static final Pattern EVENT_DAY_LINE = Pattern.compile("일\\s*시");
     private static final int TITLE_LIMIT = 80;
     private static final int LABEL_LINE_LIMIT = 20;
 
@@ -200,7 +201,9 @@ public final class DateItemExtractor {
             }
             // 날짜 앞의 글이 "접수기간", "원본서류 제출"처럼 짧고 그 안에 핵심어가 있을 때만 항목으로 본다.
             // "학생 본인, 부 또는 모 중 1명 이상이 ... 거주" 같은 자격 조건의 날짜는 마감이 아니다.
-            if (lead.length() < 2 || lead.length() > 40 || !LINE_KEYWORD.matcher(lead).find()) {
+            // "일시"는 마감이 아니라 행사 날이다. ItemKind가 안내로 분류해 마감 목록에는 들어가지 않는다.
+            boolean eventDay = EVENT_DAY_LINE.matcher(lead).matches();
+            if (lead.length() < 2 || lead.length() > 40 || !(eventDay || LINE_KEYWORD.matcher(lead).find())) {
                 continue;
             }
             items.add(new ExtractedItem(lead, merged, gradeOf(line), "line" + lineIndex));

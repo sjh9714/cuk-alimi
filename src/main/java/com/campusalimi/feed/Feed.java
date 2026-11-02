@@ -73,6 +73,7 @@ public final class Feed {
         List<Card> career = new ArrayList<>();
         List<Card> region = new ArrayList<>();
         List<Card> group = new ArrayList<>();
+        List<Card> events = new ArrayList<>();
         for (var entry : groups.entrySet()) {
             List<DateItem> items = withoutTitleEcho(entry.getValue().stream().sorted(ITEM_ORDER).toList(), notices);
             DateItem first = items.get(0);
@@ -82,6 +83,10 @@ public final class Feed {
                 for (DateItem i : items) {
                     if (ItemKind.ACTION.equals(ItemKind.of(i.getTitle()))) {
                         must.add(new Card("item:" + i.getId(), "schedule", i.getTitle(), i.getTitle(),
+                                scheduleUrl.apply(scheduleYear(i)), new AudienceView(Audience.GENERAL, null, null, null),
+                                false, line(i, null, saved), List.of()));
+                    } else if (isEvent(i, null)) {
+                        events.add(new Card("item:" + i.getId(), "schedule", i.getTitle(), i.getTitle(),
                                 scheduleUrl.apply(scheduleYear(i)), new AudienceView(Audience.GENERAL, null, null, null),
                                 false, line(i, null, saved), List.of()));
                     }
@@ -95,6 +100,12 @@ public final class Feed {
             String title = Titles.clean(notice.getTitle());
             List<DateItem> actions = items.stream().filter(i -> ItemKind.ACTION.equals(ItemKind.of(i.getTitle()))).toList();
             if (actions.isEmpty()) {
+                // 할 일이 없는 공지는 카드가 없다. 모두가 알아 둘 행사만 날짜를 따로 올린다.
+                if (Audience.GENERAL.equals(audience.scope())) {
+                    items.stream().filter(i -> isEvent(i, title)).findFirst().ifPresent(i -> events.add(
+                            new Card(entry.getKey(), kind(notice), title, notice.getTitle(), notice.getUrl(),
+                                    AudienceView.of(audience), false, line(i, title, saved), List.of())));
+                }
                 continue;
             }
             DateItem deadline = actions.get(0);
@@ -138,6 +149,7 @@ public final class Feed {
                         : "본인이나 부모님 주소가 그 지역이어야 해요.",
                 true, region);
         add(sections, "group", "특정 대상·분야 장학", "특정 계층이나 전공만 신청할 수 있어요.", true, group);
+        add(sections, "events", "행사 일정", "신청할 것 없이 날짜만 알아 두면 되는 행사예요.", true, events);
         return new View(sections, signedIn, viewer.home() != null);
     }
 
@@ -154,6 +166,10 @@ public final class Feed {
                 .filter(i -> !sameThing(i.getTitle(), title) || items.stream()
                         .noneMatch(o -> o != i && o.getEndsOn().equals(i.getEndsOn()) && !sameThing(o.getTitle(), title)))
                 .toList();
+    }
+
+    private static boolean isEvent(DateItem i, String noticeTitle) {
+        return ItemKind.isEvent(i.getTitle(), noticeTitle, i.getStartsOn() == null || i.getStartsOn().equals(i.getEndsOn()));
     }
 
     /** 모든 재학생이 챙겨야 하는 공지인가. 검수 큐도 이것부터 보여준다. */

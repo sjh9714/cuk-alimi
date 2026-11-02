@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { api, dday, type Feed, type Line, type Me } from "@/lib/api";
-import { boardCards, cleanTitle, iso, tasksOf, type Kind, type Task } from "@/lib/tasks";
+import { boardCards, cleanTitle, eventsOf, iso, tasksOf, type CampusEvent, type Kind, type Task } from "@/lib/tasks";
 import { BookmarkIcon, CheckIcon, ChevronIcon } from "./icons";
 
 const KIND_LABEL: Record<Kind, string> = { schedule: "학사일정", scholarship: "장학", academic: "학사", career: "취업" };
@@ -55,6 +55,7 @@ export default function Home() {
   const sections = useMemo(() => feed?.sections ?? [], [feed]);
   const tasks = useMemo(() => tasksOf(boardCards(sections), todayIso), [sections, todayIso]);
   const shown = tasks.filter((t) => kind === "all" || t.kind === kind);
+  const events = eventsOf(sections).filter((e) => kind === "all" || e.kind === kind);
   const week2 = iso(addDays(monday, 7));
   const after = iso(addDays(monday, 14));
   const open = (t: Task) => !done.has(t.key);
@@ -111,7 +112,7 @@ export default function Home() {
         <>
           <div className="spread">
             {days(monday).map((d) => (
-              <Day key={iso(d)} date={d} tasks={shown} {...board} />
+              <Day key={iso(d)} date={d} tasks={shown} events={events} {...board} />
             ))}
             <div className="cell memo">
               <h2>날짜 확인 중 {undated.length}건</h2>
@@ -143,7 +144,7 @@ export default function Home() {
           </div>
           <div className="spread">
             {days(addDays(monday, 7)).map((d) => (
-              <Day key={iso(d)} date={d} tasks={shown} {...board} />
+              <Day key={iso(d)} date={d} tasks={shown} events={events} {...board} />
             ))}
             <div className="cell memo">
               <h2>그다음 일정</h2>
@@ -198,13 +199,14 @@ type Board = {
   onSave: (line: Line) => void;
 };
 
-function Day({ date, tasks, todayIso, ...board }: Board & { date: Date; tasks: Task[] }) {
+function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; tasks: Task[]; events: CampusEvent[] }) {
   const key = iso(date);
   const own = tasks.filter((t) => t.date === key);
+  const ownEvents = events.filter((e) => e.date === key);
   const d = dday(key);
   const past = key < todayIso;
   const hot = d >= 0 && d <= 2;
-  const cls = ["cell", key === todayIso ? "now" : "", hot ? "hot" : "", own.length === 0 || past ? "quiet" : ""];
+  const cls = ["cell", key === todayIso ? "now" : "", hot ? "hot" : "", (own.length === 0 && ownEvents.length === 0) || past ? "quiet" : ""];
   return (
     <section
       className={cls.filter(Boolean).join(" ")}
@@ -222,6 +224,19 @@ function Day({ date, tasks, todayIso, ...board }: Board & { date: Date; tasks: T
         <ul className="items">
           {own.map((t) => (
             <Row key={t.key} task={t} {...board} />
+          ))}
+        </ul>
+      )}
+      {ownEvents.length > 0 && (
+        <ul className="events">
+          {ownEvents.map((e) => (
+            <li key={e.key}>
+              <b>행사</b>
+              <a href={e.url} target="_blank" rel="noreferrer">
+                {e.title}
+              </a>
+              {e.at && <span>{e.at}</span>}
+            </li>
           ))}
         </ul>
       )}

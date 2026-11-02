@@ -53,6 +53,37 @@ class FeedTest {
     }
 
     @Test
+    void noticeWithoutActionsShowsItsCeremonyAsAnEvent() {
+        Notice ceremony = notice("학사", "[학사행정팀] 2025학년도 후기 학위수여식 및 포토 스팟 안내", "");
+        DateItem day = item(ceremony, "일시", 3);
+        item(ceremony, "운영기간", 2);
+
+        Feed.View v = build(Feed.Viewer.ANONYMOUS);
+
+        assertThat(v.sections()).extracting(Feed.Section::key).containsExactly("events");
+        Feed.Section events = section(v, "events");
+        assertThat(events.collapsed()).isTrue();
+        assertThat(events.cards()).extracting(c -> c.deadline().id()).containsExactly(day.getId());
+    }
+
+    @Test
+    void scheduleCeremonyIsAnEventButTermDatesAreNot() {
+        schedule("봄 학위수여식", 3);
+        schedule("수업기간", 4);
+
+        assertThat(section(build(Feed.Viewer.ANONYMOUS), "events").cards()).extracting(Feed.Card::title).containsExactly("봄 학위수여식");
+    }
+
+    @Test
+    void longOrNarrowEventsStayOffTheBoard() {
+        DateItem week = item(notice("학사", "학생 축제 안내", ""), "축제 운영 기간", 5);
+        ReflectionTestUtils.setField(week, "startsOn", D.plusDays(1));
+        item(notice("장학", "순천시 장학금 수여식 안내", "전라남도 순천시 연고"), "장학증서 수여식", 3);
+
+        assertThat(build(Feed.Viewer.ANONYMOUS).sections()).extracting(Feed.Section::key).doesNotContain("events");
+    }
+
+    @Test
     void oneNoticeIsOneCardAndTheNearestActionLeads() {
         Notice exchange = notice("학사", "[학사행정팀] 2026학년도 겨울계절학기 학점교류 안내", "");
         item(exchange, "한성대학교 · 서울", 6);

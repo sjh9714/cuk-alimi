@@ -938,6 +938,38 @@ legend + * {
   color: var(--pen);
 }
 
+/* 행사. 할 일이 아니라서 체크와 형광펜 없이 흐린 글자로만 적는다. */
+.events {
+  display: grid;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--mute);
+}
+
+.events li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 6px;
+}
+
+.events b {
+  font-weight: 700;
+  color: var(--pen);
+}
+
+.events a {
+  text-decoration: none;
+}
+
+.events a:hover {
+  text-decoration: underline;
+}
+
 .memo h2 {
   font-size: 15px;
   font-weight: 800;

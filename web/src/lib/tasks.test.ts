@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Card, Line, Section } from "./api";
-import { boardCards, cleanTitle, schoolName, tasksOf } from "./tasks";
+import { boardCards, cleanTitle, eventsOf, schoolName, tasksOf } from "./tasks";
 
 const TODAY = "2026-11-02";
 let nextId = 1;
@@ -113,6 +113,22 @@ describe("tasksOf", () => {
   it("합친 줄 가운데 하나라도 저장했으면 저장됨이다", () => {
     const c = card(EXCHANGE, [line("2026-11-02", "한성대학교 · 서울"), line("2026-11-02", "한신대학교 · 경인", { saved: true })]);
     expect(tasksOf([c], TODAY)[0].saved).toBe(true);
+  });
+});
+
+describe("eventsOf", () => {
+  it("행사 구간만 읽고 시각을 적는다", () => {
+    const ceremony = card("[학사행정팀] 2025학년도 후기 학위수여식 및 포토 스팟 안내", [line("2026-11-20", "일시", { kind: "INFO", startsAt: "14:00:00" })]);
+    const sections: Section[] = [
+      { key: "events", title: "행사 일정", note: "", collapsed: true, cards: [ceremony] },
+      { key: "open", title: "공지", note: "", collapsed: false, cards: [card("공지", [line("2026-11-05", "신청")])] },
+    ];
+    expect(eventsOf(sections)).toEqual([expect.objectContaining({ title: "후기 학위수여식 및 포토 스팟", date: "2026-11-20", at: "14:00" })]);
+  });
+
+  it("행사는 할 일로 세지 않는다", () => {
+    const section: Section = { key: "events", title: "행사 일정", note: "", collapsed: true, cards: [card("봄 학위수여식", [line("2027-02-18", null, { kind: "INFO" })])] };
+    expect(boardCards([section])).toEqual([]);
   });
 });
 

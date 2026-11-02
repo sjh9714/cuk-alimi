@@ -134,6 +134,20 @@ export function tasksOf(cards: Card[], today: string): Task[] {
   return tasks.sort((a, b) => a.date.localeCompare(b.date) || Number(b.mine) - Number(a.mine) || a.title.localeCompare(b.title, "ko"));
 }
 
+export type CampusEvent = { key: string; date: string; title: string; at: string; kind: Kind; url: string };
+
+/** 신청할 것 없이 날짜만 알아 두면 되는 행사 (학위수여식 등). */
+export function eventsOf(sections: Section[]): CampusEvent[] {
+  return sections
+    .filter((s) => s.key === "events")
+    .flatMap((s) => s.cards)
+    .flatMap((c) => {
+      if (!c.deadline) return [];
+      const time = c.deadline.startsAt ?? c.deadline.endsAt;
+      return [{ key: c.key, date: c.deadline.endsOn, title: cleanTitle(c.title), at: time ? time.slice(0, 5) : "", kind: c.kind, url: c.url }];
+    });
+}
+
 /** 주간 판에 올릴 구간. 지역과 특정 대상은 ADR 009대로 접어 둔다. */
 export function boardCards(sections: Section[]): Card[] {
   return sections.filter((s) => !s.collapsed || s.key === "career").flatMap((s) => s.cards);

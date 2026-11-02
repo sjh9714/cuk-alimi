@@ -228,4 +228,16 @@ class NoticeParsersTest {
         assertThat(rows.get(0).title()).contains("2026.09.04");
         assertThat(rows.get(0).postedOn()).isEqualTo(LocalDate.of(2026, 8, 20));
     }
+
+    @Test
+    void graduationNoticeKeepsItsCeremonyDayForTheBoard() {
+        NoticeView view = NoticeViewParser.parse(Fixtures.read("gold/notices/274824.html"));
+
+        var ceremony = DateItemExtractor.extract(view).stream()
+                .filter(i -> i.range().end().equals(java.time.LocalDate.of(2026, 8, 20))).toList();
+
+        org.assertj.core.api.Assertions.assertThat(ceremony).isNotEmpty();
+        org.assertj.core.api.Assertions.assertThat(ceremony).anyMatch(i -> com.campusalimi.feed.ItemKind.isEvent(
+                i.title(), "후기 학위수여식 및 포토 스팟", i.range().start() == null || i.range().start().equals(i.range().end())));
+    }
 }
