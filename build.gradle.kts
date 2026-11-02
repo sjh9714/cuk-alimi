@@ -4,7 +4,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
 }
 
-group = "com.campusalimi"
+group = "com.cukalimi"
 version = "0.0.1-SNAPSHOT"
 
 // Spring Boot 3.4가 고르는 Testcontainers는 최신 Docker Desktop의 API 최소 버전(1.40)보다 오래된 클라이언트를 쓴다.

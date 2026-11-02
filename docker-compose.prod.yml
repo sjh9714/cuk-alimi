@@ -8,27 +8,27 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: campusalimi
-      POSTGRES_USER: campusalimi
+      POSTGRES_DB: cukalimi
+      POSTGRES_USER: cukalimi
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U campusalimi"]
+      test: ["CMD-SHELL", "pg_isready -U cukalimi"]
       interval: 10s
       timeout: 3s
       retries: 10
 
   app:
-    image: ghcr.io/sjh9714/campus-alimi-app:${IMAGE_TAG:-latest}
+    image: ghcr.io/sjh9714/cuk-alimi-app:${IMAGE_TAG:-latest}
     build: .
     restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      DB_URL: jdbc:postgresql://postgres:5432/campusalimi
-      DB_USER: campusalimi
+      DB_URL: jdbc:postgresql://postgres:5432/cukalimi
+      DB_USER: cukalimi
       DB_PASSWORD: ${POSTGRES_PASSWORD}
       PUBLIC_URL: https://${SITE_ADDRESS}
       ADMIN_EMAIL: ${ADMIN_EMAIL:?set ADMIN_EMAIL in .env}
@@ -50,7 +50,7 @@ services:
       start_period: 60s
 
   web:
-    image: ghcr.io/sjh9714/campus-alimi-web:${IMAGE_TAG:-latest}
+    image: ghcr.io/sjh9714/cuk-alimi-web:${IMAGE_TAG:-latest}
     build: ./web
     restart: unless-stopped
     depends_on:

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { api, type BacktestScore, type Quality } from "@/lib/api";
 
-const ADR_URL = "https://github.com/sjh9714/campus-alimi/blob/main/docs/decisions/011-extraction-quality.md";
+const ADR_URL = "https://github.com/sjh9714/cuk-alimi/blob/main/docs/decisions/011-extraction-quality.md";
 
 const percent = (v: number) => `${(v * 100).toFixed(1)}%`;
 

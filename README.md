@@ -80,7 +80,7 @@ ADMIN_EMAIL=you@example.com API_URL=http://localhost:8080 ./gradlew bootRun
 수집 결과는 `date_item`(날짜 항목), `notice`(공지, 검수 상태), `notice_raw`(원문), `fetch_log`(요청 기록)에 쌓입니다.
 
 ```bash
-docker exec campusalimi-postgres psql -U campusalimi -d campusalimi \
+docker exec cukalimi-postgres psql -U cukalimi -d cukalimi \
   -c "select title, starts_on, ends_on from date_item order by ends_on"
 ```
 

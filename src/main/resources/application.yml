@@ -1,10 +1,10 @@
 spring:
   application:
-    name: campus-alimi
+    name: cuk-alimi
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/campusalimi}
-    username: ${DB_USER:campusalimi}
-    password: ${DB_PASSWORD:campusalimi}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/cukalimi}
+    username: ${DB_USER:cukalimi}
+    password: ${DB_PASSWORD:cukalimi}
   jpa:
     open-in-view: false
     hibernate:
@@ -45,7 +45,7 @@ app:
   cookie-secure: ${COOKIE_SECURE:false}
   mail:
     mode: ${MAIL_MODE:console}
-    from: ${MAIL_FROM:campus-alimi@localhost}
+    from: ${MAIL_FROM:cuk-alimi@localhost}
   digest:
     cron: "0 0 8 * * *"
   schedule:

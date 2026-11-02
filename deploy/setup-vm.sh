@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Oracle Always Free VM(Ubuntu 24.04, ARM) 첫 준비. ubuntu 사용자로 한 번만 실행한다.
-#   curl -fsSL https://raw.githubusercontent.com/sjh9714/campus-alimi/main/deploy/setup-vm.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/sjh9714/cuk-alimi/main/deploy/setup-vm.sh | bash
 # 하는 일: Docker 설치, 80·443 방화벽 열기(오라클 이미지는 iptables가 막고 있다), 저장소 받기.
 set -euo pipefail
 
-REPO="${REPO:-https://github.com/sjh9714/campus-alimi.git}"
-DIR="${DIR:-$HOME/campus-alimi}"
+REPO="${REPO:-https://github.com/sjh9714/cuk-alimi.git}"
+DIR="${DIR:-$HOME/cuk-alimi}"
 
 echo "== Docker"
 if ! command -v docker >/dev/null 2>&1; then

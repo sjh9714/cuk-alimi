@@ -7,6 +7,6 @@ COPY . .
 RUN npm run build
 
 FROM caddy:2-alpine
-LABEL org.opencontainers.image.source=https://github.com/sjh9714/campus-alimi
+LABEL org.opencontainers.image.source=https://github.com/sjh9714/cuk-alimi
 COPY --from=build /web/out /srv
 COPY Caddyfile /etc/caddy/Caddyfile

@@ -8,7 +8,7 @@ COPY src src
 RUN ./gradlew --no-daemon bootJar -x test
 
 FROM eclipse-temurin:21-jre
-LABEL org.opencontainers.image.source=https://github.com/sjh9714/campus-alimi
+LABEL org.opencontainers.image.source=https://github.com/sjh9714/cuk-alimi
 WORKDIR /app
 COPY --from=build /src/build/libs/*.jar app.jar
 ENV JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=60 -Duser.timezone=Asia/Seoul"

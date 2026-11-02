@@ -1,4 +1,4 @@
-# {$SITE_ADDRESS} 는 docker compose가 .env의 SITE_ADDRESS로 채운다 (예: campus-alimi.duckdns.org).
+# {$SITE_ADDRESS} 는 docker compose가 .env의 SITE_ADDRESS로 채운다 (예: cuk-alimi.duckdns.org).
 # 도메인이면 Caddy가 HTTPS 인증서를 자동으로 받는다. 로컬 시험은 SITE_ADDRESS=:80.
 {$SITE_ADDRESS} {
 	encode zstd gzip

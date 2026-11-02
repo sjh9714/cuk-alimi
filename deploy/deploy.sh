@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # 최신 이미지를 받아 다시 띄운다. 서버에서 실행. DB 데이터는 볼륨에 남는다.
 # 이미지는 GitHub Actions가 main 푸시마다 빌드한다. 서버에서는 빌드하지 않는다.
-#   ~/campus-alimi/deploy/deploy.sh            최신(latest)
-#   IMAGE_TAG=<커밋 SHA> ~/campus-alimi/deploy/deploy.sh   특정 커밋으로 되돌리기
+#   ~/cuk-alimi/deploy/deploy.sh            최신(latest)
+#   IMAGE_TAG=<커밋 SHA> ~/cuk-alimi/deploy/deploy.sh   특정 커밋으로 되돌리기
 set -euo pipefail
 cd "$(dirname "$0")/.."
 

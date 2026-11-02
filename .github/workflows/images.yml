@@ -50,8 +50,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/sjh9714/campus-alimi-app:latest
-            ghcr.io/sjh9714/campus-alimi-app:${{ github.sha }}
+            ghcr.io/sjh9714/cuk-alimi-app:latest
+            ghcr.io/sjh9714/cuk-alimi-app:${{ github.sha }}
           cache-from: type=gha,scope=app
           cache-to: type=gha,mode=max,scope=app
       - uses: docker/build-push-action@v6
@@ -60,7 +60,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ghcr.io/sjh9714/campus-alimi-web:latest
-            ghcr.io/sjh9714/campus-alimi-web:${{ github.sha }}
+            ghcr.io/sjh9714/cuk-alimi-web:latest
+            ghcr.io/sjh9714/cuk-alimi-web:${{ github.sha }}
           cache-from: type=gha,scope=web
           cache-to: type=gha,mode=max,scope=web

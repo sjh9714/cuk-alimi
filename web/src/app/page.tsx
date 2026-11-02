@@ -10,7 +10,7 @@ import { BookmarkIcon, CheckIcon, ChevronIcon } from "./icons";
 const KIND_LABEL: Record<Kind, string> = { schedule: "학사", scholarship: "장학", academic: "학사", career: "취업" };
 const KINDS: (Kind | "all")[] = ["all", "scholarship", "academic", "career"];
 const WEEKDAY = ["일", "월", "화", "수", "목", "금", "토"];
-const DONE_KEY = "campus-alimi.done";
+const DONE_KEY = "cuk-alimi.done";
 
 export default function Home() {
   const [feed, setFeed] = useState<Feed | null>(null);
