@@ -4,7 +4,10 @@
 	encode zstd gzip
 
 	handle /api/* {
-		reverse_proxy app:8080
+		# Forwarded는 앱이 X-Forwarded-For보다 먼저 믿는다. 지어낸 값으로 IP 제한을 피하지 못하게 지운다.
+		reverse_proxy app:8080 {
+			header_up -Forwarded
+		}
 	}
 
 	# 글꼴은 파일 이름이 바뀌지 않으니 오래 둔다.

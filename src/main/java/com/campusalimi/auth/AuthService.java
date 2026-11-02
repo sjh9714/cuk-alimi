@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
  * 이메일 매직링크 로그인 (ADR 005). 비밀번호가 없다.
@@ -33,8 +34,10 @@ public class AuthService {
     static final Duration SESSION_TTL = Duration.ofDays(30);
     /** 같은 주소로 한 시간에 보내는 링크 수. 남의 주소로 메일 폭탄을 보내지 못하게. */
     static final int HOURLY_PER_ADDRESS = 3;
-    /** 새 주소로 보내는 링크의 하루 전체 수. Gmail 한도에 닿아 계정이 정지되지 않게. 이미 가입한 사람은 막지 않는다. */
-    static final int DAILY_TOTAL = 100;
+    /** 하루 전체가 이 수를 넘으면 아직 가입하지 않은 주소로는 보내지 않는다. 가입한 사람의 몫을 남기려고. */
+    static final int DAILY_NEW_ADDRESSES = 100;
+    /** 누구에게든 보내는 하루 상한. Gmail 하루 한도(500통)에 닿아 계정이 정지되지 않게, 아침 메일 몫을 남긴다. */
+    static final int DAILY_CEILING = 300;
     private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
     private final AppProperties props;
@@ -42,6 +45,7 @@ public class AuthService {
     private final AppUserRepository users;
     private final LoginTokenRepository tokens;
     private final LoginIpLimiter ipLimiter;
+    private final TransactionTemplate transaction;
     private final UserSessionRepository sessions;
     private final SavedItemRepository savedItems;
     private final UserBenefitRepository userBenefits;
@@ -49,6 +53,7 @@ public class AuthService {
     private final FeedbackRepository feedback;
 
     public AuthService(AppProperties props, MailSender mail, AppUserRepository users, LoginTokenRepository tokens, LoginIpLimiter ipLimiter,
+            TransactionTemplate transaction,
             UserSessionRepository sessions, SavedItemRepository savedItems, UserBenefitRepository userBenefits,
             SentNotificationRepository sentNotifications, FeedbackRepository feedback) {
         this.savedItems = savedItems;
@@ -60,11 +65,14 @@ public class AuthService {
         this.users = users;
         this.tokens = tokens;
         this.ipLimiter = ipLimiter;
+        this.transaction = transaction;
         this.sessions = sessions;
     }
 
-    /** 링크를 보낸다. 가입 여부와 상관없이 같은 응답을 준다. 주소가 있는지 밖에서 알 수 없게. */
-    @Transactional
+    /**
+     * 링크를 보낸다. 가입 여부와 상관없이 같은 응답을 준다. 주소가 있는지 밖에서 알 수 없게.
+     * 세고 저장하는 부분만 잠그고, 메일은 트랜잭션이 끝난 뒤 보낸다. 느린 SMTP가 다른 요청을 붙잡지 않게.
+     */
     public void requestLogin(String rawEmail, String clientIp) {
         String email = normalize(rawEmail);
         if (!EMAIL.matcher(email).matches()) {
@@ -74,19 +82,32 @@ public class AuthService {
         if (!ipLimiter.allow(clientIp, now.toInstant())) {
             throw new AuthException(HttpStatus.TOO_MANY_REQUESTS, "요청이 너무 많아요. 한 시간 뒤에 다시 시도해 주세요");
         }
-        tokens.lockLoginRequests();
-        if (tokens.countByEmailAndCreatedAtAfter(email, now.minusHours(1)) >= HOURLY_PER_ADDRESS) {
-            throw new AuthException(HttpStatus.TOO_MANY_REQUESTS, "링크를 너무 많이 요청했어요. 받은 메일을 확인하거나 한 시간 뒤에 다시 시도해 주세요");
+        String token = transaction.execute(status -> reserveLink(email, now));
+        if (token == null) {
+            return;
         }
-        if (users.findByEmail(email).isEmpty() && tokens.countByCreatedAtAfter(now.minusDays(1)) >= DAILY_TOTAL) {
-            throw new AuthException(HttpStatus.TOO_MANY_REQUESTS, "오늘 보낼 수 있는 로그인 메일을 다 썼어요. 내일 다시 시도해 주세요");
-        }
-        String token = Tokens.random();
-        tokens.save(new LoginToken(email, Tokens.hash(token), OffsetDateTime.now().plus(LINK_TTL)));
         String link = props.apiUrlOrPublic() + "/api/auth/consume?token=" + token;
         mail.send(email, "[CUK-Alimi] 로그인 링크",
                 "아래 링크를 15분 안에 누르면 로그인됩니다. 한 번만 쓸 수 있습니다.\n\n" + link
                         + "\n\n본인이 요청하지 않았다면 이 메일은 무시해도 됩니다.");
+    }
+
+    /** 한도 안이면 토큰을 저장해 돌려준다. 새 주소 한도를 넘으면 null이고, 응답은 보낸 것과 같다. */
+    private String reserveLink(String email, OffsetDateTime now) {
+        tokens.lockLoginRequests();
+        if (tokens.countByEmailAndCreatedAtAfter(email, now.minusHours(1)) >= HOURLY_PER_ADDRESS) {
+            throw new AuthException(HttpStatus.TOO_MANY_REQUESTS, "링크를 너무 많이 요청했어요. 받은 메일을 확인하거나 한 시간 뒤에 다시 시도해 주세요");
+        }
+        long today = tokens.countByCreatedAtAfter(now.minusDays(1));
+        if (today >= DAILY_CEILING) {
+            throw new AuthException(HttpStatus.TOO_MANY_REQUESTS, "오늘 보낼 수 있는 로그인 메일을 다 썼어요. 내일 다시 시도해 주세요");
+        }
+        if (today >= DAILY_NEW_ADDRESSES && users.findByEmail(email).isEmpty()) {
+            return null;
+        }
+        String token = Tokens.random();
+        tokens.save(new LoginToken(email, Tokens.hash(token), now.plus(LINK_TTL)));
+        return token;
     }
 
     /** 링크를 쓰고 세션 토큰(쿠키 값)을 돌려준다. */

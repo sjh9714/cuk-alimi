@@ -439,22 +439,39 @@ class ApiFlowTest {
     }
 
     @Test
-    void loginMailStopsAtDailyTotal() {
-        List<LoginToken> flood = new java.util.ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            flood.add(new LoginToken("flood" + i + "@catholic.ac.kr", "flood-hash-" + i, OffsetDateTime.now().plusMinutes(15)));
-        }
+    void newAddressesGetTheSameAnswerButNoMailPastTheDailyShare() {
         login("regular@catholic.ac.kr");
-        loginTokens.saveAll(flood);
+        List<LoginToken> flood = floodTokens(100);
         try {
-            ResponseEntity<Map> blocked = requestLink("after-flood@catholic.ac.kr", "10.1.0.2");
-            assertThat(blocked.getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+            ResponseEntity<Map> skipped = requestLink("after-flood@catholic.ac.kr", "10.1.0.2");
+            assertThat(skipped.getStatusCode()).isEqualTo(HttpStatus.OK);
             assertThat(mail.lastTo()).isNotEqualTo("after-flood@catholic.ac.kr");
 
             assertThat(requestLink("regular@catholic.ac.kr", "10.1.0.3").getStatusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(mail.lastTo()).isEqualTo("regular@catholic.ac.kr");
         } finally {
             loginTokens.deleteAll(flood);
         }
+    }
+
+    @Test
+    void everyoneStopsAtTheDailyCeiling() {
+        login("ceiling@catholic.ac.kr");
+        List<LoginToken> flood = floodTokens(300);
+        try {
+            assertThat(requestLink("ceiling@catholic.ac.kr", "10.1.0.6").getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+            assertThat(requestLink("ceiling-new@catholic.ac.kr", "10.1.0.6").getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+        } finally {
+            loginTokens.deleteAll(flood);
+        }
+    }
+
+    private List<LoginToken> floodTokens(int count) {
+        List<LoginToken> flood = new java.util.ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            flood.add(new LoginToken("flood" + i + "@catholic.ac.kr", "flood-hash-" + i, OffsetDateTime.now().plusMinutes(15)));
+        }
+        return loginTokens.saveAll(flood);
     }
 
     @Test

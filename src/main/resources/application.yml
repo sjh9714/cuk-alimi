@@ -19,6 +19,9 @@ spring:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 10000
+      mail.smtp.writetimeout: 10000
 
 # 메일 서버 접속은 헬스에 넣지 않는다. 콘솔 모드나 Gmail 일시 장애로 앱 전체가 DOWN이 되면 안 된다.
 management:
