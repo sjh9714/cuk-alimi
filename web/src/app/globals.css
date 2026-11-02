@@ -1049,11 +1049,39 @@ legend + * {
   padding: 4px 0 8px;
 }
 
-.upcoming em {
-  font-style: normal;
+.upcoming .fold-list > li {
+  grid-template-columns: 48px 40px minmax(0, 1fr);
+  align-items: center;
+  padding: 3px 0;
+}
+
+/* 시작은 초록, 마감은 주황, 행사는 파랑. 앞으로의 일정과 판의 줄이 같은 색을 쓴다. */
+.tag {
+  justify-self: start;
+  padding: 1px 7px;
+  border-radius: 6px;
   font-size: 13px;
   font-weight: 700;
+  line-height: 1.5;
+}
+
+.tag.start {
+  background: var(--ok-2);
+  color: var(--ok);
+}
+
+.tag.end {
+  background: var(--soon-2);
+  color: var(--soon);
+}
+
+.tag.event {
+  background: var(--select-2);
   color: var(--pen);
+}
+
+.events b.start {
+  color: var(--ok);
 }
 
 .folds {

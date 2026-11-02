@@ -10,6 +10,7 @@ import { BookmarkIcon, CheckIcon, ChevronIcon } from "./icons";
 const KIND_LABEL: Record<Kind, string> = { schedule: "학사", scholarship: "장학", academic: "학사", career: "취업" };
 const KINDS: (Kind | "all")[] = ["all", "scholarship", "academic", "career"];
 const WEEKDAY = ["일", "월", "화", "수", "목", "금", "토"];
+const TAG_CLASS = { 시작: "start", 마감: "end", 행사: "event" };
 const DONE_KEY = "cuk-alimi.done";
 
 export default function Home() {
@@ -193,9 +194,9 @@ export default function Home() {
                 {upcoming.map((r) => (
                   <li key={r.key}>
                     <span className="d">{shortDate(r.date)}</span>
+                    <span className={`tag ${TAG_CLASS[r.tag]}`}>{r.tag}</span>
                     <a href={r.url} target="_blank" rel="noreferrer">
                       {r.title}
-                      {r.tag && <em> {r.tag}</em>}
                     </a>
                   </li>
                 ))}
@@ -270,7 +271,7 @@ function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; 
         <ul className="events">
           {ownEvents.map((e) => (
             <li key={e.key}>
-              <b>{e.tag}</b>
+              <b className={TAG_CLASS[e.tag]}>{e.tag}</b>
               <a href={e.url} target="_blank" rel="noreferrer">
                 {e.title}
               </a>
@@ -376,7 +377,7 @@ function Ring() {
 /** 2주 뒤 일정. 학사일정 표 항목과 행사, 시작일을 날짜순으로 항상 보여 준다. */
 function upcomingRows(tasks: Task[], events: CampusEvent[], after: string) {
   const rows = [
-    ...tasks.filter((t) => t.date >= after && t.kind === "schedule").map((t) => ({ key: t.key, date: t.date, title: t.title, url: t.url, tag: "" })),
+    ...tasks.filter((t) => t.date >= after && t.kind === "schedule").map((t) => ({ key: t.key, date: t.date, title: t.title, url: t.url, tag: "마감" as const })),
     ...events.filter((e) => e.date >= after).map((e) => ({ key: e.key, date: e.date, title: e.title, url: e.url, tag: e.tag })),
   ];
   return rows.sort((a, b) => a.date.localeCompare(b.date));
