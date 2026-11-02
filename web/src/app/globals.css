@@ -1192,22 +1192,59 @@ details.fold .note {
   border-right: 0;
 }
 
-.benefit {
-  gap: 6px;
-}
-
-.b-top {
+.spread.two .cell.benefit {
   display: grid;
-  grid-template-columns: 18px minmax(0, 1fr) auto;
-  gap: 8px 10px;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 0 8px;
   align-items: start;
 }
 
-.b-top.plain {
-  grid-template-columns: minmax(0, 1fr) auto;
+.spread.two .cell.benefit.plain {
+  grid-template-columns: minmax(0, 1fr);
 }
 
-.b-top h3 {
+.benefit .box {
+  margin-top: 4px;
+}
+
+.benefit details {
+  min-width: 0;
+}
+
+/* 항목 전체가 접기 단추다. 오른쪽 꺾쇠가 펼쳐진다는 것을 알려 준다. */
+.benefit summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 16px;
+  gap: 10px;
+  align-items: start;
+  cursor: pointer;
+  list-style: none;
+}
+
+.benefit summary::-webkit-details-marker {
+  display: none;
+}
+
+.benefit summary > svg {
+  grid-column: 3;
+  margin-top: 4px;
+  color: var(--mute);
+}
+
+.benefit summary:hover > svg {
+  color: var(--cat, var(--pen));
+}
+
+.benefit details[open] summary > svg {
+  transform: rotate(180deg);
+}
+
+.benefit .txt {
+  display: grid;
+  min-width: 0;
+}
+
+.benefit .name {
   font-size: 17px;
   font-weight: 800;
   letter-spacing: -0.3px;
@@ -1215,22 +1252,23 @@ details.fold .note {
   color: var(--cat, var(--ink));
 }
 
-.benefit.hot h3 span {
+.benefit.hot .name span {
   padding: 1px 4px;
   margin-left: -4px;
   border-radius: 3px 6px 5px 3px;
   background: var(--hl);
 }
 
-.b-top p {
+.benefit .desc {
   font-size: 14px;
   line-height: 1.5;
   color: var(--body);
 }
 
-.b-top .left {
+.benefit .left {
   font-size: 14px;
   font-weight: 800;
+  line-height: 1.7;
   color: var(--mute);
   white-space: nowrap;
 }
@@ -1239,59 +1277,30 @@ details.fold .note {
   color: var(--alarm);
 }
 
-.benefit.ended h3,
-.benefit.ended .b-top p,
+.benefit.ended .name,
+.benefit.ended .desc,
 .benefit.ended .left {
   opacity: 0.5;
 }
 
-.benefit .m {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 2px 10px;
-  padding-left: 26px;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--mute);
-}
-
-.b-top.plain + .m {
-  padding-left: 0;
-}
-
-.benefit .m a {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-}
-
 .benefit .stale {
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 700;
   color: var(--alarm);
 }
 
-.benefit .m summary {
-  cursor: pointer;
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  list-style: none;
-}
-
-.benefit .m summary::-webkit-details-marker {
-  display: none;
-}
-
-.benefit .m details[open] {
-  flex-basis: 100%;
+.benefit dl a {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .benefit dl {
   display: grid;
   grid-template-columns: 34px minmax(0, 1fr);
   gap: 3px 10px;
-  margin: 6px 0 2px;
+  margin: 10px 0 2px;
   font-size: 14px;
   line-height: 1.5;
 }
@@ -1699,16 +1708,6 @@ details.fold .note {
   }
   .spread.two .cell:nth-child(n) {
     border-right: 0;
-  }
-  .b-top,
-  .b-top.plain {
-    grid-template-columns: 18px minmax(0, 1fr);
-  }
-  .b-top.plain {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .b-top .left {
-    grid-column: -2 / -1;
   }
   .band {
     top: 52px;

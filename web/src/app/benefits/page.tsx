@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api, dday, formatDate, type Benefit, type Me } from "@/lib/api";
-import { CheckIcon, ExternalIcon } from "../icons";
+import { CheckIcon, ChevronIcon, ExternalIcon } from "../icons";
 
 const CATEGORY: Record<string, string> = {
   TOOL: "개발·학습 도구",
@@ -54,7 +54,7 @@ export default function Benefits() {
       <div className="page-head">
         <h1>학생 혜택</h1>
         <p className="sub">
-          대학생 자격으로 받는 것만 모았어요. 출처와 확인한 날짜는 항목의 조건과 방법에 있어요.
+          대학생 자격으로 받는 것만 모았어요. 항목을 누르면 조건, 방법, 출처가 펼쳐져요.
           {me ? (
             checked > 0 && ` 지금 받는 혜택 ${checked}개를 체크해 두었어요.`
           ) : (
@@ -95,48 +95,46 @@ function BenefitCell({ benefit: b, canCheck, onToggle }: { benefit: Benefit; can
   const hot = d !== null && d >= 0 && d <= 2;
   const ended = d !== null && d < 0;
   return (
-    <li className={`cell benefit ${hot ? "hot" : ""} ${ended ? "ended" : ""}`}>
-      <div className={`b-top ${canCheck ? "" : "plain"}`}>
-        {canCheck && (
-          <button className="box" aria-pressed={b.checked} aria-label={`${b.name} 받는 중`} onClick={() => onToggle(b)}>
-            <CheckIcon size={12} />
-          </button>
-        )}
-        <div className="txt">
-          <h3>
-            <span>{b.name}</span>
-          </h3>
-          <p>{b.summary}</p>
-        </div>
-        {d !== null && <span className="left">{ddayLabel(b.endsOn!)}</span>}
-      </div>
-      <div className="m">
-        {b.stale && <b className="stale">재확인 필요</b>}
-        <details>
-          <summary>조건과 방법</summary>
-          <dl>
-            {b.price && (
-              <>
-                <dt>가격</dt>
-                <dd>{b.price}</dd>
-              </>
-            )}
-            <dt>조건</dt>
-            <dd>{b.condition}</dd>
-            <dt>방법</dt>
-            <dd>{b.howTo}</dd>
-            <dt>갱신</dt>
-            <dd>{b.renewalRule}</dd>
-            <dt>출처</dt>
-            <dd>
-              <a href={b.sourceUrl} target="_blank" rel="noreferrer">
-                {b.sourceName} <ExternalIcon size={12} />
-              </a>{" "}
-              {formatDate(b.verifiedOn)} 확인
-            </dd>
-          </dl>
-        </details>
-      </div>
+    <li className={`cell benefit ${canCheck ? "" : "plain"} ${hot ? "hot" : ""} ${ended ? "ended" : ""}`}>
+      {canCheck && (
+        <button className="box" aria-pressed={b.checked} aria-label={`${b.name} 받는 중`} onClick={() => onToggle(b)}>
+          <CheckIcon size={12} />
+        </button>
+      )}
+      <details>
+        <summary>
+          <span className="txt">
+            <span className="name">
+              <span>{b.name}</span>
+            </span>
+            <span className="desc">{b.summary}</span>
+            {b.stale && <b className="stale">재확인 필요</b>}
+          </span>
+          {d !== null && <span className="left">{ddayLabel(b.endsOn!)}</span>}
+          <ChevronIcon size={16} />
+        </summary>
+        <dl>
+          {b.price && (
+            <>
+              <dt>가격</dt>
+              <dd>{b.price}</dd>
+            </>
+          )}
+          <dt>조건</dt>
+          <dd>{b.condition}</dd>
+          <dt>방법</dt>
+          <dd>{b.howTo}</dd>
+          <dt>갱신</dt>
+          <dd>{b.renewalRule}</dd>
+          <dt>출처</dt>
+          <dd>
+            <a href={b.sourceUrl} target="_blank" rel="noreferrer">
+              {b.sourceName} <ExternalIcon size={12} />
+            </a>{" "}
+            {formatDate(b.verifiedOn)} 확인
+          </dd>
+        </dl>
+      </details>
     </li>
   );
 }
