@@ -1595,6 +1595,20 @@ details.fold .note {
   }
 }
 
+/* 손가락으로 누르는 기기에서는 작은 체크와 책갈피의 누르는 면만 넓힌다. */
+@media (pointer: coarse) {
+  .box,
+  .keep {
+    position: relative;
+  }
+  .box::after,
+  .keep::after {
+    content: "";
+    position: absolute;
+    inset: -13px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
