@@ -3,12 +3,13 @@ package com.cukalimi.notice;
 import com.cukalimi.config.AppProperties;
 import com.cukalimi.domain.DateItem;
 import com.cukalimi.domain.DateItemRepository;
-import com.cukalimi.domain.DateReportRepository;
 import com.cukalimi.domain.ImageTranscript;
 import com.cukalimi.domain.ImageTranscriptRepository;
 import com.cukalimi.domain.Notice;
 import com.cukalimi.domain.NoticeRawRepository;
 import com.cukalimi.domain.NoticeRepository;
+import com.cukalimi.domain.ReviewEvent;
+import com.cukalimi.domain.ReviewEventRepository;
 import com.cukalimi.feed.FeedService;
 import com.cukalimi.feed.ItemKind;
 import com.cukalimi.fetch.JsoupPageFetcher;
@@ -55,12 +56,12 @@ public class ImageNoticeReader {
     private final PageFetcher fetcher;
     private final ImageTranscriber transcriber;
     private final NoticeStore store;
-    private final DateReportRepository reports;
+    private final ReviewEventRepository reviewEvents;
     private final Clock clock;
 
     public ImageNoticeReader(AppProperties props, NoticeRepository notices, NoticeRawRepository raws,
             DateItemRepository dateItems, ImageTranscriptRepository transcripts, PageFetcher fetcher,
-            ImageTranscriber transcriber, NoticeStore store, DateReportRepository reports, Clock clock) {
+            ImageTranscriber transcriber, NoticeStore store, ReviewEventRepository reviewEvents, Clock clock) {
         this.props = props;
         this.notices = notices;
         this.raws = raws;
@@ -69,7 +70,7 @@ public class ImageNoticeReader {
         this.fetcher = fetcher;
         this.transcriber = transcriber;
         this.store = store;
-        this.reports = reports;
+        this.reviewEvents = reviewEvents;
         this.clock = clock;
     }
 
@@ -124,14 +125,11 @@ public class ImageNoticeReader {
     private record Read(int newTranscripts, int candidates, boolean limitReached) {
     }
 
-    /** 항목이 없거나 후보만 있는 공지만 본다. 신고된 공지는 다시 올리지 않고 운영자에게 맡긴다. */
+    /** 항목이 없거나 후보만 있는 공지만 본다. 신고로 내렸거나 운영자가 지운 날짜가 있으면 다시 올리지 않고 사람에게 맡긴다. */
     private boolean waitingForImageRead(Notice n) {
-        List<DateItem> items = dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId());
-        if (items.isEmpty()) {
-            return true;
-        }
-        return items.stream().allMatch(i -> DateItem.STATUS_CANDIDATE.equals(i.getStatus()))
-                && !reports.existsByDateItemIdIn(items.stream().map(DateItem::getId).toList());
+        return !reviewEvents.existsByNoticeIdAndAction(n.getId(), ReviewEvent.DELETE)
+                && dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId()).stream()
+                        .allMatch(i -> DateItem.STATUS_CANDIDATE.equals(i.getStatus()) && !i.isWithdrawn());
     }
 
     private Read read(Notice n, LocalDate today) {

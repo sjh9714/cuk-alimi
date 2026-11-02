@@ -148,13 +148,13 @@ public class ItemsController {
                 .toList();
     }
 
-    /** 자동 공개한 그림 날짜가 원문과 다르다는 신고. 바로 내려 운영자에게 넘긴다. 사람이 확인한 날짜는 기록만 한다. */
+    /** 자동 공개한 그림 날짜가 원문과 다르다는 신고. 바로 내려 운영자에게 넘긴다. 다른 날짜의 신고는 받지 않는다. */
     @PostMapping("/items/{itemId}/report")
     @Transactional
     public ResponseEntity<Void> report(HttpServletRequest request, @PathVariable long itemId) {
         AppUser user = auth.requireUser(request);
         DateItem item = dateItems.findById(itemId).orElseThrow();
-        if (reports.existsByDateItemIdAndUserId(itemId, user.getId())) {
+        if (!DateItem.STATUS_AUTO_IMAGE.equals(item.getStatus()) || reports.existsByDateItemIdAndUserId(itemId, user.getId())) {
             return ResponseEntity.noContent().build();
         }
         if (reports.countByUserIdAndCreatedAtAfter(user.getId(), OffsetDateTime.now(clock).minusDays(1)) >= DAILY_REPORTS) {

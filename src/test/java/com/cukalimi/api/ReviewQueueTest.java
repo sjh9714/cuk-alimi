@@ -27,6 +27,14 @@ class ReviewQueueTest {
     }
 
     @Test
+    void openCandidateKeepsTheNoticeInTheQueueEvenIfOtherDatesPassed() {
+        Notice n = imageNotice();
+        DateItem past = DateItem.fromNotice(1L, "notice:1:line3", "신청기간", null, TODAY.minusDays(3), null, null, null);
+        DateItem withdrawn = DateItem.fromImage(1L, "notice:1:img.line4", "서류 제출", null, TODAY.plusDays(3), null, null, null);
+        assertThat(AdminController.closedReason(n, Audience.of(n), List.of(past, withdrawn), TODAY)).isNull();
+    }
+
+    @Test
     void pastSettledItemsCloseTheNotice() {
         Notice n = imageNotice();
         DateItem past = DateItem.fromNotice(1L, "notice:1:line3", "신청기간", null, TODAY.minusDays(3), null, null, null);

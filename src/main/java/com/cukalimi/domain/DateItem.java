@@ -41,6 +41,7 @@ public class DateItem {
     private String targetDept;
     private String targetNote;
     private String status = STATUS_AUTO;
+    private OffsetDateTime withdrawnAt;
     private OffsetDateTime createdAt = OffsetDateTime.now();
     private OffsetDateTime updatedAt = OffsetDateTime.now();
     private OffsetDateTime reviewedAt;
@@ -104,8 +105,13 @@ public class DateItem {
             return false;
         }
         status = STATUS_CANDIDATE;
-        updatedAt = OffsetDateTime.now();
+        withdrawnAt = OffsetDateTime.now();
+        updatedAt = withdrawnAt;
         return true;
+    }
+
+    public boolean isWithdrawn() {
+        return withdrawnAt != null;
     }
 
     /** 운영자가 손으로 넣은 항목. 이미지에만 날짜가 있는 공지가 여기로 온다. */

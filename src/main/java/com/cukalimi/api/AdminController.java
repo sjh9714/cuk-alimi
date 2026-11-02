@@ -145,6 +145,10 @@ public class AdminController {
         if (Audience.RESULT.equals(audience.scope())) {
             return CLOSED_RESULT;
         }
+        // 아직 지나지 않은 후보가 있으면 다른 날짜가 다 지나도 닫지 않는다. 신고로 내린 날짜가 큐에서 사라지지 않게.
+        if (items.stream().anyMatch(i -> DateItem.STATUS_CANDIDATE.equals(i.getStatus()) && !i.getEndsOn().isBefore(today))) {
+            return null;
+        }
         // 그림에서 읽은 후보는 운영자가 아직 보지 않은 날짜다. 후보만 있는 공지는 날짜 없는 공지처럼 다룬다.
         List<DateItem> settled = items.stream().filter(i -> !DateItem.STATUS_CANDIDATE.equals(i.getStatus())).toList();
         if (!settled.isEmpty()) {

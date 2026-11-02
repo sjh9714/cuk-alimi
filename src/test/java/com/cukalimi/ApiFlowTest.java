@@ -529,6 +529,18 @@ class ApiFlowTest {
             assertThat(undatedKeys()).contains("notice:" + noticeId);
             imageReader.readPending(LocalDate.of(2026, 7, 10));
             assertThat(dateItems.findById(itemId).orElseThrow().getStatus()).isEqualTo(DateItem.STATUS_CANDIDATE);
+
+            // 신고한 사람이 탈퇴해도 내린 날짜는 다시 공개되지 않는다.
+            assertThat(rest.exchange("/api/me", HttpMethod.DELETE, withCookie(cookie, null), Void.class).getStatusCode())
+                    .isEqualTo(HttpStatus.NO_CONTENT);
+            imageReader.readPending(LocalDate.of(2026, 7, 10));
+            assertThat(dateItems.findById(itemId).orElseThrow().getStatus()).isEqualTo(DateItem.STATUS_CANDIDATE);
+
+            // 운영자가 지운 날짜도 다시 읽어 올리지 않는다.
+            String admin = login("admin@catholic.ac.kr");
+            rest.exchange("/api/admin/items/" + itemId, HttpMethod.DELETE, withCookie(admin, null), Void.class);
+            imageReader.readPending(LocalDate.of(2026, 7, 10));
+            assertThat(dateItems.findByNoticeIdOrderByEndsOnAsc(noticeId)).isEmpty();
         } finally {
             transcriber.disagree = true;
         }
