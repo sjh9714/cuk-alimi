@@ -18,6 +18,8 @@ public class AppUser {
     private Long id;
     private String email;
     private Integer entryYear;
+    /** 입학년도로 센 학년과 실제 학년의 차이. 휴학이나 군 복무로 늦어지면 음수다. */
+    private int gradeAdjust;
     private String major;
     private String secondMajor;
     private String homeRegion;
@@ -34,8 +36,11 @@ public class AppUser {
         this.email = email;
     }
 
-    public void updateProfile(Integer entryYear, String major, String secondMajor, String homeRegion) {
+    /** grade는 학생이 고른 지금 학년이다. null이면 입학년도로 센다. */
+    public void updateProfile(Integer entryYear, Integer grade, String major, String secondMajor, String homeRegion,
+            LocalDate today) {
         this.entryYear = entryYear;
+        this.gradeAdjust = entryYear == null || grade == null ? 0 : grade - yearsSince(entryYear, today);
         this.major = blankToNull(major);
         this.secondMajor = blankToNull(secondMajor);
         this.homeRegion = blankToNull(homeRegion);
@@ -57,16 +62,28 @@ public class AppUser {
         lastLoginAt = OffsetDateTime.now();
     }
 
-    /**
-     * 입학년도로 학년을 센다. 학년도는 3월에 시작하므로 1·2월은 전년도로 본다.
-     * 5학년 이상은 4로 본다. 휴학·복학은 모르니 어림값이고, 화면에서 바꿀 수 있다.
-     */
+    /** 지금 학년. 학생이 고른 차이를 입학년도로 센 값에 더해서 다음 해에도 한 학년씩 오른다. */
     public Integer grade(LocalDate today) {
-        if (entryYear == null) {
-            return null;
-        }
+        return entryYear == null ? null : clamp(yearsSince(entryYear, today) + gradeAdjust);
+    }
+
+    /** 휴학을 모르고 입학년도로만 센 학년. */
+    public Integer autoGrade(LocalDate today) {
+        return entryYear == null ? null : clamp(yearsSince(entryYear, today));
+    }
+
+    public boolean isGradeManual() {
+        return gradeAdjust != 0;
+    }
+
+    /** 학년도는 3월에 시작하므로 1·2월은 전년도로 본다. */
+    private static int yearsSince(int entryYear, LocalDate today) {
         int academicYear = today.getMonthValue() >= 3 ? today.getYear() : today.getYear() - 1;
-        int grade = academicYear - entryYear + 1;
+        return academicYear - entryYear + 1;
+    }
+
+    /** 5학년 이상은 4로 본다. */
+    private static int clamp(int grade) {
         return Math.max(1, Math.min(4, grade));
     }
 

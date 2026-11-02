@@ -40,15 +40,19 @@ public class AuthController {
     }
 
     public record MeView(String email, Integer entryYear, String major, String secondMajor, String homeRegion,
-            Integer grade, boolean admin, boolean digestEnabled) {
+            Integer grade, Integer autoGrade, boolean gradeManual, boolean admin, boolean digestEnabled) {
         static MeView of(AppUser u, boolean admin) {
+            LocalDate today = LocalDate.now();
             return new MeView(u.getEmail(), u.getEntryYear(), u.getMajor(), u.getSecondMajor(), u.getHomeRegion(),
-                    u.grade(LocalDate.now()), admin, u.isDigestEnabled());
+                    u.grade(today), u.autoGrade(today), u.isGradeManual(), admin, u.isDigestEnabled());
         }
     }
 
-    /** homeRegion은 "전라남도 순천시"나 "전라남도". 목록(regions.yml)에 없는 값은 받지 않는다. */
-    public record ProfileRequest(Integer entryYear, String major, String secondMajor, String homeRegion) {
+    /**
+     * grade는 학생이 고른 지금 학년이고 null이면 입학년도로 센다.
+     * homeRegion은 "전라남도 순천시"나 "전라남도". 목록(regions.yml)에 없는 값은 받지 않는다.
+     */
+    public record ProfileRequest(Integer entryYear, Integer grade, String major, String secondMajor, String homeRegion) {
     }
 
     @PostMapping("/auth/request")
@@ -101,11 +105,17 @@ public class AuthController {
         if (body.entryYear() != null && (body.entryYear() < 1990 || body.entryYear() > LocalDate.now().getYear())) {
             throw new IllegalArgumentException("입학년도가 이상합니다");
         }
+        if (body.grade() != null && (body.grade() < 1 || body.grade() > 4)) {
+            throw new IllegalArgumentException("학년은 1부터 4까지 골라 주세요");
+        }
+        if (body.grade() != null && body.entryYear() == null) {
+            throw new IllegalArgumentException("학년을 고르려면 입학년도를 넣어 주세요");
+        }
         String home = body.homeRegion() == null || body.homeRegion().isBlank() ? null
                 : Regions.parse(body.homeRegion()).map(Regions.Region::label)
                         .orElseThrow(() -> new IllegalArgumentException("연고 지역은 목록에서 골라 주세요"));
         AppUser managed = users.findById(user.getId()).orElseThrow();
-        managed.updateProfile(body.entryYear(), body.major(), body.secondMajor(), home);
+        managed.updateProfile(body.entryYear(), body.grade(), body.major(), body.secondMajor(), home, LocalDate.now());
         return MeView.of(managed, auth.isAdmin(managed));
     }
 }

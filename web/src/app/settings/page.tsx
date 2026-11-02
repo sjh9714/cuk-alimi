@@ -9,6 +9,7 @@ export default function Settings() {
   const [email, setEmail] = useState("");
   const [sentTo, setSentTo] = useState<string | null>(null);
   const [entryYear, setEntryYear] = useState("");
+  const [grade, setGrade] = useState("");
   const [major, setMajor] = useState("");
   const [secondMajor, setSecondMajor] = useState("");
   const [sido, setSido] = useState("");
@@ -30,6 +31,7 @@ export default function Settings() {
         setMe(m);
         if (m) {
           setEntryYear(m.entryYear ? String(m.entryYear) : "");
+          setGrade(m.gradeManual && m.grade ? String(m.grade) : "");
           setMajor(m.major ?? "");
           setSecondMajor(m.secondMajor ?? "");
           const [s, g] = (m.homeRegion ?? "").split(" ");
@@ -66,11 +68,13 @@ export default function Settings() {
     try {
       const updated = await api.updateProfile({
         entryYear: entryYear ? Number(entryYear) : null,
+        grade: entryYear && grade ? Number(grade) : null,
         major,
         secondMajor,
         homeRegion: sido ? [sido, sigungu].filter(Boolean).join(" ") : "",
       });
       setMe(updated);
+      setGrade(updated.gradeManual && updated.grade ? String(updated.grade) : "");
       setSaved(true);
     } catch (err) {
       setError((err as Error).message);
@@ -196,8 +200,25 @@ export default function Settings() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="grade">지금 학년 (자동 계산)</label>
-                  <input id="grade" value={me.grade ? `${me.grade}학년` : "-"} readOnly disabled />
+                  <label htmlFor="grade">지금 학년</label>
+                  <select
+                    id="grade"
+                    value={grade}
+                    disabled={!entryYear}
+                    onChange={(e) => {
+                      setGrade(e.target.value);
+                      setSaved(false);
+                    }}
+                  >
+                    <option value="">
+                      {me.autoGrade && Number(entryYear) === me.entryYear ? `자동 (${me.autoGrade}학년)` : "자동"}
+                    </option>
+                    {[1, 2, 3, 4].map((g) => (
+                      <option key={g} value={g}>
+                        {g}학년
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <label htmlFor="major">전공</label>
@@ -220,7 +241,7 @@ export default function Settings() {
                 }}
                 placeholder="없으면 비워 두세요"
               />
-              <p className="hint">학년은 입학년도로 계산해요. 휴학했다면 실제와 다를 수 있어요.</p>
+              <p className="hint">휴학이나 군 복무로 학년이 다르면 지금 학년을 골라 주세요. 해마다 3월에 한 학년씩 올라가요.</p>
 
               <fieldset className="region">
                 <legend>연고 지역</legend>
@@ -312,7 +333,7 @@ export default function Settings() {
           <section className="panel danger-zone">
             <h2 className="panel-title">탈퇴</h2>
             <p className="muted">
-              이메일, 입학년도, 전공, 연고 지역, 저장한 마감, 체크한 혜택, 알림 기록, 남긴 의견, 날짜 신고를 모두 지워요. 되돌릴 수
+              이메일, 입학년도, 학년, 전공, 연고 지역, 저장한 마감, 체크한 혜택, 알림 기록, 남긴 의견, 날짜 신고를 모두 지워요. 되돌릴 수
               없어요.
             </p>
             {confirmDelete ? (

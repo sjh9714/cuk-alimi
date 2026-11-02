@@ -216,6 +216,19 @@ class ApiFlowTest {
                 withCookie(cookie, Map.of("homeRegion", "전라남도 강남구")), String.class).getStatusCode())
                 .isEqualTo(HttpStatus.BAD_REQUEST);
 
+        // 휴학으로 늦어진 학년은 직접 고른다. 입학년도 없이는 고를 수 없다.
+        ResponseEntity<Map> manual = rest.exchange("/api/me/profile", HttpMethod.PUT,
+                withCookie(cookie, Map.of("entryYear", 2010, "grade", 3)), Map.class);
+        assertThat(manual.getBody().get("grade")).isEqualTo(3);
+        assertThat(manual.getBody().get("autoGrade")).isEqualTo(4);
+        assertThat(manual.getBody().get("gradeManual")).isEqualTo(true);
+        assertThat(rest.exchange("/api/me/profile", HttpMethod.PUT,
+                withCookie(cookie, Map.of("entryYear", 2021, "grade", 5)), String.class).getStatusCode())
+                .isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(rest.exchange("/api/me/profile", HttpMethod.PUT,
+                withCookie(cookie, Map.of("grade", 3)), String.class).getStatusCode())
+                .isEqualTo(HttpStatus.BAD_REQUEST);
+
         // 항목 저장과 혜택 체크
         long itemId = ((Number) ((Map) rest.getForObject("/api/items?includePast=true", List.class).get(0)).get("id")).longValue();
         assertThat(rest.exchange("/api/me/saved/" + itemId, HttpMethod.POST, withCookie(cookie, null), Void.class)
