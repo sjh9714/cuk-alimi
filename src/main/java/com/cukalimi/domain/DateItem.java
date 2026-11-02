@@ -20,7 +20,7 @@ public class DateItem {
 
     public static final String STATUS_AUTO = "AUTO";
     public static final String STATUS_REVIEWED = "REVIEWED";
-    /** 공지 그림을 AI가 받아 적은 글에서 읽은 날짜. 운영자가 승인하기 전까지 학생에게 보이지 않는다 (ADR 010). */
+    /** 공지 그림에서 읽었지만 공개하지 못한 날짜. 두 번 읽기가 어긋났거나 신고로 내려 운영자를 기다린다 (ADR 010). */
     public static final String STATUS_CANDIDATE = "CANDIDATE";
     /** 그림을 두 번 받아 적어 날짜가 일치해 자동으로 공개한 항목 (ADR 010). */
     public static final String STATUS_AUTO_IMAGE = "AUTO_IMAGE";

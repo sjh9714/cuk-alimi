@@ -33,7 +33,7 @@ public record AppProperties(
     }
 
     /**
-     * 그림 공지 받아 적기 (ADR 010). apiKey가 비면 꺼진다. dailyLimit은 하루에 새로 받아 적는 그림 수의 상한이다.
+     * 그림 공지 받아 적기 (ADR 010). apiKey가 비면 꺼진다. dailyLimit은 하루 호출 수의 상한이다. 그림 한 장을 두 번 읽으니 그림 수로는 절반이다.
      * toString에 키가 찍히지 않게 한다.
      */
     public record Transcribe(String apiKey, String model, int dailyLimit, String cron) {
