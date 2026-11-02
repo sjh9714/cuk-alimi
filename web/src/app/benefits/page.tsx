@@ -95,7 +95,7 @@ function BenefitCell({ benefit: b, canCheck, onToggle }: { benefit: Benefit; can
   const hot = d !== null && d >= 0 && d <= 2;
   const ended = d !== null && d < 0;
   return (
-    <li className={`cell benefit ${canCheck ? "" : "plain"} ${hot ? "hot" : ""} ${ended ? "ended" : ""}`}>
+    <li className={`cell benefit ${canCheck ? "" : "plain"} ${hot ? "hot" : ""} ${ended ? "ended" : ""} ${b.checked ? "checked" : ""}`}>
       {canCheck && (
         <button className="box" aria-pressed={b.checked} aria-label={`${b.name} 받는 중`} onClick={() => onToggle(b)}>
           <CheckIcon size={12} />

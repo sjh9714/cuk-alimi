@@ -965,12 +965,22 @@ legend + * {
 }
 
 .it.done .do,
-.it.done .m {
+.it.done .m,
+.cell.past .it .do,
+.cell.past .it .m,
+.cell.past .events {
   opacity: 0.4;
 }
 
-.it.done .do {
+.it.done .do,
+.cell.past .it .do,
+.cell.past .events a,
+.memo li.done {
   text-decoration: line-through;
+}
+
+.memo li.done {
+  opacity: 0.4;
 }
 
 .keep {
@@ -999,7 +1009,8 @@ legend + * {
   background: var(--hl);
 }
 
-.it.done .do a > span:first-child {
+.it.done .do a > span:first-child,
+.cell.past .it .do a > span:first-child {
   background: none;
 }
 
@@ -1359,8 +1370,15 @@ details.fold .note {
 
 .benefit.ended .name,
 .benefit.ended .desc,
-.benefit.ended .left {
+.benefit.ended .left,
+.benefit.checked .name,
+.benefit.checked .desc {
   opacity: 0.5;
+}
+
+.benefit.ended .name,
+.benefit.checked .name {
+  text-decoration: line-through;
 }
 
 .benefit .stale {

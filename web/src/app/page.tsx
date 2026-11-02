@@ -192,7 +192,7 @@ function Planner({ today }: { today: Date }) {
                 <>
                   <ul>
                     {saved.slice(0, MEMO_MAX).map((t) => (
-                      <li key={t.key}>
+                      <li key={t.key} className={done.has(t.key) || t.date < todayIso ? "done" : undefined}>
                         <a href={t.url} target="_blank" rel="noreferrer">
                           {t.title}
                         </a>
@@ -269,7 +269,7 @@ function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; 
   const d = dday(key);
   const past = key < todayIso;
   const hot = d >= 0 && d <= 2;
-  const cls = ["cell", key === todayIso ? "now" : "", hot ? "hot" : "", (own.length === 0 && ownEvents.length === 0) || past ? "quiet" : ""];
+  const cls = ["cell", key === todayIso ? "now" : "", past ? "past" : "", hot ? "hot" : "", (own.length === 0 && ownEvents.length === 0) || past ? "quiet" : ""];
   return (
     <section
       className={cls.filter(Boolean).join(" ")}
