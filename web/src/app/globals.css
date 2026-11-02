@@ -1,6 +1,6 @@
 /*
  * CUK 알리미 화면 규칙. 값은 docs/design.md가 기준이다.
- * 점 찍힌 종이에 볼펜 파랑. 빨강은 오늘과 이틀 안의 표시에만.
+ * 점 찍힌 종이에 볼펜 파랑. 형광펜은 내게 맞는 일과 저장한 일에만, 빨강은 오늘과 이틀 안의 표시에만.
  */
 
 :root {
@@ -16,6 +16,7 @@
   --hair-2: #b3bbd2;
   --seg: #ebedf4;
   --today: #fffbe3;
+  --hl: #ffe94d;
   --alarm: #e5281e;
   --alarm-2: #fdecea;
   --select: #1b2ba3;
@@ -988,6 +989,20 @@ legend + * {
   color: var(--pen);
 }
 
+/* 형광펜. 내게 맞는 일과 저장한 일의 표시다. 급한 날짜는 빨강이 맡는다. */
+.it.picked .do a > span:first-child {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  margin-left: -4px;
+  padding: 1px 4px;
+  border-radius: 3px 6px 5px 3px;
+  background: var(--hl);
+}
+
+.it.done .do a > span:first-child {
+  background: none;
+}
+
 /* 행사. 할 일이 아니라서 체크 없이 흐린 글자로만 적는다. */
 .events {
   display: grid;
@@ -1202,56 +1217,44 @@ details.fold .note {
 
 /* ───── 혜택 ───── */
 
-/* 분류마다 색이 하나다. 머리띠, 왼쪽 막대, 항목 이름이 같은 색을 써서 스크롤 중에도 구역이 보인다. */
+/* 분류마다 색이 하나다. 제목, 왼쪽 막대, 항목 이름이 같은 색을 써서 스크롤 중에도 구역이 보인다. */
 .cat-scholarship {
   --cat: #0b6e49;
-  --cat-soft: #dff3e8;
 }
 
 .cat-school {
   --cat: #2348c2;
-  --cat-soft: #e3e9fb;
 }
 
 .cat-subscription {
   --cat: #a84806;
-  --cat-soft: #fcebdc;
 }
 
 .cat-tool {
   --cat: #6d3bbd;
-  --cat-soft: #efe7fb;
 }
 
 .benefit-group {
   margin-top: 28px;
 }
 
-/* 붙어 있을 때 둥근 모서리 틈으로 아래 칸이 비치지 않게 바깥은 종이색으로 막는다. */
 .band {
   position: sticky;
   top: var(--header-h);
   z-index: 5;
-  background: var(--paper);
-}
-
-.band-in {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 12px;
-  padding: 10px 18px;
-  border: 1px solid var(--hair);
-  border-bottom: 0;
-  border-radius: 14px 14px 0 0;
-  background: var(--cat-soft, var(--paper-2));
+  padding: 8px 0;
+  background: var(--paper);
   font-size: 20px;
   font-weight: 800;
   letter-spacing: -0.4px;
   color: var(--cat, var(--pen));
 }
 
-.band-in span {
+.band span {
   font-size: 14px;
   font-weight: 700;
 }
@@ -1261,7 +1264,6 @@ details.fold .note {
   list-style: none;
   margin: 0;
   padding: 0;
-  border-radius: 0 0 14px 14px;
   background: var(--sheet);
 }
 
