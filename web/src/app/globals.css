@@ -1122,11 +1122,61 @@ details.fold .note {
 
 /* ───── 혜택 ───── */
 
+/* 분류마다 색이 하나다. 머리띠, 왼쪽 막대, 항목 이름이 같은 색을 써서 스크롤 중에도 구역이 보인다. */
+.cat-scholarship {
+  --cat: #0b6e49;
+  --cat-soft: #dff3e8;
+}
+
+.cat-school {
+  --cat: #2348c2;
+  --cat-soft: #e3e9fb;
+}
+
+.cat-subscription {
+  --cat: #a84806;
+  --cat-soft: #fcebdc;
+}
+
+.cat-tool {
+  --cat: #6d3bbd;
+  --cat-soft: #efe7fb;
+}
+
+.benefit-group {
+  margin-top: 28px;
+}
+
+.band {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 5;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 18px;
+  border: 1px solid var(--hair);
+  border-bottom: 0;
+  border-radius: 14px 14px 0 0;
+  background: var(--cat-soft, var(--paper-2));
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: var(--cat, var(--pen));
+}
+
+.band span {
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .spread.two {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   list-style: none;
   margin: 0;
   padding: 0;
+  border-radius: 0 0 14px 14px;
   background: var(--sheet);
 }
 
@@ -1135,6 +1185,7 @@ details.fold .note {
   margin-bottom: -1px;
   border-right: 1px solid var(--hair);
   border-bottom: 1px solid var(--hair);
+  box-shadow: inset 4px 0 0 var(--cat, var(--pen));
 }
 
 .spread.two .cell:nth-child(2n) {
@@ -1148,7 +1199,7 @@ details.fold .note {
 .b-top {
   display: grid;
   grid-template-columns: 18px minmax(0, 1fr) auto;
-  gap: 8px;
+  gap: 8px 10px;
   align-items: start;
 }
 
@@ -1157,11 +1208,11 @@ details.fold .note {
 }
 
 .b-top h3 {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 800;
   letter-spacing: -0.3px;
-  line-height: 1.5;
-  color: var(--ink);
+  line-height: 1.45;
+  color: var(--cat, var(--ink));
 }
 
 .benefit.hot h3 span {
@@ -1177,6 +1228,23 @@ details.fold .note {
   color: var(--body);
 }
 
+.b-top .value {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  max-width: 190px;
+  text-align: right;
+}
+
+.b-top .value strong {
+  text-wrap: balance;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
 .b-top .left {
   font-size: 14px;
   font-weight: 800;
@@ -1189,7 +1257,8 @@ details.fold .note {
 }
 
 .benefit.ended h3,
-.benefit.ended .b-top p {
+.benefit.ended .b-top p,
+.benefit.ended .value {
   opacity: 0.5;
 }
 
@@ -1207,12 +1276,6 @@ details.fold .note {
 
 .b-top.plain + .m {
   padding-left: 0;
-}
-
-.benefit .m em {
-  font-style: normal;
-  font-weight: 700;
-  color: var(--ink);
 }
 
 .benefit .m a {
@@ -1653,6 +1716,22 @@ details.fold .note {
   }
   .spread.two .cell:nth-child(n) {
     border-right: 0;
+  }
+  .b-top,
+  .b-top.plain {
+    grid-template-columns: 18px minmax(0, 1fr);
+  }
+  .b-top.plain {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .b-top .value {
+    grid-column: -2 / -1;
+    justify-items: start;
+    max-width: none;
+    text-align: left;
+  }
+  .band {
+    top: 52px;
   }
   .stats .cell {
     border-right: 0;

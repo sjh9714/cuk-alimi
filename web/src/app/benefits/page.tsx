@@ -15,6 +15,9 @@ const CATEGORY: Record<string, string> = {
   CULTURE: "문화",
 };
 
+/** 학생 누구나 볼 것부터. 개발 도구는 비전공 학생이 덜 헤매게 맨 아래에 둔다. */
+const ORDER = ["SCHOLARSHIP", "SCHOOL", "SUBSCRIPTION", "TOOL"];
+
 export default function Benefits() {
   const [benefits, setBenefits] = useState<Benefit[] | null>(null);
   const [me, setMe] = useState<Me | null>(null);
@@ -43,14 +46,15 @@ export default function Benefits() {
     }
   };
 
-  const categories = Array.from(new Set((benefits ?? []).map((b) => b.category)));
+  const present = new Set((benefits ?? []).map((b) => b.category));
+  const categories = [...ORDER.filter((c) => present.has(c)), ...[...present].filter((c) => !ORDER.includes(c))];
   const checked = (benefits ?? []).filter((b) => b.checked).length;
   return (
     <main id="main">
       <div className="page-head">
         <h1>학생 혜택</h1>
         <p className="sub">
-          대학생 자격으로 받는 것만 모았어요. 항목마다 출처와 확인한 날짜가 붙어 있어요.
+          대학생 자격으로 받는 것만 모았어요. 출처와 확인한 날짜는 항목의 조건과 방법에 있어요.
           {me ? (
             checked > 0 && ` 지금 받는 혜택 ${checked}개를 체크해 두었어요.`
           ) : (
@@ -70,11 +74,10 @@ export default function Benefits() {
       {categories.map((c) => {
         const list = (benefits ?? []).filter((b) => b.category === c);
         return (
-          <section key={c} aria-labelledby={`cat-${c}`}>
-            <div className="next">
-              <h2 id={`cat-${c}`}>{CATEGORY[c] ?? c}</h2>
-              <span>{list.length}개</span>
-            </div>
+          <section key={c} className={`benefit-group cat-${c.toLowerCase()}`} aria-labelledby={`cat-${c}`}>
+            <h2 id={`cat-${c}`} className="band">
+              {CATEGORY[c] ?? c} <span>{list.length}개</span>
+            </h2>
             <ul className="spread two">
               {list.map((b) => (
                 <BenefitCell key={b.id} benefit={b} canCheck={!!me} onToggle={toggle} />
@@ -105,14 +108,15 @@ function BenefitCell({ benefit: b, canCheck, onToggle }: { benefit: Benefit; can
           </h3>
           <p>{b.summary}</p>
         </div>
-        <span className="left">{d === null ? "상시" : ddayLabel(b.endsOn!)}</span>
+        {(b.price || d !== null) && (
+          <div className="value">
+            {b.price && <strong>{b.price}</strong>}
+            {d !== null && <span className="left">{ddayLabel(b.endsOn!)}</span>}
+          </div>
+        )}
       </div>
       <div className="m">
-        {b.price && <em>{b.price}</em>}
-        <a href={b.sourceUrl} target="_blank" rel="noreferrer">
-          {b.sourceName} <ExternalIcon size={12} />
-        </a>
-        {b.stale ? <b className="stale">재확인 필요</b> : <span>{formatDate(b.verifiedOn)} 확인</span>}
+        {b.stale && <b className="stale">재확인 필요</b>}
         <details>
           <summary>조건과 방법</summary>
           <dl>
@@ -122,6 +126,13 @@ function BenefitCell({ benefit: b, canCheck, onToggle }: { benefit: Benefit; can
             <dd>{b.howTo}</dd>
             <dt>갱신</dt>
             <dd>{b.renewalRule}</dd>
+            <dt>출처</dt>
+            <dd>
+              <a href={b.sourceUrl} target="_blank" rel="noreferrer">
+                {b.sourceName} <ExternalIcon size={12} />
+              </a>{" "}
+              {formatDate(b.verifiedOn)} 확인
+            </dd>
           </dl>
         </details>
       </div>
