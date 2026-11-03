@@ -56,10 +56,13 @@ export type Me = {
   major: string | null;
   secondMajor: string | null;
   homeRegion: string | null;
+  /** 이번 학기에서 나온 학년. */
   grade: number | null;
-  /** 입학년도로만 센 학년. */
-  autoGrade: number | null;
-  gradeManual: boolean;
+  /** 이번 학기(1~8, 9는 초과학기). */
+  semester: number | null;
+  /** 입학년도로만 센 학기. */
+  autoSemester: number | null;
+  semesterManual: boolean;
   admin: boolean;
   digestEnabled: boolean;
 };
@@ -259,7 +262,7 @@ export const api = {
   feedback: () => call<FeedbackEntry[]>("GET", "/api/admin/feedback"),
   meta: () => call<{ contactEmail: string }>("GET", "/api/meta"),
   quality: () => call<Quality>("GET", "/api/quality"),
-  updateProfile: (p: { entryYear: number | null; grade: number | null; major: string; secondMajor: string; homeRegion: string }) =>
+  updateProfile: (p: { entryYear: number | null; semester: number | null; major: string; secondMajor: string; homeRegion: string }) =>
     call<Me>("PUT", "/api/me/profile", p),
   save: (id: number) => call<void>("POST", `/api/me/saved/${id}`),
   unsave: (id: number) => call<void>("DELETE", `/api/me/saved/${id}`),

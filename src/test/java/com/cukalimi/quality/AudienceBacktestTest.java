@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import com.cukalimi.Fixtures;
+import com.cukalimi.domain.AppUser;
 import com.cukalimi.feed.Audience;
 import com.cukalimi.feed.AudienceFacts;
 import com.cukalimi.feed.Feed;
@@ -24,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 /**
  * 형광펜 백테스트 (ADR 013). 공지 62건마다 정답(Opus가 읽은 대상 조건)으로 칠해야 할 학생과, 정규식과 AI(Haiku 두 번 읽기)가 실제로 칠하는 학생을 비교한다.
- * 학생은 학년 1~4, 정답에 나온 학과와 지역, 아무 데도 해당하지 않는 학과와 지역 없음을 모두 조합해 만든다.
+ * 학생은 학기 1~9(학년은 학기에서 나온다), 정답에 나온 학과와 지역, 아무 데도 해당하지 않는 학과와 지역 없음을 모두 조합해 만든다.
  * 칠한 것 중 맞은 비율(정밀도)과 칠해야 할 것 중 칠한 비율(재현율)을 낸다. AI가 기준선보다 떨어지면 실패한다.
  * Haiku 응답은 저장해 둔 것을 쓰므로 API를 부르지 않는다. 두 번 읽기가 어긋난 공지는 운영과 같이 정규식으로 돌아간다.
  * 공개 품질 페이지의 요약(src/main/resources/quality/audience.json)이 이번 결과와 다르면 실패한다. 수치가 바뀌면 QUALITY_UPDATE=1로 다시 쓴다.
@@ -87,10 +88,10 @@ class AudienceBacktestTest {
         List<Feed.Viewer> viewers = new ArrayList<>();
         List<Regions.Region> homeChoices = new ArrayList<>(homes);
         homeChoices.add(null);
-        for (int grade = 1; grade <= 4; grade++) {
+        for (int semester = 1; semester <= 9; semester++) {
             for (String dept : depts) {
                 for (Regions.Region home : homeChoices) {
-                    viewers.add(new Feed.Viewer(grade, dept, null, home));
+                    viewers.add(new Feed.Viewer(AppUser.gradeOf(semester), semester, dept, null, home));
                 }
             }
         }

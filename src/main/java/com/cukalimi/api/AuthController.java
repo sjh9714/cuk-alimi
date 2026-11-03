@@ -39,20 +39,21 @@ public class AuthController {
     public record LoginRequest(String email) {
     }
 
+    /** semester는 이번 학기(9는 초과학기), grade는 거기서 나온 학년이다. */
     public record MeView(String email, Integer entryYear, String major, String secondMajor, String homeRegion,
-            Integer grade, Integer autoGrade, boolean gradeManual, boolean admin, boolean digestEnabled) {
+            Integer grade, Integer semester, Integer autoSemester, boolean semesterManual, boolean admin, boolean digestEnabled) {
         static MeView of(AppUser u, boolean admin) {
             LocalDate today = LocalDate.now();
             return new MeView(u.getEmail(), u.getEntryYear(), u.getMajor(), u.getSecondMajor(), u.getHomeRegion(),
-                    u.grade(today), u.autoGrade(today), u.isGradeManual(), admin, u.isDigestEnabled());
+                    u.grade(today), u.semester(today), u.autoSemester(today), u.isSemesterManual(), admin, u.isDigestEnabled());
         }
     }
 
     /**
-     * grade는 학생이 고른 지금 학년이고 null이면 입학년도로 센다.
+     * semester는 학생이 고른 이번 학기(1~8, 9는 초과학기)이고 null이면 입학년도로 센다.
      * homeRegion은 "전라남도 순천시"나 "전라남도". 목록(regions.yml)에 없는 값은 받지 않는다.
      */
-    public record ProfileRequest(Integer entryYear, Integer grade, String major, String secondMajor, String homeRegion) {
+    public record ProfileRequest(Integer entryYear, Integer semester, String major, String secondMajor, String homeRegion) {
     }
 
     @PostMapping("/auth/request")
@@ -105,17 +106,17 @@ public class AuthController {
         if (body.entryYear() != null && (body.entryYear() < 1990 || body.entryYear() > LocalDate.now().getYear())) {
             throw new IllegalArgumentException("입학년도가 이상합니다");
         }
-        if (body.grade() != null && (body.grade() < 1 || body.grade() > 4)) {
-            throw new IllegalArgumentException("학년은 1부터 4까지 골라 주세요");
+        if (body.semester() != null && (body.semester() < 1 || body.semester() > 9)) {
+            throw new IllegalArgumentException("학기는 1학기부터 초과학기까지 골라 주세요");
         }
-        if (body.grade() != null && body.entryYear() == null) {
-            throw new IllegalArgumentException("학년을 고르려면 입학년도를 넣어 주세요");
+        if (body.semester() != null && body.entryYear() == null) {
+            throw new IllegalArgumentException("학기를 고르려면 입학년도를 넣어 주세요");
         }
         String home = body.homeRegion() == null || body.homeRegion().isBlank() ? null
                 : Regions.parse(body.homeRegion()).map(Regions.Region::label)
                         .orElseThrow(() -> new IllegalArgumentException("연고 지역은 목록에서 골라 주세요"));
         AppUser managed = users.findById(user.getId()).orElseThrow();
-        managed.updateProfile(body.entryYear(), body.grade(), body.major(), body.secondMajor(), home, LocalDate.now());
+        managed.updateProfile(body.entryYear(), body.semester(), body.major(), body.secondMajor(), home, LocalDate.now());
         return MeView.of(managed, auth.isAdmin(managed));
     }
 }

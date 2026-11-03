@@ -1,26 +1,26 @@
 {
   "measuredOn" : "2026-11-03",
   "notices" : 61,
-  "students" : 336,
+  "students" : 756,
   "humanChecked" : 0,
   "runModel" : "claude-haiku-5-5",
   "goldModel" : "Claude Opus 5.5",
   "runSource" : "운영과 같은 API 호출(구조화 출력)로 두 번씩 읽혔어요",
-  "agreed" : 58,
+  "agreed" : 51,
   "regex" : {
-    "precision" : 0.95,
-    "recall" : 0.41,
-    "expected" : 1805,
-    "predicted" : 780,
-    "hit" : 741,
-    "exactNotices" : 52
+    "precision" : 0.953,
+    "recall" : 0.414,
+    "expected" : 4375,
+    "predicted" : 1902,
+    "hit" : 1813,
+    "exactNotices" : 51
   },
   "ai" : {
-    "precision" : 0.892,
-    "recall" : 0.77,
-    "expected" : 1805,
-    "predicted" : 1559,
-    "hit" : 1391,
-    "exactNotices" : 54
+    "precision" : 0.66,
+    "recall" : 0.617,
+    "expected" : 4375,
+    "predicted" : 4092,
+    "hit" : 2701,
+    "exactNotices" : 49
   }
 }

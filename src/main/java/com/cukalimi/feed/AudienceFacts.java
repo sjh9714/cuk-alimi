@@ -17,8 +17,10 @@ import java.util.TreeSet;
  * 비어 있는 목록은 그 조건이 없다는 뜻이다. 모두 비어 있으면 모든 재학생 대상이라 "내 것"으로 따로 올리지 않는다.
  */
 public record AudienceFacts(
-        @JsonPropertyDescription("지원할 수 있는 학년. 졸업예정자는 4, 신입생은 1. 학년 제한이 없으면 빈 목록")
+        @JsonPropertyDescription("지원할 수 있는 학년. 졸업예정자는 4, 신입생은 1. 학기 조건이 있으면 비우고 semesters에 적는다. 학년 제한이 없으면 빈 목록")
         List<Integer> grades,
+        @JsonPropertyDescription("학기로 적힌 조건일 때 지금 몇 번째 학기인 학생이 지원할 수 있는지(1~8, 9는 초과학기). 없으면 빈 목록")
+        List<Integer> semesters,
         @JsonPropertyDescription("지원할 수 있는 학과·학부·전공 이름을 공지에 적힌 그대로. 제한이 없으면 빈 목록")
         List<String> depts,
         @JsonPropertyDescription("본인이나 부모의 주소·출신 지역 조건. '전라남도 순천시'나 '서울특별시'처럼 시·도 정식 이름으로 시작. 없으면 빈 목록")
@@ -45,11 +47,22 @@ public record AudienceFacts(
     private static final ObjectMapper JSON = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-    /** 목록을 정렬하고 중복과 빈 값을 지운다. 전 학년이면 학년 조건이 없는 것이다. 두 번 읽은 결과를 비교하고 저장할 때 쓴다. */
+    /** 학기 조건이 없는 읽기. */
+    public AudienceFacts(List<Integer> grades, List<String> depts, List<String> regions, List<Blocker> blockers, String evidence) {
+        this(grades, List.of(), depts, regions, blockers, evidence);
+    }
+
+    /**
+     * 목록을 정렬하고 중복과 빈 값을 지운다. 전 학년이나 정규 학기(1~8) 전부면 그 조건이 없는 것이다.
+     * 두 번 읽은 결과를 비교하고 저장할 때 쓴다.
+     */
     public AudienceFacts normalized() {
         List<Integer> g = sorted(grades == null ? List.of() : grades.stream().filter(x -> x != null && x >= 1 && x <= 4).toList());
+        List<Integer> s = sorted(semesters == null ? List.of() : semesters.stream().filter(x -> x != null && x >= 1 && x <= 9).toList());
+        boolean allRegular = s.containsAll(List.of(1, 2, 3, 4, 5, 6, 7, 8));
         return new AudienceFacts(
                 g.size() == 4 ? List.of() : g,
+                allRegular ? List.of() : s,
                 sorted(clean(depts)),
                 // "영주시"나 "전남"처럼 줄여 적어도 목록의 이름으로 맞춘다. 맞출 수 없으면 그대로 두고, 비교에서 맞지 않는 지역이 된다.
                 sorted(clean(regions).stream().map(r -> Regions.parseLoose(r).map(Regions.Region::label).orElse(r)).toList()),
@@ -65,7 +78,7 @@ public record AudienceFacts(
     public boolean sameConditions(AudienceFacts other) {
         AudienceFacts a = normalized();
         AudienceFacts b = other.normalized();
-        return a.grades.equals(b.grades) && a.depts.equals(b.depts) && a.regions.equals(b.regions)
+        return a.grades.equals(b.grades) && a.semesters.equals(b.semesters) && a.depts.equals(b.depts) && a.regions.equals(b.regions)
                 && a.blocking().equals(b.blocking()) && a.blockers.isEmpty() == b.blockers.isEmpty();
     }
 
@@ -76,7 +89,7 @@ public record AudienceFacts(
     }
 
     public boolean restricted() {
-        return !grades.isEmpty() || !depts.isEmpty() || !regions.isEmpty();
+        return !grades.isEmpty() || !semesters.isEmpty() || !depts.isEmpty() || !regions.isEmpty();
     }
 
     /**
@@ -106,6 +119,12 @@ public record AudienceFacts(
             }
             parts.add(GradeTag.label(new TreeSet<>(f.grades)));
         }
+        if (!f.semesters.isEmpty()) {
+            if (viewer.semester() == null || !f.semesters.contains(viewer.semester())) {
+                return null;
+            }
+            parts.add(semesterLabel(f.semesters));
+        }
         if (!f.depts.isEmpty()) {
             Optional<String> dept = f.depts.stream()
                     .filter(d -> sameDept(d, viewer.major()) || sameDept(d, viewer.secondMajor())).findFirst();
@@ -116,6 +135,17 @@ public record AudienceFacts(
         }
         String reason = String.join("·", parts) + " 대상";
         return f.blockers.isEmpty() ? reason : reason + ", 자격 조건은 원문 확인";
+    }
+
+    /** "5~7학기", "2학기", 초과학기는 "초과학기"로 적는다. 이어지지 않으면 점으로 잇는다. */
+    static String semesterLabel(List<Integer> semesters) {
+        List<String> names = semesters.stream().map(s -> s == 9 ? "초과학기" : s + "학기").toList();
+        int first = semesters.get(0);
+        int last = semesters.get(semesters.size() - 1);
+        if (semesters.size() > 1 && last <= 8 && last - first + 1 == semesters.size()) {
+            return first + "~" + last + "학기";
+        }
+        return String.join("·", names);
     }
 
     /** "컴퓨터정보공학부"와 "컴퓨터정보공학", "경영학과"와 "경영학부"를 같은 곳으로 본다. 끝말을 뗀 이름이 두 글자보다 짧으면 맞추지 않는다. */

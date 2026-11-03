@@ -245,17 +245,18 @@ class ApiFlowTest {
                 withCookie(cookie, Map.of("homeRegion", "전라남도 강남구")), String.class).getStatusCode())
                 .isEqualTo(HttpStatus.BAD_REQUEST);
 
-        // 휴학으로 늦어진 학년은 직접 고른다. 입학년도 없이는 고를 수 없다.
+        // 휴학으로 늦어진 학기는 직접 고른다. 학년은 학기에서 나온다. 입학년도 없이는 고를 수 없다.
         ResponseEntity<Map> manual = rest.exchange("/api/me/profile", HttpMethod.PUT,
-                withCookie(cookie, Map.of("entryYear", 2010, "grade", 3)), Map.class);
+                withCookie(cookie, Map.of("entryYear", 2010, "semester", 6)), Map.class);
+        assertThat(manual.getBody().get("semester")).isEqualTo(6);
         assertThat(manual.getBody().get("grade")).isEqualTo(3);
-        assertThat(manual.getBody().get("autoGrade")).isEqualTo(4);
-        assertThat(manual.getBody().get("gradeManual")).isEqualTo(true);
+        assertThat(manual.getBody().get("autoSemester")).isEqualTo(9);
+        assertThat(manual.getBody().get("semesterManual")).isEqualTo(true);
         assertThat(rest.exchange("/api/me/profile", HttpMethod.PUT,
-                withCookie(cookie, Map.of("entryYear", 2021, "grade", 5)), String.class).getStatusCode())
+                withCookie(cookie, Map.of("entryYear", 2021, "semester", 10)), String.class).getStatusCode())
                 .isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(rest.exchange("/api/me/profile", HttpMethod.PUT,
-                withCookie(cookie, Map.of("grade", 3)), String.class).getStatusCode())
+                withCookie(cookie, Map.of("semester", 3)), String.class).getStatusCode())
                 .isEqualTo(HttpStatus.BAD_REQUEST);
 
         // 항목 저장과 혜택 체크
@@ -447,7 +448,7 @@ class ApiFlowTest {
         // 프로필이 맞는 학생에게는 칠한 이유가 붙고, 학년이 다른 학생에게는 붙지 않는다.
         login("ai-third@catholic.ac.kr");
         AppUser third = users.findByEmail("ai-third@catholic.ac.kr").orElseThrow();
-        third.updateProfile(2024, 3, "컴퓨터정보공학부", null, null, LocalDate.of(2026, 7, 10));
+        third.updateProfile(2024, 5, "컴퓨터정보공학부", null, null, LocalDate.of(2026, 7, 10));
         users.save(third);
         String key = "notice:" + agreedNotice.getId();
         Feed.Card card = feeds.build(third, LocalDate.of(2026, 7, 10)).view().sections().stream()
@@ -455,7 +456,7 @@ class ApiFlowTest {
         assertThat(card.mine()).isTrue();
         assertThat(card.mineReason()).isEqualTo("3학년·컴퓨터정보공학부 대상");
 
-        third.updateProfile(2024, 2, "컴퓨터정보공학부", null, null, LocalDate.of(2026, 7, 10));
+        third.updateProfile(2024, 3, "컴퓨터정보공학부", null, null, LocalDate.of(2026, 7, 10));
         users.save(third);
         assertThat(feeds.build(third, LocalDate.of(2026, 7, 10)).view().sections().stream().flatMap(s -> s.cards().stream())
                 .filter(c -> key.equals(c.key())).findFirst().orElseThrow().mine()).isFalse();

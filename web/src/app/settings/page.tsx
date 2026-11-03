@@ -9,7 +9,7 @@ export default function Settings() {
   const [email, setEmail] = useState("");
   const [sentTo, setSentTo] = useState<string | null>(null);
   const [entryYear, setEntryYear] = useState("");
-  const [grade, setGrade] = useState("");
+  const [semester, setSemester] = useState("");
   const [major, setMajor] = useState("");
   const [secondMajor, setSecondMajor] = useState("");
   const [sido, setSido] = useState("");
@@ -31,7 +31,7 @@ export default function Settings() {
         setMe(m);
         if (m) {
           setEntryYear(m.entryYear ? String(m.entryYear) : "");
-          setGrade(m.gradeManual && m.grade ? String(m.grade) : "");
+          setSemester(m.semesterManual && m.semester ? String(m.semester) : "");
           setMajor(m.major ?? "");
           setSecondMajor(m.secondMajor ?? "");
           const [s, g] = (m.homeRegion ?? "").split(" ");
@@ -68,13 +68,13 @@ export default function Settings() {
     try {
       const updated = await api.updateProfile({
         entryYear: entryYear ? Number(entryYear) : null,
-        grade: entryYear && grade ? Number(grade) : null,
+        semester: entryYear && semester ? Number(semester) : null,
         major,
         secondMajor,
         homeRegion: sido ? [sido, sigungu].filter(Boolean).join(" ") : "",
       });
       setMe(updated);
-      setGrade(updated.gradeManual && updated.grade ? String(updated.grade) : "");
+      setSemester(updated.semesterManual && updated.semester ? String(updated.semester) : "");
       setSaved(true);
     } catch (err) {
       setError((err as Error).message);
@@ -200,22 +200,22 @@ export default function Settings() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="grade">지금 학년</label>
+                  <label htmlFor="semester">이번 학기</label>
                   <select
-                    id="grade"
-                    value={grade}
+                    id="semester"
+                    value={semester}
                     disabled={!entryYear}
                     onChange={(e) => {
-                      setGrade(e.target.value);
+                      setSemester(e.target.value);
                       setSaved(false);
                     }}
                   >
                     <option value="">
-                      {me.autoGrade && Number(entryYear) === me.entryYear ? `자동 (${me.autoGrade}학년)` : "자동"}
+                      {me.autoSemester && Number(entryYear) === me.entryYear ? `자동 (${semesterName(me.autoSemester)})` : "자동"}
                     </option>
-                    {[1, 2, 3, 4].map((g) => (
-                      <option key={g} value={g}>
-                        {g}학년
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((s) => (
+                      <option key={s} value={s}>
+                        {semesterName(s)}
                       </option>
                     ))}
                   </select>
@@ -241,7 +241,7 @@ export default function Settings() {
                 }}
                 placeholder="없으면 비워 두세요"
               />
-              <p className="hint">휴학이나 군 복무로 학년이 다르면 지금 학년을 골라 주세요. 해마다 3월에 한 학년씩 올라가요.</p>
+              <p className="hint">휴학이나 군 복무로 학기가 다르면 이번 학기를 골라 주세요. 3월과 9월에 한 학기씩 올라가요. "4학기 이상 이수" 같은 조건을 맞추는 데 써요.</p>
 
               <fieldset className="region">
                 <legend>연고 지역</legend>
@@ -333,7 +333,7 @@ export default function Settings() {
           <section className="panel danger-zone">
             <h2 className="panel-title">탈퇴</h2>
             <p className="muted">
-              이메일, 입학년도, 학년, 전공, 연고 지역, 저장한 마감, 체크한 혜택, 알림 기록, 남긴 의견, 날짜 신고를 모두 지워요. 되돌릴 수
+              이메일, 입학년도, 학기, 전공, 연고 지역, 저장한 마감, 체크한 혜택, 알림 기록, 남긴 의견, 날짜 신고를 모두 지워요. 되돌릴 수
               없어요.
             </p>
             {confirmDelete ? (
@@ -360,6 +360,11 @@ export default function Settings() {
       )}
     </main>
   );
+}
+
+/** 3 → "2학년 1학기", 9 → "초과학기". 학기는 1학년 1학기부터 센다. */
+function semesterName(s: number): string {
+  return s >= 9 ? "초과학기" : `${Math.ceil(s / 2)}학년 ${s % 2 === 1 ? 1 : 2}학기`;
 }
 
 const FEEDBACK_MAX = 300;

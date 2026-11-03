@@ -18,8 +18,8 @@ public class AppUser {
     private Long id;
     private String email;
     private Integer entryYear;
-    /** 입학년도로 센 학년과 실제 학년의 차이. 휴학이나 군 복무로 늦어지면 음수다. */
-    private int gradeAdjust;
+    /** 입학년도로 센 학기와 실제 학기의 차이. 휴학이나 군 복무로 늦어지면 음수다. */
+    private int semesterAdjust;
     private String major;
     private String secondMajor;
     private String homeRegion;
@@ -36,11 +36,11 @@ public class AppUser {
         this.email = email;
     }
 
-    /** grade는 학생이 고른 지금 학년이다. null이면 입학년도로 센다. */
-    public void updateProfile(Integer entryYear, Integer grade, String major, String secondMajor, String homeRegion,
+    /** semester는 학생이 고른 이번 학기(몇 번째 학기인지, 9는 초과학기)다. null이면 입학년도로 센다. */
+    public void updateProfile(Integer entryYear, Integer semester, String major, String secondMajor, String homeRegion,
             LocalDate today) {
         this.entryYear = entryYear;
-        this.gradeAdjust = entryYear == null || grade == null ? 0 : grade - yearsSince(entryYear, today);
+        this.semesterAdjust = entryYear == null || semester == null ? 0 : semester - semestersSince(entryYear, today);
         this.major = blankToNull(major);
         this.secondMajor = blankToNull(secondMajor);
         this.homeRegion = blankToNull(homeRegion);
@@ -62,29 +62,41 @@ public class AppUser {
         lastLoginAt = OffsetDateTime.now();
     }
 
-    /** 지금 학년. 학생이 고른 차이를 입학년도로 센 값에 더해서 다음 해에도 한 학년씩 오른다. */
+    /** 이번 학기(1~8, 9는 초과학기). 학생이 고른 차이를 입학년도로 센 값에 더해서 학기마다 하나씩 오른다. */
+    public Integer semester(LocalDate today) {
+        return entryYear == null ? null : clamp(semestersSince(entryYear, today) + semesterAdjust);
+    }
+
+    /** 휴학을 모르고 입학년도로만 센 학기. */
+    public Integer autoSemester(LocalDate today) {
+        return entryYear == null ? null : clamp(semestersSince(entryYear, today));
+    }
+
+    /** 지금 학년. 학기에서 나온다. 초과학기는 4학년이다. */
     public Integer grade(LocalDate today) {
-        return entryYear == null ? null : clamp(yearsSince(entryYear, today) + gradeAdjust);
+        Integer s = semester(today);
+        return s == null ? null : gradeOf(s);
     }
 
-    /** 휴학을 모르고 입학년도로만 센 학년. */
-    public Integer autoGrade(LocalDate today) {
-        return entryYear == null ? null : clamp(yearsSince(entryYear, today));
+    public boolean isSemesterManual() {
+        return semesterAdjust != 0;
     }
 
-    public boolean isGradeManual() {
-        return gradeAdjust != 0;
+    public static int gradeOf(int semester) {
+        return Math.min(4, (semester + 1) / 2);
     }
 
-    /** 학년도는 3월에 시작하므로 1·2월은 전년도로 본다. */
-    private static int yearsSince(int entryYear, LocalDate today) {
-        int academicYear = today.getMonthValue() >= 3 ? today.getYear() : today.getYear() - 1;
-        return academicYear - entryYear + 1;
+    /** 1학기는 3~8월, 2학기는 9월~다음 해 2월이다. 입학한 해 1학기가 1번째 학기다. */
+    private static int semestersSince(int entryYear, LocalDate today) {
+        int month = today.getMonthValue();
+        int academicYear = month >= 3 ? today.getYear() : today.getYear() - 1;
+        boolean second = month >= 9 || month <= 2;
+        return (academicYear - entryYear) * 2 + (second ? 2 : 1);
     }
 
-    /** 5학년 이상은 4로 본다. */
-    private static int clamp(int grade) {
-        return Math.max(1, Math.min(4, grade));
+    /** 9번째 학기 이상은 초과학기 하나로 본다. */
+    private static int clamp(int semester) {
+        return Math.max(1, Math.min(9, semester));
     }
 
     private static String blankToNull(String s) {

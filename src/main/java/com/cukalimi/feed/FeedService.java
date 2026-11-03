@@ -41,7 +41,7 @@ public class FeedService {
     @Transactional(readOnly = true)
     public Built build(AppUser user, LocalDate today) {
         Feed.Viewer viewer = user == null ? Feed.Viewer.ANONYMOUS
-                : new Feed.Viewer(user.grade(today), user.getMajor(), user.getSecondMajor(),
+                : new Feed.Viewer(user.grade(today), user.semester(today), user.getMajor(), user.getSecondMajor(),
                         Regions.parse(user.getHomeRegion()).orElse(null));
         Set<Long> savedIds = user == null ? Set.of()
                 : saved.findByUserId(user.getId()).stream().map(SavedItem::getDateItemId).collect(Collectors.toSet());

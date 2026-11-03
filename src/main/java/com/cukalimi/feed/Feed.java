@@ -22,8 +22,13 @@ public final class Feed {
     /** 모든 재학생이 놓치면 손해인 공지. 학사일정 표의 항목과 같은 무게로 맨 위에 둔다. */
     private static final Pattern MUST_TITLE = Pattern.compile("국가장학금|국가근로|등록금|수강신청|수강과목\\s*취소|휴학|복학");
 
-    public record Viewer(Integer grade, String major, String secondMajor, Regions.Region home) {
-        public static final Viewer ANONYMOUS = new Viewer(null, null, null, null);
+    /** semester는 이번 학기(9는 초과학기). 학기 조건이 있는 공지만 쓴다. */
+    public record Viewer(Integer grade, Integer semester, String major, String secondMajor, Regions.Region home) {
+        public static final Viewer ANONYMOUS = new Viewer(null, null, null, null, null);
+
+        public Viewer(Integer grade, String major, String secondMajor, Regions.Region home) {
+            this(grade, null, major, secondMajor, home);
+        }
     }
 
     /** label은 공지 안에서 이 날짜가 무엇인지("트리니티 신청", "서류 합격자 발표"). 공지 제목과 같으면 비운다. */

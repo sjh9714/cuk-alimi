@@ -31,6 +31,20 @@ class AudienceFactsTest {
     }
 
     @Test
+    void 학기로_적힌_조건은_이번_학기로_맞춘다() {
+        AudienceFacts f = new AudienceFacts(List.of(), List.of(5, 6, 7), List.of(), List.of(), List.of(), "");
+        assertThat(f.reasonFor(new Feed.Viewer(3, 6, null, null, null))).isEqualTo("5~7학기 대상");
+        assertThat(f.reasonFor(new Feed.Viewer(4, 8, null, null, null))).isNull();
+        // 학기를 모르면(학년만 있으면) 칠하지 않는다.
+        assertThat(f.reasonFor(new Feed.Viewer(3, null, null, null))).isNull();
+        // 정규 학기 전부면 조건이 없는 것이다.
+        assertThat(new AudienceFacts(List.of(), List.of(1, 2, 3, 4, 5, 6, 7, 8), List.of(), List.of(), List.of(), "")
+                .normalized().restricted()).isFalse();
+        assertThat(AudienceFacts.semesterLabel(List.of(2))).isEqualTo("2학기");
+        assertThat(AudienceFacts.semesterLabel(List.of(8, 9))).isEqualTo("8학기·초과학기");
+    }
+
+    @Test
     void 조건이_없으면_모두의_것이라_칠하지_않는다() {
         assertThat(facts(List.of(), List.of(), List.of(), List.of()).reasonFor(THIRD_CS_SUNCHEON)).isNull();
     }
