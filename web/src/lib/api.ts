@@ -169,7 +169,7 @@ export type Quality = {
   autoPublish: { published: number; waiting: number; reports: number };
   /** 형광펜 백테스트. 아직 재지 않았으면 null */
   audienceBacktest: AudienceBacktest | null;
-  audienceRead: { notices: number; agreed: number; inputTokens: number; outputTokens: number; costUsd: number };
+  audienceRead: { enabled: boolean; notices: number; agreed: number; inputTokens: number; outputTokens: number; costUsd: number };
 };
 
 export type AudienceScore = {

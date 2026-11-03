@@ -202,9 +202,15 @@ export default function QualityPage() {
             <section className="panel">
               <h2>형광펜 정확도</h2>
               <p>
-                홈에서 형광펜은 내 학년·학과·연고 지역에 맞는 일에 칠해요. 공지의 대상 조건은 AI(Claude Haiku)가 두 번 따로
-                읽고, 두 번이 같을 때만 써요. 내 프로필과 맞는지는 AI가 아니라 코드가 비교하고, 프로필은 AI에 보내지 않아요.
-                공지 {q.audienceBacktest.notices}건마다 {q.audienceBacktest.students}가지 학생 프로필로 정답과 비교했어요.
+                홈에서 형광펜은 내 학년·학과·연고 지역에 맞는 일에 칠해요. 공지의 대상 조건을 AI(Claude Haiku)가 두 번 따로
+                읽고 두 번이 같을 때만 쓰는 방식을 시험하고 있어요. 내 프로필과 맞는지는 AI가 아니라 코드가 비교하고, 프로필은
+                AI에 보내지 않아요. 공지 {q.audienceBacktest.notices}건마다 {q.audienceBacktest.students}가지 학생 프로필로
+                정답과 비교했어요.
+              </p>
+              <p>
+                {q.audienceRead.enabled
+                  ? "지금은 AI가 읽은 조건으로 칠해요."
+                  : "AI가 놓치는 것은 훨씬 적지만 잘못 칠하는 것이 정규식보다 많아서, 지금은 꺼 두고 정규식으로 칠해요."}
               </p>
               <table className="facts">
                 <thead>

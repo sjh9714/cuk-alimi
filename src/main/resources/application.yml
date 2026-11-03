@@ -72,7 +72,8 @@ app:
     cron: "0 20 * * * *"
   # 공지 글에서 대상 조건(학년·학과·지역)을 AI가 읽는다 (ADR 013). 그림 받아 적기(20분) 뒤에 돌아 받아 적은 글도 함께 읽는다.
   audience-read:
-    enabled: ${AUDIENCE_READ_ENABLED:true}
+    # 2026-11-03 실제 API 측정에서 잘못 칠하는 수가 정규식보다 많아 꺼 둔다 (ADR 013).
+    enabled: ${AUDIENCE_READ_ENABLED:false}
     model: claude-haiku-5-5
     daily-limit: ${AUDIENCE_READ_DAILY_LIMIT:60}
     cron: "0 35 * * * *"
