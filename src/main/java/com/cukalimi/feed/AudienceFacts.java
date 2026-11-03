@@ -59,7 +59,8 @@ public record AudienceFacts(
     public AudienceFacts normalized() {
         List<Integer> g = sorted(grades == null ? List.of() : grades.stream().filter(x -> x != null && x >= 1 && x <= 4).toList());
         List<Integer> s = sorted(semesters == null ? List.of() : semesters.stream().filter(x -> x != null && x >= 1 && x <= 9).toList());
-        boolean allRegular = s.containsAll(List.of(1, 2, 3, 4, 5, 6, 7, 8));
+        // 정규 학기 8개 중 7개 이상이 해당하면 거의 모두의 공지다. "내 것"이라는 신호가 아니라 학기 조건이 없는 것으로 본다.
+        boolean allRegular = s.stream().filter(x -> x <= 8).count() >= 7;
         return new AudienceFacts(
                 g.size() == 4 ? List.of() : g,
                 allRegular ? List.of() : s,

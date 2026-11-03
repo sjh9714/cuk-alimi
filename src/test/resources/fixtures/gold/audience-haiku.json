@@ -10,7 +10,15 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "OTHER" ],
+        "blockers" : [ "COURSE" ],
+        "evidence" : "◎ 적용대상: 2019학번 이전 학생 중 [글로벌커뮤니케이션1,2](기초교양필수-2학점) 미이수자"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "COURSE" ],
         "evidence" : "◎ 적용대상: 2019학번 이전 학생 중 [글로벌커뮤니케이션1,2](기초교양필수-2학점) 미이수자"
       },
       "second" : {
@@ -18,7 +26,15 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "OTHER" ],
+        "blockers" : [ "COURSE" ],
+        "evidence" : "◎ 적용대상: 2019학번 이전 학생 중 [글로벌커뮤니케이션1,2](기초교양필수-2학점) 미이수자"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "COURSE" ],
         "evidence" : "◎ 적용대상: 2019학번 이전 학생 중 [글로벌커뮤니케이션1,2](기초교양필수-2학점) 미이수자"
       },
       "agreed" : true
@@ -32,7 +48,15 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
-        "evidence" : ""
+        "evidence" : "외부 장학 기관에서 총장 명의 추천서를 요구하는 경우에 필요한 총장 명의 추천서 발급 절차를 아래와 같이 안내드립니다."
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "외부 장학 기관에서 총장 명의 추천서를 요구하는 경우에 필요한 총장 명의 추천서 발급 절차를 아래와 같이 안내드립니다."
       },
       "second" : {
         "grades" : [ ],
@@ -40,7 +64,15 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
-        "evidence" : ""
+        "evidence" : "외부 장학 기관에서 총장 명의 추천서를 요구하는 경우에 필요한 총장 명의 추천서 발급 절차를 아래와 같이 안내드립니다."
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "외부 장학 기관에서 총장 명의 추천서를 요구하는 경우에 필요한 총장 명의 추천서 발급 절차를 아래와 같이 안내드립니다."
       },
       "agreed" : true
     },
@@ -55,13 +87,29 @@
         "blockers" : [ "OTHER" ],
         "evidence" : "2026-2학기 강의시간표 등 수업 관련 변경사항을 안내하오니 확인하시기 바랍니다."
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "2026-2학기 강의시간표 등 수업 관련 변경사항을 안내하오니 확인하시기 바랍니다."
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
-        "evidence" : "2026-2학기 강의시간표 등 수업 관련 변경사항을 안내하오니 확인하시기 바랍니다."
+        "evidence" : "2026-2학기 강의시간표 등 변경사항을 안내하오니 확인하시기 바랍니다."
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "2026-2학기 강의시간표 등 변경사항을 안내하오니 확인하시기 바랍니다."
       },
       "agreed" : true
     },
@@ -70,7 +118,19 @@
       "title" : "2026년 8월 졸업대상자 융복합트랙 이수여부 확인 기간 알림",
       "first" : {
         "grades" : [ ],
-        "semesters" : [ ],
+        "semesters" : [ 7 ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "대상 : 졸업 예정(확정)자 중 융복합트랙 이수자"
+      },
+      "firstReading" : {
+        "grades" : [ 4 ],
+        "semesterRules" : [ {
+          "kind" : "NOT_FINAL_SEMESTER",
+          "value" : 0,
+          "half" : 0
+        } ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
@@ -78,7 +138,19 @@
       },
       "second" : {
         "grades" : [ ],
-        "semesters" : [ ],
+        "semesters" : [ 7 ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "대상 : 졸업 예정(확정)자 중 융복합트랙 이수자"
+      },
+      "secondReading" : {
+        "grades" : [ 4 ],
+        "semesterRules" : [ {
+          "kind" : "NOT_FINAL_SEMESTER",
+          "value" : 0,
+          "half" : 0
+        } ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
@@ -94,7 +166,15 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "IMAGE_ONLY" ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
         "evidence" : ""
       },
       "second" : {
@@ -102,7 +182,15 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "IMAGE_ONLY" ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
         "evidence" : ""
       },
       "agreed" : true
@@ -115,12 +203,28 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "OTHER" ],
+        "blockers" : [ "IMAGE_ONLY" ],
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "IMAGE_ONLY" ],
         "evidence" : ""
       },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
@@ -139,9 +243,25 @@
         "blockers" : [ ],
         "evidence" : ""
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ ],
@@ -157,8 +277,16 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "OTHER" ],
-        "evidence" : "2026학년도 2학기 공결 신청 변경 안내 2026학년도 1학기부터 공결 신청이 전산화됨에 따라 2학기에는 신청 및 처리 절차를 아래와 같이 수시로 안내하오니, 해당 학생들은 반드시 기한 내에 신청하시기 바랍니다."
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
       },
       "second" : {
         "grades" : [ ],
@@ -168,7 +296,15 @@
         "blockers" : [ "OTHER" ],
         "evidence" : ""
       },
-      "agreed" : true
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
+      "agreed" : false
     },
     "274963" : {
       "category" : "학사",
@@ -179,11 +315,27 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
-        "evidence" : "「취소–시간차 수강신청제」 안내 1. 취소–시간차 수강신청제 : 강의 매매 방지를 위해 수강취소 시점과 수강신청 시점 사이에 시간차를 적용하여 여석을 생성하는 수강신청 운영 방식"
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
       },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "「취소–시간차 수강신청제」 안내 1. 취소–시간차 수강신청제 : 강의 매매 방지를 위해 수강취소 시점과 수강신청 시점 사이에 시간차를 적용하여 여석을 생성하는 수강신청 운영 방식"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
@@ -202,9 +354,25 @@
         "blockers" : [ ],
         "evidence" : ""
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ ],
@@ -223,9 +391,25 @@
         "blockers" : [ "OTHER" ],
         "evidence" : ""
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ ],
@@ -244,9 +428,25 @@
         "blockers" : [ ],
         "evidence" : ""
       },
+      "firstReading" : {
+        "grades" : [ 2, 3, 4 ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
       "second" : {
         "grades" : [ 2, 3, 4 ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ 2, 3, 4 ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ ],
@@ -262,7 +462,15 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "OTHER" ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ 4 ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
         "evidence" : ""
       },
       "second" : {
@@ -273,7 +481,15 @@
         "blockers" : [ ],
         "evidence" : ""
       },
-      "agreed" : false
+      "secondReading" : {
+        "grades" : [ 4 ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "agreed" : true
     },
     "275110" : {
       "category" : "학사",
@@ -286,15 +502,31 @@
         "blockers" : [ ],
         "evidence" : ""
       },
-      "second" : {
+      "firstReading" : {
         "grades" : [ ],
-        "semesters" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ ],
         "evidence" : ""
       },
-      "agreed" : true
+      "second" : {
+        "grades" : [ ],
+        "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
+      "agreed" : false
     },
     "275179" : {
       "category" : "학사",
@@ -307,9 +539,25 @@
         "blockers" : [ ],
         "evidence" : ""
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ ],
@@ -328,9 +576,25 @@
         "blockers" : [ "OTHER" ],
         "evidence" : ""
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
@@ -349,15 +613,31 @@
         "blockers" : [ ],
         "evidence" : ""
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "OTHER" ],
-        "evidence" : "개강미사는 동일 시간대(2~3교시) 수업을 대체하며, 해당 수업은 보강 의무가 없습니다."
+        "blockers" : [ ],
+        "evidence" : ""
       },
-      "agreed" : false
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "agreed" : true
     },
     "275332" : {
       "category" : "학사",
@@ -370,9 +650,25 @@
         "blockers" : [ ],
         "evidence" : ""
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ ],
@@ -388,7 +684,15 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "COURSE" ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
         "evidence" : ""
       },
       "second" : {
@@ -396,10 +700,18 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "OTHER" ],
+        "blockers" : [ ],
         "evidence" : ""
       },
-      "agreed" : false
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "agreed" : true
     },
     "275433" : {
       "category" : "학사",
@@ -409,8 +721,16 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "OTHER" ],
-        "evidence" : "학부(과) 교과목명 분반 변경내용 변경전 변경후 비고 미디어기술콘텐츠학과 미디어의발전과문화 01 증원 100명 110명"
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
       },
       "second" : {
         "grades" : [ ],
@@ -420,7 +740,15 @@
         "blockers" : [ ],
         "evidence" : ""
       },
-      "agreed" : false
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "agreed" : true
     },
     "275515" : {
       "category" : "학사",
@@ -430,7 +758,15 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
         "evidence" : ""
       },
       "second" : {
@@ -438,7 +774,15 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
         "evidence" : ""
       },
       "agreed" : true
@@ -452,7 +796,15 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
-        "evidence" : "나. 참석 대상 : 수업평가 문항 개선에 관심 있는 학부(과) 소속 교원"
+        "evidence" : "각 학부(과) 및 전공 소속 교원께서는 참석하여 주시기 바랍니다."
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "각 학부(과) 및 전공 소속 교원께서는 참석하여 주시기 바랍니다."
       },
       "second" : {
         "grades" : [ ],
@@ -460,7 +812,15 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
-        "evidence" : "나. 참석 대상 : 수업평가 문항 개선에 관심 있는 학부(과) 소속 교원"
+        "evidence" : "각 학부(과) 및 전공 소속 교원께서는 참석하여 주시기 바랍니다."
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "각 학부(과) 및 전공 소속 교원께서는 참석하여 주시기 바랍니다."
       },
       "agreed" : true
     },
@@ -473,11 +833,27 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
-        "evidence" : "<서식 1. 장학생 추천서(학교(총)장 추천) 관련 안내> 총장 명의 추천서가 필요한 경우, 아래 관련 공지사항을 확인한 후 추천서 발급원 등 구비서류를 준비하여 소속 학과(부)에 신청하시기 바랍니다."
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
       },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
@@ -493,7 +869,19 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "GPA" ],
+        "blockers" : [ ],
+        "evidence" : "직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "WITHIN_REGULAR",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
         "evidence" : "직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
       },
       "second" : {
@@ -501,7 +889,19 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "GPA" ],
+        "blockers" : [ ],
+        "evidence" : "직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "WITHIN_REGULAR",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
         "evidence" : "직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
       },
       "agreed" : true
@@ -511,19 +911,43 @@
       "title" : "[학생지원팀] 2026학년도 2학기 직무인턴 2차 신청 안내(9/17~9/27)",
       "first" : {
         "grades" : [ ],
-        "semesters" : [ 1, 2, 3, 4, 5, 6, 7 ],
+        "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "GPA", "OTHER" ],
-        "evidence" : "직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
+        "blockers" : [ "INCOME", "GPA" ],
+        "evidence" : "가) 직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "WITHIN_REGULAR",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME", "GPA" ],
+        "evidence" : "가) 직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
       },
       "second" : {
         "grades" : [ ],
-        "semesters" : [ 1, 2, 3, 4, 5, 6, 7 ],
+        "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "INCOME", "GPA", "OTHER" ],
-        "evidence" : "직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
+        "blockers" : [ "INCOME", "GPA" ],
+        "evidence" : "가) 직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "WITHIN_REGULAR",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME", "GPA" ],
+        "evidence" : "가) 직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
       },
       "agreed" : true
     },
@@ -538,9 +962,25 @@
         "blockers" : [ "OTHER" ],
         "evidence" : ""
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
@@ -556,16 +996,40 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ "강원특별자치도 춘천시" ],
-        "blockers" : [ "OTHER" ],
-        "evidence" : "이번학기(26년 2학기) 등록금 자부담금 없는 경우(전액 면제자) 신청불가"
+        "blockers" : [ ],
+        "evidence" : "※ 이번학기(26년 2학기) 등록금 자부담금 없는 경우(전액 면제자) 신청불가"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "NOT_ENROLLED_AT_LEAST",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ "강원특별자치도 춘천시" ],
+        "blockers" : [ ],
+        "evidence" : "※ 이번학기(26년 2학기) 등록금 자부담금 없는 경우(전액 면제자) 신청불가"
       },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ "강원특별자치도 춘천시" ],
-        "blockers" : [ "OTHER" ],
-        "evidence" : "2. 제출방법: 신청자 개별 신청 가. 애향 장학금: 모든 서류 원본 제출 나. 비애향 장학금(성적우수,특기,주소이전,원격대학): 모든 서류 원본 제출과 온라인 신청"
+        "blockers" : [ ],
+        "evidence" : "(재)춘천인재육성장학재단에서 2026년 하반기 봄내장학생을 선발하오니"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "NOT_ENROLLED_AT_LEAST",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ "강원특별자치도 춘천시" ],
+        "blockers" : [ ],
+        "evidence" : "(재)춘천인재육성장학재단에서 2026년 하반기 봄내장학생을 선발하오니"
       },
       "agreed" : true
     },
@@ -575,17 +1039,49 @@
       "first" : {
         "grades" : [ ],
         "semesters" : [ ],
-        "depts" : [ "상경계열", "이공계열", "인문사회계열" ],
+        "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "GPA", "GROUP", "OTHER" ],
-        "evidence" : "직전학기 및 총평점 평균 3.0/4.5 이상"
+        "blockers" : [ "INCOME", "GPA", "GROUP", "COURSE", "OTHER" ],
+        "evidence" : "대한민국 국적의 국내 4년제 대학 학부 재학생 이공·상경·인문사회계열 전공자※ 예체능·의학·보건계열 지원 불가"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "ENROLLED_AT_LEAST",
+          "value" : 0,
+          "half" : 0
+        }, {
+          "kind" : "ENTERING",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME", "GPA", "GROUP", "COURSE", "OTHER" ],
+        "evidence" : "대한민국 국적의 국내 4년제 대학 학부 재학생 이공·상경·인문사회계열 전공자※ 예체능·의학·보건계열 지원 불가"
       },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
-        "depts" : [ "상경계열", "이공계열", "인문사회계열" ],
+        "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "INCOME", "GPA", "GROUP", "OTHER" ],
+        "blockers" : [ "INCOME", "GPA", "GROUP", "COURSE", "OTHER" ],
+        "evidence" : "대한민국 국적의 국내 4년제 대학 학부 재학생 이공·상경·인문사회계열 전공자※ 예체능·의학·보건계열 지원 불가"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "ENTERING",
+          "value" : 2027,
+          "half" : 0
+        }, {
+          "kind" : "ENROLLED_AT_LEAST",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME", "GPA", "GROUP", "COURSE", "OTHER" ],
         "evidence" : "대한민국 국적의 국내 4년제 대학 학부 재학생 이공·상경·인문사회계열 전공자※ 예체능·의학·보건계열 지원 불가"
       },
       "agreed" : true
@@ -601,9 +1097,25 @@
         "blockers" : [ "GROUP" ],
         "evidence" : "2026년도 국내 정규대학교 신입생 ※ 2년제 전문대학 포함"
       },
+      "firstReading" : {
+        "grades" : [ 1 ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "충청남도 논산시" ],
+        "blockers" : [ "GROUP" ],
+        "evidence" : "2026년도 국내 정규대학교 신입생 ※ 2년제 전문대학 포함"
+      },
       "second" : {
         "grades" : [ 1 ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ "충청남도 논산시" ],
+        "blockers" : [ "GROUP" ],
+        "evidence" : "2026년도 국내 정규대학교 신입생 ※ 2년제 전문대학 포함"
+      },
+      "secondReading" : {
+        "grades" : [ 1 ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ "충청남도 논산시" ],
         "blockers" : [ "GROUP" ],
@@ -622,9 +1134,25 @@
         "blockers" : [ "OTHER" ],
         "evidence" : ""
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
@@ -640,18 +1168,42 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "INCOME", "GPA", "OTHER" ],
-        "evidence" : "- 직전학기 12학점 이상 이수자"
+        "blockers" : [ "INCOME", "GPA", "GROUP" ],
+        "evidence" : "대한민국 국적의 2026학년도 2학기 정규학기 재학생"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "ENROLLED_AT_LEAST",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME", "GPA", "GROUP" ],
+        "evidence" : "대한민국 국적의 2026학년도 2학기 정규학기 재학생"
       },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "INCOME", "GPA", "GROUP", "OTHER" ],
-        "evidence" : "대한민국 국적의 2026학년도 2학기 정규학기 재학생"
+        "blockers" : [ "INCOME", "GPA", "GROUP" ],
+        "evidence" : "- 대한민국 국적의 2026학년도 2학기 정규학기 재학생"
       },
-      "agreed" : false
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "ENROLLED_AT_LEAST",
+          "value" : 1,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME", "GPA", "GROUP" ],
+        "evidence" : "- 대한민국 국적의 2026학년도 2학기 정규학기 재학생"
+      },
+      "agreed" : true
     },
     "276300" : {
       "category" : "학사",
@@ -661,8 +1213,16 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "OTHER" ],
-        "evidence" : "2026-2학기 수강과목 취소가 확정되었음을 안내 드리며, 신청하신 학생들께서는 트리니티 내 수강신청확인원을 통해 취소 신청 처리내역을 반드시 확인하여 주시기 바랍니다."
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
       },
       "second" : {
         "grades" : [ ],
@@ -672,7 +1232,15 @@
         "blockers" : [ "OTHER" ],
         "evidence" : "2026-2학기 수강과목 취소가 확정되었음을 안내 드리며, 신청하신 학생들께서는 트리니티 내 수강신청확인원을 통해 취소 신청 처리내역을 반드시 확인하여 주시기 바랍니다."
       },
-      "agreed" : true
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "2026-2학기 수강과목 취소가 확정되었음을 안내 드리며, 신청하신 학생들께서는 트리니티 내 수강신청확인원을 통해 취소 신청 처리내역을 반드시 확인하여 주시기 바랍니다."
+      },
+      "agreed" : false
     },
     "276332" : {
       "category" : "장학",
@@ -685,9 +1253,25 @@
         "blockers" : [ ],
         "evidence" : ""
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ ],
@@ -703,7 +1287,15 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ ],
+        "blockers" : [ "INCOME" ],
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME" ],
         "evidence" : ""
       },
       "second" : {
@@ -711,7 +1303,15 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ ],
+        "blockers" : [ "INCOME" ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME" ],
         "evidence" : ""
       },
       "agreed" : true
@@ -721,7 +1321,19 @@
       "title" : "[학생지원팀] 2026학년도 2학기 직무인턴 3차 신청 안내(10/1~10/7)",
       "first" : {
         "grades" : [ ],
-        "semesters" : [ 1, 2, 3, 4, 5, 6, 7 ],
+        "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "GPA" ],
+        "evidence" : "가) 직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "WITHIN_REGULAR",
+          "value" : 0,
+          "half" : 0
+        } ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "GPA" ],
@@ -729,7 +1341,19 @@
       },
       "second" : {
         "grades" : [ ],
-        "semesters" : [ 1, 2, 3, 4, 5, 6, 7 ],
+        "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "GPA" ],
+        "evidence" : "가) 직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "WITHIN_REGULAR",
+          "value" : 0,
+          "half" : 0
+        } ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "GPA" ],
@@ -746,7 +1370,15 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
-        "evidence" : "「이원길 장학금」(학술·봉사·설계·실현[창업])에 지원해주신 모든 학생 여러분께 진심으로 감사드립니다."
+        "evidence" : "「이원길 장학금」 최종 선발 결과 안내 가톨릭대학교 학부대학운영팀입니다. 2026학년도 「이원길 장학금」(학술·봉사·설계·실현[창업])에 지원해주신 모든 학생 여러분께 진심으로 감사드립니다."
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "「이원길 장학금」 최종 선발 결과 안내 가톨릭대학교 학부대학운영팀입니다. 2026학년도 「이원길 장학금」(학술·봉사·설계·실현[창업])에 지원해주신 모든 학생 여러분께 진심으로 감사드립니다."
       },
       "second" : {
         "grades" : [ ],
@@ -754,7 +1386,15 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
-        "evidence" : "「이원길 장학금」(학술·봉사·설계·실현[창업])에 지원해주신 모든 학생 여러분께 진심으로 감사드립니다."
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
       },
       "agreed" : true
     },
@@ -769,9 +1409,25 @@
         "blockers" : [ "OTHER" ],
         "evidence" : "세부 지원자격 및 제출서류는 붙임 공고문을 반드시 확인하시기 바랍니다."
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "서울특별시 마포구" ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "세부 지원자격 및 제출서류는 붙임 공고문을 반드시 확인하시기 바랍니다."
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ "서울특별시 마포구" ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "세부 지원자격 및 제출서류는 붙임 공고문을 반드시 확인하시기 바랍니다."
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ "서울특별시 마포구" ],
         "blockers" : [ "OTHER" ],
@@ -787,15 +1443,31 @@
         "semesters" : [ ],
         "depts" : [ "의생명과학분야" ],
         "regions" : [ ],
-        "blockers" : [ "GPA" ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ "의생명과학분야" ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
         "evidence" : ""
       },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
-        "depts" : [ "의생명과학분야" ],
+        "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "GROUP" ],
+        "blockers" : [ "INCOME" ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME" ],
         "evidence" : ""
       },
       "agreed" : false
@@ -804,11 +1476,23 @@
       "category" : "장학",
       "title" : "[학생지원팀] ﻿2026년 2학기 문주장학재단 AI·ICT 분야 인재 장학생 선발 안(2026. 9. 21.(월) ~ 10. 8.(목))",
       "first" : {
-        "grades" : [ 2, 3, 4 ],
-        "semesters" : [ ],
+        "grades" : [ ],
+        "semesters" : [ 3, 4, 5, 6, 7, 8, 9 ],
         "depts" : [ "AI·ICT 분야 전공" ],
         "regions" : [ "서울특별시 서초구" ],
-        "blockers" : [ "GPA" ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "지원자격 : AI·ICT 분야 전공 대학교(학부) 2학년 이상 재학생"
+      },
+      "firstReading" : {
+        "grades" : [ 2, 3, 4 ],
+        "semesterRules" : [ {
+          "kind" : "ENROLLED_AT_LEAST",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ "AI·ICT 분야 전공" ],
+        "regions" : [ "서울특별시 서초구" ],
+        "blockers" : [ "OTHER" ],
         "evidence" : "지원자격 : AI·ICT 분야 전공 대학교(학부) 2학년 이상 재학생"
       },
       "second" : {
@@ -816,8 +1500,16 @@
         "semesters" : [ ],
         "depts" : [ "AI·ICT 분야 전공" ],
         "regions" : [ "서울특별시 서초구" ],
-        "blockers" : [ "GROUP" ],
-        "evidence" : "지원자격 : AI·ICT 분야 전공 대학교(학부) 2학년 이상 재학생"
+        "blockers" : [ "GPA" ],
+        "evidence" : "● 지원자격 : AI·ICT 분야 전공 대학교(학부) 2학년 이상 재학생"
+      },
+      "secondReading" : {
+        "grades" : [ 2, 3, 4 ],
+        "semesterRules" : [ ],
+        "depts" : [ "AI·ICT 분야 전공" ],
+        "regions" : [ "서울특별시 서초구" ],
+        "blockers" : [ "GPA" ],
+        "evidence" : "● 지원자격 : AI·ICT 분야 전공 대학교(학부) 2학년 이상 재학생"
       },
       "agreed" : false
     },
@@ -830,14 +1522,30 @@
         "depts" : [ ],
         "regions" : [ "전라남도 진도군" ],
         "blockers" : [ "GROUP" ],
-        "evidence" : "2025. 12. 31.부터 공고일 현재까지 진도군에 주민등록이 되어 있는 학생 또는 진도군민의 자녀"
+        "evidence" : "신청자격 - 2025. 12. 31.부터 공고일 현재까지 진도군에 주민등록이 되어 있는 학생 또는 진도군민의 자녀 - 진도군 관내 중학교 또는 고등학교 졸업 대학생"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "전라남도 진도군" ],
+        "blockers" : [ "GROUP" ],
+        "evidence" : "신청자격 - 2025. 12. 31.부터 공고일 현재까지 진도군에 주민등록이 되어 있는 학생 또는 진도군민의 자녀 - 진도군 관내 중학교 또는 고등학교 졸업 대학생"
       },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ "전라남도 진도군" ],
-        "blockers" : [ "GPA", "GROUP" ],
+        "blockers" : [ "GROUP", "OTHER" ],
+        "evidence" : "2025. 12. 31.부터 공고일 현재까지 진도군에 주민등록이 되어 있는 학생 또는 진도군민의 자녀"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "전라남도 진도군" ],
+        "blockers" : [ "GROUP", "OTHER" ],
         "evidence" : "2025. 12. 31.부터 공고일 현재까지 진도군에 주민등록이 되어 있는 학생 또는 진도군민의 자녀"
       },
       "agreed" : true
@@ -850,7 +1558,15 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ "경상북도 영주시" ],
-        "blockers" : [ "OTHER" ],
+        "blockers" : [ "GROUP" ],
+        "evidence" : "지원대상(다음 중 하나에 해당하는 자 <지원 기준일 : 2026. 9. 21.>) - 지원 기준일 현재 본인이 영주시에 주민등록을 두고 있는 대학생 - 지원 기준일 현재 직계존속이 영주시에 주민등록을 두고 있는 대학생 - 영주시 소재 고등교육기관에 다니면서 영주시에 주민등록을 두고 있는 대학생(1학년은 3개월 이상, 그 외 1년 이상)"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "경상북도 영주시" ],
+        "blockers" : [ "GROUP" ],
         "evidence" : "지원대상(다음 중 하나에 해당하는 자 <지원 기준일 : 2026. 9. 21.>) - 지원 기준일 현재 본인이 영주시에 주민등록을 두고 있는 대학생 - 지원 기준일 현재 직계존속이 영주시에 주민등록을 두고 있는 대학생 - 영주시 소재 고등교육기관에 다니면서 영주시에 주민등록을 두고 있는 대학생(1학년은 3개월 이상, 그 외 1년 이상)"
       },
       "second" : {
@@ -859,9 +1575,17 @@
         "depts" : [ ],
         "regions" : [ "경상북도 영주시" ],
         "blockers" : [ "OTHER" ],
-        "evidence" : "지원대상(다음 중 하나에 해당하는 자 <지원 기준일 : 2026. 9. 21.>) - 지원 기준일 현재 본인이 영주시에 주민등록을 두고 있는 대학생"
+        "evidence" : "지원 기준일 현재 본인이 영주시에 주민등록을 두고 있는 대학생"
       },
-      "agreed" : true
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "경상북도 영주시" ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "지원 기준일 현재 본인이 영주시에 주민등록을 두고 있는 대학생"
+      },
+      "agreed" : false
     },
     "276506" : {
       "category" : "장학",
@@ -872,7 +1596,15 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "GROUP" ],
-        "evidence" : "북한이탈청소년 장학생 선발 안내"
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "GROUP" ],
+        "evidence" : ""
       },
       "second" : {
         "grades" : [ ],
@@ -880,7 +1612,15 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "GROUP" ],
-        "evidence" : "북한이탈청소년 장학생 선발 안내"
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "GROUP" ],
+        "evidence" : ""
       },
       "agreed" : true
     },
@@ -892,8 +1632,16 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ ],
-        "evidence" : ""
+        "blockers" : [ "OTHER" ],
+        "evidence" : "2.조사대상자:본교 재학생 및 휴학생"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "2.조사대상자:본교 재학생 및 휴학생"
       },
       "second" : {
         "grades" : [ ],
@@ -903,7 +1651,15 @@
         "blockers" : [ ],
         "evidence" : ""
       },
-      "agreed" : true
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "agreed" : false
     },
     "276597" : {
       "category" : "장학",
@@ -916,13 +1672,29 @@
         "blockers" : [ "OTHER" ],
         "evidence" : "(재)인천광역시 계양구 인재양성장학교육재단에서 다양한 분야의 우수한 청소년과 학생을 대상으로 장학생을 선발하오니"
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "인천광역시 계양구" ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "(재)인천광역시 계양구 인재양성장학교육재단에서 다양한 분야의 우수한 청소년과 학생을 대상으로 장학생을 선발하오니"
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ "인천광역시 계양구" ],
         "blockers" : [ "OTHER" ],
-        "evidence" : "(재)인천광역시 계양구 인재양성장학교육재단에서 다양한 분야의 우수한 청소년과 학생을 대상으로 장학생을 선발하오니, 지원을 희망하는 학생은 기한 내 신청하시기 바랍니다."
+        "evidence" : "(재)인천광역시 계양구 인재양성장학교육재단에서 다양한 분야의 우수한 청소년과 학생을 대상으로 장학생을 선발하오니"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "인천광역시 계양구" ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "(재)인천광역시 계양구 인재양성장학교육재단에서 다양한 분야의 우수한 청소년과 학생을 대상으로 장학생을 선발하오니"
       },
       "agreed" : true
     },
@@ -935,11 +1707,27 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "GROUP" ],
-        "evidence" : "선원가족장학생 선발 안내"
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "GROUP" ],
+        "evidence" : ""
       },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "GROUP" ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "GROUP" ],
@@ -956,11 +1744,27 @@
         "depts" : [ ],
         "regions" : [ "전라남도" ],
         "blockers" : [ "OTHER" ],
-        "evidence" : "장학금별 신청자격을 충족하는 국내 대학 재학생"
+        "evidence" : "지원대상: 장학금별 신청자격을 충족하는 국내 대학 재학생"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "전라남도" ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "지원대상: 장학금별 신청자격을 충족하는 국내 대학 재학생"
       },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ "전라남도" ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "지원대상: 장학금별 신청자격을 충족하는 국내 대학 재학생"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ "전라남도" ],
         "blockers" : [ "OTHER" ],
@@ -977,7 +1781,15 @@
         "depts" : [ ],
         "regions" : [ "전라남도 순천시" ],
         "blockers" : [ "OTHER" ],
-        "evidence" : "(재)순천시인재육성장학회에서 2026년 장학생을 모집하오니, 해당 학생은 기한 내 신청하시기 바랍니다."
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "전라남도 순천시" ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
       },
       "second" : {
         "grades" : [ ],
@@ -985,7 +1797,15 @@
         "depts" : [ ],
         "regions" : [ "전라남도 순천시" ],
         "blockers" : [ "OTHER" ],
-        "evidence" : "(재)순천시인재육성장학회에서 2026년 장학생을 모집하오니, 해당 학생은 기한 내 신청하시기 바랍니다."
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "전라남도 순천시" ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
       },
       "agreed" : true
     },
@@ -997,15 +1817,31 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ "경상남도 양산시" ],
-        "blockers" : [ "INCOME" ],
-        "evidence" : "신청일 기준 본인 또는 부모 중 한 명이 1년 이상 양산시에 주민등록이 되어 있는 자"
+        "blockers" : [ "OTHER" ],
+        "evidence" : "한국장학재단으로부터 학자금 대출을 받은 대학교 재학(휴학)생"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "경상남도 양산시" ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "한국장학재단으로부터 학자금 대출을 받은 대학교 재학(휴학)생"
       },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ "경상남도 양산시" ],
-        "blockers" : [ "INCOME", "OTHER" ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "한국장학재단으로부터 학자금 대출을 받은 대학교 재학(휴학)생"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "경상남도 양산시" ],
+        "blockers" : [ "OTHER" ],
         "evidence" : "한국장학재단으로부터 학자금 대출을 받은 대학교 재학(휴학)생"
       },
       "agreed" : true
@@ -1021,9 +1857,25 @@
         "blockers" : [ "INCOME", "GPA" ],
         "evidence" : "신청자격(일반장학생): 다음 요건을 모두 충족하는 대학생 - 공고일 현재 은평구에 2년 이상 거주 - 학자금 지원구간 8구간 이내 - 직전 학기 성적 3.0 이상"
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "서울특별시 은평구" ],
+        "blockers" : [ "INCOME", "GPA" ],
+        "evidence" : "신청자격(일반장학생): 다음 요건을 모두 충족하는 대학생 - 공고일 현재 은평구에 2년 이상 거주 - 학자금 지원구간 8구간 이내 - 직전 학기 성적 3.0 이상"
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ "서울특별시 은평구" ],
+        "blockers" : [ "INCOME", "GPA" ],
+        "evidence" : "신청자격(일반장학생): 다음 요건을 모두 충족하는 대학생 - 공고일 현재 은평구에 2년 이상 거주 - 학자금 지원구간 8구간 이내 - 직전 학기 성적 3.0 이상"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ "서울특별시 은평구" ],
         "blockers" : [ "INCOME", "GPA" ],
@@ -1042,9 +1894,25 @@
         "blockers" : [ ],
         "evidence" : ""
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ ],
@@ -1061,7 +1929,19 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "INCOME", "GPA" ],
-        "evidence" : "직전 학기 12학점 이상 이수 및 성적 70점(평점 1.88/4.5) 이상"
+        "evidence" : "2026학년도 2학기 학자금 지원구간 산정 완료"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "WITHIN_REGULAR",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME", "GPA" ],
+        "evidence" : "2026학년도 2학기 학자금 지원구간 산정 완료"
       },
       "second" : {
         "grades" : [ ],
@@ -1069,7 +1949,19 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "INCOME", "GPA" ],
-        "evidence" : "직전 학기 12학점 이상 이수 및 성적 70점(평점 1.88/4.5) 이상"
+        "evidence" : "직전 학기 12학점 이상 이수 및 성적 70점(평점 1.88/4.5) 이상 - 학자금 지원구간 9구간 이하"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "WITHIN_REGULAR",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME", "GPA" ],
+        "evidence" : "직전 학기 12학점 이상 이수 및 성적 70점(평점 1.88/4.5) 이상 - 학자금 지원구간 9구간 이하"
       },
       "agreed" : true
     },
@@ -1082,11 +1974,27 @@
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "COURSE" ],
-        "evidence" : "[Career DESIGN 수강생 대상] 신입생 전공탐색 특화 교과 <Career DESIGN>의 9주차 특강 <Career Master Class>를 시행합니다."
+        "evidence" : "<Career DESIGN> 과목을 수강하고 있는 학생들은 아래의 사항을 숙지하여 특강에 참여하기 바랍니다."
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "COURSE" ],
+        "evidence" : "<Career DESIGN> 과목을 수강하고 있는 학생들은 아래의 사항을 숙지하여 특강에 참여하기 바랍니다."
       },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "COURSE" ],
+        "evidence" : "<Career DESIGN> 과목을 수강하고 있는 학생들은 아래의 사항을 숙지하여 특강에 참여하기 바랍니다."
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "COURSE" ],
@@ -1105,13 +2013,37 @@
         "blockers" : [ "INCOME", "GPA" ],
         "evidence" : "1. 지원 자격: 2027년 3월 기준, 4년제 대학 2학년 1학기 진학 예정자 중 성적 및 소득 요건을 충족하는 대한민국 국적 학부생"
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "ENTERING",
+          "value" : 2,
+          "half" : 1
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME", "GPA" ],
+        "evidence" : "1. 지원 자격: 2027년 3월 기준, 4년제 대학 2학년 1학기 진학 예정자 중 성적 및 소득 요건을 충족하는 대한민국 국적 학부생"
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ 2 ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "INCOME", "GPA" ],
-        "evidence" : "1. 지원 자격: 2027년 3월 기준, 4년제 대학 2학년 1학기 진학 예정자 중 성적 및 소득 요건을 충족하는 대한민국 국적 학부생"
+        "evidence" : "2027년 3월 기준, 4년제 대학 2학년 1학기 진학 예정자 중 성적 및 소득 요건을 충족하는 대한민국 국적 학부생"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "ENTERING",
+          "value" : 2,
+          "half" : 1
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME", "GPA" ],
+        "evidence" : "2027년 3월 기준, 4년제 대학 2학년 1학기 진학 예정자 중 성적 및 소득 요건을 충족하는 대한민국 국적 학부생"
       },
       "agreed" : true
     },
@@ -1119,20 +2051,52 @@
       "category" : "학사",
       "title" : "[학사행정팀] 2026학년도 겨울계절학기 서울 및 경인지역 대학교 학점교류 안내",
       "first" : {
-        "grades" : [ 2, 3, 4 ],
-        "semesters" : [ ],
+        "grades" : [ ],
+        "semesters" : [ 3, 4, 5, 6, 7 ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "OTHER" ],
-        "evidence" : "1. 학점교류 신청 자격 - 1학년 이상 수료한 학생 - 학칙에 의해 징계사실이 없는 학생 - 마지막 학기가 아닌 학생"
+        "blockers" : [ "GPA", "OTHER" ],
+        "evidence" : "일부대학은 평점평균 3.0이상만 지원가능(트리니티 신청화면에서 확인 가능)"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "COMPLETED_GRADES_AT_LEAST",
+          "value" : 1,
+          "half" : 0
+        }, {
+          "kind" : "NOT_FINAL_SEMESTER",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "GPA", "OTHER" ],
+        "evidence" : "일부대학은 평점평균 3.0이상만 지원가능(트리니티 신청화면에서 확인 가능)"
       },
       "second" : {
-        "grades" : [ 2, 3, 4 ],
-        "semesters" : [ ],
+        "grades" : [ ],
+        "semesters" : [ 3, 4, 5, 6, 7 ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "OTHER" ],
-        "evidence" : "1. 학점교류 신청 자격 - 1학년 이상 수료한 학생 - 학칙에 의해 징계사실이 없는 학생 - 마지막 학기가 아닌 학생"
+        "blockers" : [ "INCOME", "GPA", "OTHER" ],
+        "evidence" : "일부대학은 평점평균 3.0이상만 지원가능(트리니티 신청화면에서 확인 가능)"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "COMPLETED_GRADES_AT_LEAST",
+          "value" : 1,
+          "half" : 0
+        }, {
+          "kind" : "NOT_FINAL_SEMESTER",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME", "GPA", "OTHER" ],
+        "evidence" : "일부대학은 평점평균 3.0이상만 지원가능(트리니티 신청화면에서 확인 가능)"
       },
       "agreed" : true
     },
@@ -1147,15 +2111,31 @@
         "blockers" : [ ],
         "evidence" : ""
       },
-      "second" : {
+      "firstReading" : {
         "grades" : [ ],
-        "semesters" : [ ],
+        "semesterRules" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ ],
         "evidence" : ""
       },
-      "agreed" : true
+      "second" : {
+        "grades" : [ ],
+        "semesters" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : ""
+      },
+      "agreed" : false
     },
     "276848" : {
       "category" : "장학",
@@ -1165,7 +2145,15 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ "경상남도 거창군" ],
-        "blockers" : [ ],
+        "blockers" : [ "GROUP" ],
+        "evidence" : ""
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "경상남도 거창군" ],
+        "blockers" : [ "GROUP" ],
         "evidence" : ""
       },
       "second" : {
@@ -1173,17 +2161,41 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ "경상남도 거창군" ],
-        "blockers" : [ ],
+        "blockers" : [ "INCOME" ],
         "evidence" : ""
       },
-      "agreed" : true
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ "경상남도 거창군" ],
+        "blockers" : [ "INCOME" ],
+        "evidence" : ""
+      },
+      "agreed" : false
     },
     "276928" : {
       "category" : "학사",
       "title" : "[융합전공학부] 2026-2학기 학생설계전공 신규·변경·포기 신청 안내",
       "first" : {
         "grades" : [ ],
-        "semesters" : [ ],
+        "semesters" : [ 3, 4, 5, 6, 7, 8, 9 ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "1. 신청대상 : 2학기 이상 재학생 (단, 8학기(마지막 학기) 재학생의 경우 추가학기 재학 시 가능)"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "COMPLETED_SEMESTERS_AT_LEAST",
+          "value" : 2,
+          "half" : 0
+        }, {
+          "kind" : "ENROLLED_AT_LEAST",
+          "value" : 2,
+          "half" : 0
+        } ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
@@ -1191,7 +2203,23 @@
       },
       "second" : {
         "grades" : [ ],
-        "semesters" : [ ],
+        "semesters" : [ 3, 4, 5, 6, 7, 8, 9 ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "1. 신청대상 : 2학기 이상 재학생 (단, 8학기(마지막 학기) 재학생의 경우 추가학기 재학 시 가능)"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "COMPLETED_SEMESTERS_AT_LEAST",
+          "value" : 2,
+          "half" : 0
+        }, {
+          "kind" : "ENROLLED_AT_LEAST",
+          "value" : 2,
+          "half" : 0
+        } ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
@@ -1207,7 +2235,23 @@
         "semesters" : [ 2, 3, 4, 5, 6, 7 ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "INCOME", "GPA", "OTHER" ],
+        "blockers" : [ "INCOME", "GPA" ],
+        "evidence" : "2026년 2학기 한국장학재단 학자금 지원구간 3구간 이내인 자"
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "COMPLETED_SEMESTERS_AT_LEAST",
+          "value" : 1,
+          "half" : 0
+        }, {
+          "kind" : "REMAINING_AT_LEAST",
+          "value" : 2,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME", "GPA" ],
         "evidence" : "2026년 2학기 한국장학재단 학자금 지원구간 3구간 이내인 자"
       },
       "second" : {
@@ -1215,7 +2259,23 @@
         "semesters" : [ 2, 3, 4, 5, 6, 7 ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ "INCOME", "GPA", "OTHER" ],
+        "blockers" : [ "INCOME", "GPA" ],
+        "evidence" : "2026년 2학기 한국장학재단 학자금 지원구간 3구간 이내인 자"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "COMPLETED_SEMESTERS_AT_LEAST",
+          "value" : 1,
+          "half" : 0
+        }, {
+          "kind" : "REMAINING_AT_LEAST",
+          "value" : 2,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME", "GPA" ],
         "evidence" : "2026년 2학기 한국장학재단 학자금 지원구간 3구간 이내인 자"
       },
       "agreed" : true
@@ -1231,13 +2291,49 @@
         "blockers" : [ "GPA" ],
         "evidence" : "1) 본교에 재학중인 학부생 중 4학기 이상 이수한 자(단, 졸업예정자 혹은 8학기 이상 재학중인 자는 지원 불가)"
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "COMPLETED_SEMESTERS_AT_LEAST",
+          "value" : 4,
+          "half" : 0
+        }, {
+          "kind" : "NOT_FINAL_SEMESTER",
+          "value" : 0,
+          "half" : 0
+        }, {
+          "kind" : "NOT_ENROLLED_AT_LEAST",
+          "value" : 8,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "GPA" ],
+        "evidence" : "1) 본교에 재학중인 학부생 중 4학기 이상 이수한 자(단, 졸업예정자 혹은 8학기 이상 재학중인 자는 지원 불가)"
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ 5, 6, 7 ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "GPA" ],
-        "evidence" : "1) 본교에 재학중인 학부생 중 4학기 이상 이수한 자(단, 졸업예정자 혹은 8학기 이상 재학중인 자는 지원 불가)"
+        "evidence" : "지원하기 이전 학기까지 성적의 평점평균이 3.0 이상인 자"
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ {
+          "kind" : "COMPLETED_SEMESTERS_AT_LEAST",
+          "value" : 4,
+          "half" : 0
+        }, {
+          "kind" : "NOT_FINAL_SEMESTER",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "GPA" ],
+        "evidence" : "지원하기 이전 학기까지 성적의 평점평균이 3.0 이상인 자"
       },
       "agreed" : true
     },
@@ -1249,7 +2345,15 @@
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
-        "blockers" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "2026-2학기 일반휴학원 제출은 수업일수 1/2선까지만 가능함을 알려드리오니 참고하시기 바랍니다."
+      },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
         "evidence" : "2026-2학기 일반휴학원 제출은 수업일수 1/2선까지만 가능함을 알려드리오니 참고하시기 바랍니다."
       },
       "second" : {
@@ -1260,7 +2364,15 @@
         "blockers" : [ "OTHER" ],
         "evidence" : "2026-2학기 일반휴학원 제출은 수업일수 1/2선까지만 가능함을 알려드리오니 참고하시기 바랍니다."
       },
-      "agreed" : false
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "2026-2학기 일반휴학원 제출은 수업일수 1/2선까지만 가능함을 알려드리오니 참고하시기 바랍니다."
+      },
+      "agreed" : true
     },
     "277004" : {
       "category" : "장학",
@@ -1273,13 +2385,29 @@
         "blockers" : [ "INCOME" ],
         "evidence" : ""
       },
+      "firstReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME" ],
+        "evidence" : ""
+      },
       "second" : {
         "grades" : [ ],
         "semesters" : [ ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "INCOME" ],
-        "evidence" : "푸른등대 기부장학금은 소득 분위 등 경제 조건을 충족하는 학생을 대상으로 합니다."
+        "evidence" : ""
+      },
+      "secondReading" : {
+        "grades" : [ ],
+        "semesterRules" : [ ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "INCOME" ],
+        "evidence" : ""
       },
       "agreed" : true
     },
@@ -1287,8 +2415,24 @@
       "category" : "학사",
       "title" : "2026-겨울학기 가톨릭계 대학 학점교류 안내(서강대, 가톨릭관동대, 대구가톨릭대, 부산가톨릭대)",
       "first" : {
+        "grades" : [ ],
+        "semesters" : [ 3, 4, 5, 6, 7 ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "1) 1학년 이상 수료한 학생"
+      },
+      "firstReading" : {
         "grades" : [ 2, 3, 4 ],
-        "semesters" : [ ],
+        "semesterRules" : [ {
+          "kind" : "COMPLETED_GRADES_AT_LEAST",
+          "value" : 1,
+          "half" : 0
+        }, {
+          "kind" : "NOT_FINAL_SEMESTER",
+          "value" : 0,
+          "half" : 0
+        } ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
@@ -1296,17 +2440,33 @@
       },
       "second" : {
         "grades" : [ ],
-        "semesters" : [ ],
+        "semesters" : [ 3, 4, 5, 6, 7 ],
         "depts" : [ ],
         "regions" : [ ],
         "blockers" : [ "OTHER" ],
-        "evidence" : ""
+        "evidence" : "지원자격 1) 1학년 이상 수료한 학생"
       },
-      "agreed" : false
+      "secondReading" : {
+        "grades" : [ 2, 3, 4 ],
+        "semesterRules" : [ {
+          "kind" : "COMPLETED_GRADES_AT_LEAST",
+          "value" : 1,
+          "half" : 0
+        }, {
+          "kind" : "NOT_FINAL_SEMESTER",
+          "value" : 0,
+          "half" : 0
+        } ],
+        "depts" : [ ],
+        "regions" : [ ],
+        "blockers" : [ "OTHER" ],
+        "evidence" : "지원자격 1) 1학년 이상 수료한 학생"
+      },
+      "agreed" : true
     }
   },
   "usage" : {
-    "inputTokens" : 502274,
-    "outputTokens" : 9989
+    "inputTokens" : 581758,
+    "outputTokens" : 10648
   }
 }

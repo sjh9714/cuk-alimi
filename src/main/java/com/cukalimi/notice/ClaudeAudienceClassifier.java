@@ -12,7 +12,7 @@ import com.anthropic.models.messages.StructuredMessage;
 import com.anthropic.models.messages.StructuredMessageCreateParams;
 import com.anthropic.models.messages.ThinkingConfigDisabled;
 import com.cukalimi.config.AppProperties;
-import com.cukalimi.feed.AudienceFacts;
+import com.cukalimi.feed.AudienceReading;
 import com.cukalimi.feed.Regions;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,18 +29,23 @@ public class ClaudeAudienceClassifier implements AudienceClassifier {
             너는 가톨릭대학교 공지에서 지원 대상 조건만 옮겨 적는다. 공지에 글자로 적힌 조건만 적고, 추측하거나 보태지 마라.
 
             grades
-            - "2~4학년"은 [2,3,4], "2학년 이상"은 [2,3,4], "3학년"은 [3]이다.
-            - 졸업예정자·졸업대상자는 [4], 신입생은 [1]이다. "졸업예정자는 지원 불가"처럼 빼라고 적혀 있으면 4를 뺀다.
-            - "1학년 이상 수료"는 2학년부터다.
+            - 학년으로 적힌 조건만 적는다. "2~4학년"은 [2,3,4], "2학년 이상"은 [2,3,4], "3학년"은 [3]이다.
+            - 졸업예정자·졸업대상자는 [4], 신입생은 [1], "1학년 이상 수료"는 [2,3,4]다.
             - "재학생"만 있거나 학년 말이 없거나 전 학년이 해당하면 빈 목록이다.
-            - 학기로 적힌 조건이 하나라도 있으면 grades는 비우고 semesters에 적는다.
 
-            semesters
-            - 지금 몇 번째 학기인 학생이 지원할 수 있는지 1~8로 적는다. 9는 초과학기(9번째 학기 이상)다.
-            - "4학기 이상 이수"는 5번째 학기부터, "8학기 이상 재학 중인 자는 불가"는 7번째 학기까지다. 둘 다 있으면 [5,6,7]이다.
-            - "2학년 1학기 진학 예정자"는 지금 2번째 학기라 [2]다. "마지막 학기 지원 불가"는 8을 뺀다.
-            - 학년 조건과 학기 조건이 함께 있으면 학년도 학기로 바꿔 함께 따진다. "1학년 이상 수료, 마지막 학기 불가"는 [3,4,5,6,7]이다.
-            - "정규학기(8학기) 이내"처럼 거의 모든 학생이 해당하면 빈 목록이다.
+            semesterRules
+            - 학기에 관한 문장을 하나씩 아래 종류와 숫자로 옮긴다. 계산하지 말고 문장에 적힌 숫자를 그대로 쓴다.
+            - 지원 자격을 정하는 문장만 옮긴다. 근로 기간, 지급 시기처럼 자격이 아닌 문장에 나온 학기·졸업 이야기는 옮기지 않는다.
+            - "이수", "수료"는 이미 마친 학기 수이고 "재학", "등록"은 지금 다니는 학기다. 둘을 섞지 않는다.
+            - COMPLETED_SEMESTERS_AT_LEAST "N학기 이상 이수(수료)한 자" value=N
+            - ENROLLED_AT_LEAST "N학기 이상 재학생", "N학기 이상 등록한 자" value=N
+            - NOT_ENROLLED_AT_LEAST "N학기 이상 재학 중인 자는 지원 불가" value=N
+            - NOT_FINAL_SEMESTER "마지막 학기(졸업 학기) 학생은 지원 불가", "졸업예정자는 지원 불가" value=0
+            - ENTERING "g학년 h학기 진학 예정자" value=g, half=h
+            - WITHIN_REGULAR "정규학기(8학기) 이내 재학생" value=0
+            - REMAINING_AT_LEAST "졸업까지 N개 학기 이상 남은 자" value=N
+            - COMPLETED_GRADES_AT_LEAST "N학년 이상 수료"가 학기 문장과 함께 있을 때 value=N. 이때도 grades에 따로 적지 않는다.
+            - half는 ENTERING일 때만 쓰고 나머지는 0이다. 학기 문장이 없으면 빈 목록이다.
 
             depts
             - 특정 학과·학부·전공·단과대학만 지원할 수 있을 때 그 이름을 공지에 적힌 그대로 적는다. 우대만 하면 적지 않는다.
@@ -106,7 +111,7 @@ public class ClaudeAudienceClassifier implements AudienceClassifier {
 
     @Override
     public Result classify(String title, String text) {
-        StructuredMessage<AudienceFacts> message;
+        StructuredMessage<AudienceReading> message;
         try {
             message = client().messages().create(params(title, text));
         } catch (com.anthropic.errors.BadRequestException | com.anthropic.errors.UnprocessableEntityException e) {
@@ -118,14 +123,14 @@ public class ClaudeAudienceClassifier implements AudienceClassifier {
         if (!StopReason.END_TURN.equals(stop)) {
             throw new Failed("대상 읽기가 끝까지 가지 않았습니다: " + stop, in, out, null);
         }
-        AudienceFacts facts;
+        AudienceReading reading;
         try {
-            facts = message.content().stream().flatMap(b -> b.text().stream()).map(t -> t.text()).findFirst()
+            reading = message.content().stream().flatMap(b -> b.text().stream()).map(t -> t.text()).findFirst()
                     .orElseThrow(() -> new IllegalStateException("응답에 글이 없습니다"));
         } catch (RuntimeException e) {
             throw new Failed("대상 읽기 응답을 읽지 못했습니다: " + e.getMessage(), in, out, e);
         }
-        return new Result(facts.normalized(), model, in, out);
+        return new Result(reading.toFacts(), model, in, out, reading);
     }
 
     private static String userText(String title, String text) {
@@ -136,7 +141,7 @@ public class ClaudeAudienceClassifier implements AudienceClassifier {
         return "제목: " + title + "\n\n본문:\n" + body;
     }
 
-    StructuredMessageCreateParams<AudienceFacts> params(String title, String text) {
+    StructuredMessageCreateParams<AudienceReading> params(String title, String text) {
         MessageCreateParams.Builder b = MessageCreateParams.builder()
                 .model(model)
                 .maxTokens(2000L)
@@ -145,8 +150,8 @@ public class ClaudeAudienceClassifier implements AudienceClassifier {
         if (!model.startsWith("claude-opus")) {
             b.thinking(ThinkingConfigDisabled.builder().build());
         }
-        StructuredOutputConfig.Builder<AudienceFacts> config = StructuredOutputConfig.<AudienceFacts>builder()
-                .format(AudienceFacts.class, JsonSchemaLocalValidation.YES);
+        StructuredOutputConfig.Builder<AudienceReading> config = StructuredOutputConfig.<AudienceReading>builder()
+                .format(AudienceReading.class, JsonSchemaLocalValidation.YES);
         if (effort != null) {
             config.effort(effort);
         }

@@ -186,6 +186,8 @@ export type AudienceScore = {
 
 export type AudienceBacktest = {
   measuredOn: string;
+  /** holdout이면 지시문을 고칠 때 보지 않은 시험용 공지로 잰 값이다. */
+  set: "holdout" | "dev";
   notices: number;
   students: number;
   goldModel: string;

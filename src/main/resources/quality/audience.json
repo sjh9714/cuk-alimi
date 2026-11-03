@@ -1,26 +1,53 @@
 {
   "measuredOn" : "2026-11-03",
-  "notices" : 61,
-  "students" : 756,
+  "notices" : 69,
+  "students" : 2700,
   "humanChecked" : 0,
   "runModel" : "claude-haiku-5-5",
   "goldModel" : "Claude Opus 5.5",
   "runSource" : "운영과 같은 API 호출(구조화 출력)로 두 번씩 읽혔어요",
-  "agreed" : 51,
+  "agreed" : 56,
   "regex" : {
-    "precision" : 0.953,
-    "recall" : 0.414,
-    "expected" : 4375,
-    "predicted" : 1902,
-    "hit" : 1813,
+    "precision" : 0.719,
+    "recall" : 0.241,
+    "expected" : 16250,
+    "predicted" : 5460,
+    "hit" : 3930,
     "exactNotices" : 51
   },
   "ai" : {
-    "precision" : 0.66,
-    "recall" : 0.617,
-    "expected" : 4375,
-    "predicted" : 4092,
-    "hit" : 2701,
-    "exactNotices" : 49
+    "precision" : 0.914,
+    "recall" : 0.574,
+    "expected" : 16250,
+    "predicted" : 10200,
+    "hit" : 9330,
+    "exactNotices" : 55
+  },
+  "set" : "holdout",
+  "dev" : {
+    "measuredOn" : "2026-11-03",
+    "notices" : 61,
+    "students" : 756,
+    "humanChecked" : 0,
+    "runModel" : "claude-haiku-5-5",
+    "goldModel" : "Claude Opus 5.5",
+    "runSource" : "운영과 같은 API 호출(구조화 출력)로 두 번씩 읽혔어요",
+    "agreed" : 51,
+    "regex" : {
+      "precision" : 0.953,
+      "recall" : 0.414,
+      "expected" : 4375,
+      "predicted" : 1902,
+      "hit" : 1813,
+      "exactNotices" : 51
+    },
+    "ai" : {
+      "precision" : 0.944,
+      "recall" : 0.828,
+      "expected" : 4375,
+      "predicted" : 3840,
+      "hit" : 3625,
+      "exactNotices" : 53
+    }
   }
 }

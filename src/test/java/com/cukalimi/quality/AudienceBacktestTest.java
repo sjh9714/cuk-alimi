@@ -54,9 +54,32 @@ class AudienceBacktestTest {
     @Test
     void highlightDoesNotRegress() throws Exception {
         assumeTrue(Files.exists(AudienceLabelRun.GOLD) && Files.exists(AudienceLabelRun.HAIKU_OUT), "정답지와 Haiku 기록이 아직 없다");
-        JsonNode notices = JSON.readTree(Fixtures.read("notices-2026-10-26.json"));
-        JsonNode gold = JSON.readTree(AudienceLabelRun.GOLD.toFile());
-        JsonNode haiku = JSON.readTree(AudienceLabelRun.HAIKU_OUT.toFile());
+        List<ObjectNode> misses = new ArrayList<>();
+        Measured dev = measure("/fixtures/notices-2026-10-26.json", AudienceLabelRun.GOLD, AudienceLabelRun.HAIKU_OUT, misses);
+        // 지시문을 고칠 때 보지 않은 시험용 셋이 있으면 그 결과를 앞에 싣는다.
+        boolean hasHoldout = Files.exists(AudienceLabelRun.HOLDOUT_GOLD) && Files.exists(AudienceLabelRun.HOLDOUT_HAIKU);
+        Measured head = hasHoldout ? measure(AudienceLabelRun.HOLDOUT_NOTICES, AudienceLabelRun.HOLDOUT_GOLD,
+                AudienceLabelRun.HOLDOUT_HAIKU, misses) : dev;
+        ObjectNode summary = head.summary().deepCopy();
+        summary.put("set", hasHoldout ? "holdout" : "dev");
+        if (hasHoldout) {
+            summary.set("dev", dev.summary());
+        }
+        writeReport(summary, misses);
+        checkPublishedSummary(summary);
+
+        JsonNode baseline = JSON.readTree(Fixtures.read("gold/audience-baseline.json"));
+        assertThat(head.ai().precision()).as("AI 형광펜 정밀도").isGreaterThanOrEqualTo(baseline.get("precision").asDouble());
+        assertThat(head.ai().recall()).as("AI 형광펜 재현율").isGreaterThanOrEqualTo(baseline.get("recall").asDouble());
+    }
+
+    record Measured(ObjectNode summary, Score ai) {
+    }
+
+    private static Measured measure(String noticesResource, Path goldPath, Path haikuPath, List<ObjectNode> misses) throws Exception {
+        JsonNode notices = JSON.readTree(AudienceBacktestTest.class.getResourceAsStream(noticesResource));
+        JsonNode gold = JSON.readTree(goldPath.toFile());
+        JsonNode haiku = JSON.readTree(haikuPath.toFile());
 
         record Case(String article, Audience regex, Audience ai, Audience gold, boolean agreed) {
         }
@@ -80,7 +103,7 @@ class AudienceBacktestTest {
             boolean agreed = first != null && second != null && first.sameConditions(second);
             cases.add(new Case(article, regex, agreed ? regex.withAi(first) : regex, regex.withAi(goldFacts), agreed));
             depts.addAll(goldFacts.depts());
-            goldFacts.regions().stream().map(Regions::parse).flatMap(java.util.Optional::stream).forEach(homes::add);
+            goldFacts.regions().stream().map(Regions::parseLoose).flatMap(java.util.Optional::stream).forEach(homes::add);
             homes.addAll(regex.regions());
         }
         depts.add(OTHER_DEPT);
@@ -98,7 +121,6 @@ class AudienceBacktestTest {
 
         Score regexScore = new Score();
         Score aiScore = new Score();
-        List<ObjectNode> misses = new ArrayList<>();
         for (Case c : cases) {
             boolean regexExact = true;
             boolean aiExact = true;
@@ -131,12 +153,7 @@ class AudienceBacktestTest {
         summary.put("agreed", agreed);
         summary.set("regex", score(regexScore));
         summary.set("ai", score(aiScore));
-        writeReport(summary, misses);
-        checkPublishedSummary(summary);
-
-        JsonNode baseline = JSON.readTree(Fixtures.read("gold/audience-baseline.json"));
-        assertThat(aiScore.precision()).as("AI 형광펜 정밀도").isGreaterThanOrEqualTo(baseline.get("precision").asDouble());
-        assertThat(aiScore.recall()).as("AI 형광펜 재현율").isGreaterThanOrEqualTo(baseline.get("recall").asDouble());
+        return new Measured(summary, aiScore);
     }
 
     private static boolean tally(Score s, boolean expected, boolean predicted) {
@@ -176,6 +193,12 @@ class AudienceBacktestTest {
         ObjectNode current = now.deepCopy();
         before.remove("measuredOn");
         current.remove("measuredOn");
+        if (before.get("dev") instanceof ObjectNode d) {
+            d.remove("measuredOn");
+        }
+        if (current.get("dev") instanceof ObjectNode d) {
+            d.remove("measuredOn");
+        }
         assertThat(Objects.equals(before, current)).as("공개 형광펜 요약이 이번 결과와 다르다. QUALITY_UPDATE=1로 다시 쓴다").isTrue();
     }
 }
