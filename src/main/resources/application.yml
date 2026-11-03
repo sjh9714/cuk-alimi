@@ -70,3 +70,9 @@ app:
     model: claude-haiku-5-5
     daily-limit: ${TRANSCRIBE_DAILY_LIMIT:40}
     cron: "0 20 * * * *"
+  # 공지 글에서 대상 조건(학년·학과·지역)을 AI가 읽는다 (ADR 013). 그림 받아 적기(20분) 뒤에 돌아 받아 적은 글도 함께 읽는다.
+  audience-read:
+    enabled: ${AUDIENCE_READ_ENABLED:true}
+    model: claude-haiku-5-5
+    daily-limit: ${AUDIENCE_READ_DAILY_LIMIT:60}
+    cron: "0 35 * * * *"

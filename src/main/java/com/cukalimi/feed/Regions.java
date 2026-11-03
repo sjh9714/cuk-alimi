@@ -75,6 +75,31 @@ public final class Regions {
         return Optional.empty();
     }
 
+    /**
+     * AI가 적은 지역처럼 형식이 덜 맞는 값. 정식 이름이 아니면 시·도 줄임말("전남", "서울 은평구")과
+     * 시·도 없이 적은 시·군·구("영주시")를 받는다. 같은 이름의 시·군·구가 여러 시·도에 있으면(중구) 맞추지 않는다.
+     */
+    public static Optional<Region> parseLoose(String value) {
+        Optional<Region> exact = parse(value);
+        if (exact.isPresent() || value == null || value.isBlank()) {
+            return exact;
+        }
+        String[] parts = value.trim().split("\\s+", 2);
+        for (Sido s : ALL) {
+            if (s.shortName() != null && s.shortName().equals(parts[0])) {
+                return parse(parts.length == 1 ? s.name() : s.name() + " " + parts[1]);
+            }
+        }
+        if (parts.length == 1) {
+            List<Region> hits = ALL.stream().filter(s -> s.sigungu().contains(parts[0]))
+                    .map(s -> new Region(s.name(), parts[0])).toList();
+            if (hits.size() == 1) {
+                return Optional.of(hits.get(0));
+            }
+        }
+        return Optional.empty();
+    }
+
     /** 공지 제목에서 지역 조건을 찾는다. 같은 이름의 구가 여러 시·도에 있으면(중구, 고성군) 후보를 모두 돌려준다. */
     public static List<Region> inTitle(String title) {
         Set<String> sidoHits = new LinkedHashSet<>();

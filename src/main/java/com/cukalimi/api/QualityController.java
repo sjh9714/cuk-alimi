@@ -4,6 +4,7 @@ import com.cukalimi.domain.DateItem;
 import com.cukalimi.domain.DateItemRepository;
 import com.cukalimi.domain.DateReportRepository;
 import com.cukalimi.domain.ImageTranscriptRepository;
+import com.cukalimi.domain.NoticeRepository;
 import com.cukalimi.domain.ReviewEvent;
 import com.cukalimi.domain.ReviewEventRepository;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -38,12 +39,20 @@ public class QualityController {
     private final DateReportRepository reports;
     private final ObjectMapper json;
     private final JsonNode backtest;
+    private final NoticeRepository notices;
+    private final JsonNode audienceBacktest;
     private volatile Quality cached;
     private volatile long cachedAt;
     static final long CACHE_MILLIS = 60_000;
 
     public QualityController(ReviewEventRepository reviewEvents, ImageTranscriptRepository transcripts,
-            DateItemRepository dateItems, DateReportRepository reports, ObjectMapper json) {
+            DateItemRepository dateItems, DateReportRepository reports, NoticeRepository notices, ObjectMapper json) {
+        this.notices = notices;
+        try (InputStream in = getClass().getResourceAsStream("/quality/audience.json")) {
+            this.audienceBacktest = in == null ? null : json.readTree(in);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
         this.dateItems = dateItems;
         this.reports = reports;
         this.reviewEvents = reviewEvents;
@@ -72,7 +81,13 @@ public class QualityController {
     public record AutoPublish(long published, long waiting, long reports) {
     }
 
-    public record Quality(JsonNode backtest, Review review, Transcription transcription, AutoPublish autoPublish) {
+    /** AI 대상 읽기 운영 기록 (ADR 013). notices는 읽은 공지 수, agreed는 두 번 읽기가 같아 형광펜 판단에 쓰는 공지 수. */
+    public record AudienceRead(long notices, long agreed, long inputTokens, long outputTokens, double costUsd) {
+    }
+
+    /** audienceBacktest는 형광펜 백테스트의 마지막 결과다. 아직 측정하지 않았으면 null이다. */
+    public record Quality(JsonNode backtest, Review review, Transcription transcription, AutoPublish autoPublish,
+            JsonNode audienceBacktest, AudienceRead audienceRead) {
     }
 
     @GetMapping("/quality")
@@ -81,8 +96,11 @@ public class QualityController {
         long now = System.currentTimeMillis();
         Quality q = cached;
         if (q == null || now - cachedAt > CACHE_MILLIS) {
+            NoticeRepository.AudienceUsage u = notices.audienceUsage();
             q = new Quality(backtest, review(), transcription(), new AutoPublish(dateItems.countByStatus(DateItem.STATUS_AUTO_IMAGE),
-                    dateItems.countByStatus(DateItem.STATUS_CANDIDATE), reports.count()));
+                    dateItems.countByStatus(DateItem.STATUS_CANDIDATE), reports.count()), audienceBacktest,
+                    new AudienceRead(u.getNotices(), u.getAgreed(), u.getInputTokens(), u.getOutputTokens(),
+                            Math.round((u.getInputTokens() * PRICE_IN + u.getOutputTokens() * PRICE_OUT) / 1e6 * 10000) / 10000.0));
             cached = q;
             cachedAt = now;
         }

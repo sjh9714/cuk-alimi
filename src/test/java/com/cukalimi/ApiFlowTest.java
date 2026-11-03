@@ -14,6 +14,7 @@ import com.cukalimi.domain.LoginTokenRepository;
 import com.cukalimi.domain.ReviewEvent;
 import com.cukalimi.domain.ReviewEventRepository;
 import com.cukalimi.domain.Notice;
+import com.cukalimi.feed.Feed;
 import com.cukalimi.domain.NoticeRepository;
 import com.cukalimi.fetch.PageFetcher;
 import com.cukalimi.notice.ImageNoticeReader;
@@ -90,6 +91,12 @@ class ApiFlowTest {
             return new FakeTranscriber();
         }
 
+        @Bean
+        @Primary
+        FakeAudienceClassifier audienceClassifier() {
+            return new FakeAudienceClassifier();
+        }
+
         /** 픽스처 공지의 날짜(2026년 7월)가 아직 남아 있는 날로 고정한다. */
         @Bean
         @Primary
@@ -121,6 +128,10 @@ class ApiFlowTest {
     @Autowired
     FakeTranscriber transcriber;
     @Autowired
+    FakeAudienceClassifier audienceClassifier;
+    @Autowired
+    com.cukalimi.notice.AudienceReader audienceReader;
+    @Autowired
     ImageTranscriptRepository transcripts;
     @Autowired
     ReviewEventRepository reviewEvents;
@@ -142,6 +153,24 @@ class ApiFlowTest {
             int day = disagree && calls % 2 == 0 ? 30 : 31;
             String text = image[0] == 1 ? "<p>신청기간</p><p>2026. 7. 20.(월) ~ 7. " + day + ".(금)</p>" : "";
             return new Result(text, "fake", 10, 5);
+        }
+    }
+
+    /** 제목에 "AI 대상"이 있으면 3학년 컴퓨터정보공학부 조건을, "어긋남"이 있으면 읽을 때마다 다른 학년을 돌려준다. */
+    static class FakeAudienceClassifier implements com.cukalimi.notice.AudienceClassifier {
+        int calls;
+
+        @Override
+        public boolean enabled() {
+            return true;
+        }
+
+        @Override
+        public Result classify(String title, String text) {
+            calls++;
+            List<Integer> grades = title.contains("AI 대상") ? List.of(3) : title.contains("어긋남") ? List.of(calls % 2 + 1) : List.of();
+            List<String> depts = title.contains("AI 대상") ? List.of("컴퓨터정보공학부") : List.of();
+            return new Result(new com.cukalimi.feed.AudienceFacts(grades, depts, List.of(), List.of(), ""), "fake", 100, 20);
         }
     }
 
@@ -389,6 +418,54 @@ class ApiFlowTest {
         rest.exchange("/api/admin/notices/" + noticeId + "/reviewed", HttpMethod.POST, withCookie(cookie, null), Map.class);
         assertThat(undatedKeys()).doesNotContain("notice:" + noticeId);
         assertThat(itemIds()).contains(itemId);
+    }
+
+    @Test
+    void aiAudienceReadTwiceMarksMineWithReasonAndDisagreementFallsBack() {
+        String html = Fixtures.read("notice-273306.html");
+        store.save(new NoticeSummary(999101L, "학사", "", LocalDate.of(2026, 7, 1)), html.replace("273306", "999101")
+                .replace("[학사지원팀] 2026학년도 2학기 수강신청 일정 안내", "[학사지원팀] AI 대상 일정 안내"));
+        store.save(new NoticeSummary(999102L, "학사", "", LocalDate.of(2026, 7, 1)), html.replace("273306", "999102")
+                .replace("[학사지원팀] 2026학년도 2학기 수강신청 일정 안내", "[학사지원팀] 어긋남 일정 안내"));
+        Notice agreedNotice = notices.findByArticleNo(999101L).orElseThrow();
+        Notice disagreedNotice = notices.findByArticleNo(999102L).orElseThrow();
+
+        audienceReader.readPending(LocalDate.of(2026, 7, 10));
+        agreedNotice = notices.findById(agreedNotice.getId()).orElseThrow();
+        disagreedNotice = notices.findById(disagreedNotice.getId()).orElseThrow();
+        assertThat(agreedNotice.getAudienceAi()).contains("컴퓨터정보공학부");
+        assertThat(agreedNotice.getAudienceModel()).isEqualTo("fake");
+        // 두 번 읽은 학년이 다르면 저장하지 않는다. 읽은 시각은 남아 다시 부르지 않는다.
+        assertThat(disagreedNotice.getAudienceAi()).isNull();
+        assertThat(disagreedNotice.getAudienceModel()).isEqualTo("disagree:fake");
+        assertThat(disagreedNotice.getAudienceReadAt()).isNotNull();
+
+        int calls = audienceClassifier.calls;
+        audienceReader.readPending(LocalDate.of(2026, 7, 10));
+        assertThat(audienceClassifier.calls).isEqualTo(calls);
+
+        // 프로필이 맞는 학생에게는 칠한 이유가 붙고, 학년이 다른 학생에게는 붙지 않는다.
+        login("ai-third@catholic.ac.kr");
+        AppUser third = users.findByEmail("ai-third@catholic.ac.kr").orElseThrow();
+        third.updateProfile(2024, 3, "컴퓨터정보공학부", null, null, LocalDate.of(2026, 7, 10));
+        users.save(third);
+        String key = "notice:" + agreedNotice.getId();
+        Feed.Card card = feeds.build(third, LocalDate.of(2026, 7, 10)).view().sections().stream()
+                .flatMap(s -> s.cards().stream()).filter(c -> key.equals(c.key())).findFirst().orElseThrow();
+        assertThat(card.mine()).isTrue();
+        assertThat(card.mineReason()).isEqualTo("3학년·컴퓨터정보공학부 대상");
+
+        third.updateProfile(2024, 2, "컴퓨터정보공학부", null, null, LocalDate.of(2026, 7, 10));
+        users.save(third);
+        assertThat(feeds.build(third, LocalDate.of(2026, 7, 10)).view().sections().stream().flatMap(s -> s.cards().stream())
+                .filter(c -> key.equals(c.key())).findFirst().orElseThrow().mine()).isFalse();
+
+        // 학교가 공지를 고치면 대상도 다시 읽는다.
+        store.save(new NoticeSummary(999101L, "학사", "", LocalDate.of(2026, 7, 1)), html.replace("273306", "999101")
+                .replace("[학사지원팀] 2026학년도 2학기 수강신청 일정 안내", "[학사지원팀] AI 대상 일정 안내(정정)"));
+        assertThat(notices.findById(agreedNotice.getId()).orElseThrow().getAudienceReadAt()).isNull();
+        audienceReader.readPending(LocalDate.of(2026, 7, 10));
+        assertThat(audienceClassifier.calls).isEqualTo(calls + 2);
     }
 
     @Test

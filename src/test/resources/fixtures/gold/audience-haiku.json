@@ -1,0 +1,1421 @@
+{
+ "about": "운영 모델 측정 기록 (ADR 013). 2026-11-03 Claude Code 세션에서 Haiku 서브에이전트 네 개에 운영과 같은 지시문(ClaudeAudienceClassifier.PROMPT)을 주고 공지 62건을 두 번씩 따로 읽혔다(first, second). API 키가 없어 운영 호출(구조화 출력, 한 번에 공지 한 건)과 조건이 다르다. 키가 생기면 AUDIENCE_RUN=haiku로 다시 잰다.",
+ "source": "이 수치는 API 대신 Claude Code 세션의 Haiku에 같은 지시문을 줘 잰 근사치예요",
+ "notices": {
+  "141681": {
+   "category": "학사",
+   "title": "글로벌커뮤니케이션1,2 폐지에 따른 대체과목 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "COURSE",
+     "OTHER"
+    ],
+    "evidence": "적용대상: 2019학번 이전 학생 중 [글로벌커뮤니케이션1,2](기초교양필수-2학점) 미이수자"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "COURSE",
+     "OTHER"
+    ],
+    "evidence": "적용대상: 2019학번 이전 학생 중 [글로벌커뮤니케이션1,2](기초교양필수-2학점) 미이수자"
+   }
+  },
+  "270948": {
+   "category": "장학",
+   "title": "[학생지원팀] 외부장학 추천서 발급 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "외부 장학 기관에서 총장 명의 추천서를 요구하는 경우에 필요한 총장 명의 추천서 발급 절차를 아래와 같이 안내드립니다."
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   }
+  },
+  "274402": {
+   "category": "학사",
+   "title": "[학사행정팀] 2026-2학기 전공(전선, 전필) 교과목 변동사항 안내 <2026.09.04. 업데이트>",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   }
+  },
+  "274706": {
+   "category": "학사",
+   "title": "2026년 8월 졸업대상자 융복합트랙 이수여부 확인 기간 알림",
+   "first": {
+    "grades": [
+     4
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "대상 : 졸업 예정(확정)자 중 융복합트랙 이수자"
+   },
+   "second": {
+    "grades": [
+     4
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "대상 : 졸업 예정(확정)자 중 융복합트랙 이수자"
+   }
+  },
+  "274778": {
+   "category": "학사",
+   "title": "[학사행정팀] 본교 성적 백분위(백분률) 계산식 변경 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   }
+  },
+  "274824": {
+   "category": "학사",
+   "title": "[학사행정팀] 2025학년도 후기 학위수여식 및 포토 스팟 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "2025학년도 후기 학위수여식과 관련하여 다음과 같이 안내드립니다."
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   }
+  },
+  "274836": {
+   "category": "학사",
+   "title": "[학사행정팀] 2026학년도 2학기 학기 중 취업학생 출결 사항 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "2026학년도 2학기 학기 중 취업학생 출결 사항 안내"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": ""
+   }
+  },
+  "274894": {
+   "category": "학사",
+   "title": "[학사행정팀] 2026학년도 2학기 공결 신청 안내(학생용 공결 안내 및 가이드 탑재 / 공결 신청 시 필독)",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   }
+  },
+  "274963": {
+   "category": "학사",
+   "title": "[학사행정팀] 「취소–시간차 수강신청제」 재안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   }
+  },
+  "275023": {
+   "category": "학사",
+   "title": "[학부대학운영팀] 2026학년도 2학기 강의변경 (폐강 등) 2차 안내 [교양,전공기초]",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   }
+  },
+  "275026": {
+   "category": "학사",
+   "title": "[학사행정팀] 2027년 봄(2026학년도 전기) 조기졸업 신청 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "2027년 봄(2026학년도 전기) 조기졸업 신청 안내"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": ""
+   }
+  },
+  "275055": {
+   "category": "학사",
+   "title": "[학사행정팀] (2~4학년) 2026학년도 2학기 부전공(2차) 신청/변경 안내",
+   "first": {
+    "grades": [
+     2,
+     3,
+     4
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": "(2~4학년) 2026학년도 2학기 부전공(2차) 신청/변경 안내"
+   },
+   "second": {
+    "grades": [
+     2,
+     3,
+     4
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": "(2~4학년) 2026학년도 2학기 부전공(2차) 신청/변경 안내"
+   }
+  },
+  "275089": {
+   "category": "학사",
+   "title": "2027년 봄(2026학년도 전기) 졸업대상자 예비 졸업사정 안내",
+   "first": {
+    "grades": [
+     4
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": "2027년 봄(2026학년도 전기) 졸업대상자 예비 졸업사정 안내"
+   },
+   "second": {
+    "grades": [
+     4
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": "2027년 봄(2026학년도 전기) 졸업대상자 예비 졸업사정 안내"
+   }
+  },
+  "275110": {
+   "category": "학사",
+   "title": "[학부대학운영팀] 2026학년도 2학기 강의변경 3차 안내 [교양,전공기초]",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   }
+  },
+  "275179": {
+   "category": "학사",
+   "title": "[학사행정팀] 2026-2학기 수강과목 취소 기간 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   }
+  },
+  "275227": {
+   "category": "학사",
+   "title": "[학부대학운영팀] 2026학년도 2학기 강의변경 4차 안내 [교양,전공기초]",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   }
+  },
+  "275275": {
+   "category": "학사",
+   "title": "[학사행정팀] 2026-2학기 개강미사 및 수업운영 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   }
+  },
+  "275332": {
+   "category": "학사",
+   "title": "[학부대학운영팀] 2026학년도 2학기 강의변경 5차 안내 [교양,전공기초]",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   }
+  },
+  "275428": {
+   "category": "학사",
+   "title": "[학부대학운영팀] 2026학년도 2학기 강의변경 6차 안내 [교양,전공기초]",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   }
+  },
+  "275433": {
+   "category": "학사",
+   "title": "[학부대학운영팀] 2026학년도 2학기 강의변경 7차 안내 [교양]",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   }
+  },
+  "275515": {
+   "category": "학사",
+   "title": "[학부대학운영팀] 2026학년도 2학기 강의변경 8차 안내 [교양]",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   }
+  },
+  "275590": {
+   "category": "학사",
+   "title": "[교무처] 수업평가 문항 개선(안) 온라인 설명회 참석 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "참석 대상 : 수업평가 문항 개선에 관심 있는 학부(과) 소속 교원"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   }
+  },
+  "275600": {
+   "category": "장학",
+   "title": "[학생지원팀] (재)대전청년내일재단 2026년 2학기 인재육성(성취) 장학생 선발 안내(기간 연장)",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "대전광역시"
+    ],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "총장 명의 추천서가 필요한 경우, 아래 관련 공지사항을 확인한 후 추천서 발급원 등 구비서류를 준비하여 소속 학과(부)에 신청하시기 바랍니다."
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": ""
+   }
+  },
+  "275929": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026학년도 2학기 교육지원인턴 신청 안내(9/17~9/27)",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "GPA"
+    ],
+    "evidence": "직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "GPA"
+    ],
+    "evidence": "직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
+   }
+  },
+  "275947": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026학년도 2학기 직무인턴 2차 신청 안내(9/17~9/27)",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "GPA"
+    ],
+    "evidence": "직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "GPA"
+    ],
+    "evidence": "직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
+   }
+  },
+  "275978": {
+   "category": "장학",
+   "title": "[학생지원팀](한국장학재단)2026년도 2학기 고졸 후학습자 장학사업(희망사다리Ⅱ유형) 신규장학생 신청기간 연장 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "(한국장학재단)2026년도 2학기 고졸 후학습자 장학사업(희망사다리Ⅱ유형) 신규장학생 신청기간 연장 안내"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "GROUP"
+    ],
+    "evidence": "(한국장학재단)2026년도 2학기 고졸 후학습자 장학사업(희망사다리Ⅱ유형) 신규장학생 신청기간 연장 안내"
+   }
+  },
+  "276061": {
+   "category": "장학",
+   "title": "[학생지원팀] (재)춘천인재육성장학재단 2026년 하반기 봄내장학생 선발 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "강원특별자치도 춘천시"
+    ],
+    "blockers": [],
+    "evidence": "춘천인재육성장학재단에서 2026년 하반기 봄내장학생을 선발하오니, 관심 있는 학생은 아래 내용을 확인하여 기간 내 신청하시기 바랍니다."
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "강원특별자치도 춘천시"
+    ],
+    "blockers": [],
+    "evidence": "춘천인재육성장학재단에서 2026년 하반기 봄내장학생을 선발하오니, 관심 있는 학생은 아래 내용을 확인하여 기간 내 신청하시기 바랍니다."
+   }
+  },
+  "276150": {
+   "category": "장학",
+   "title": "[학생지원팀] 제36기 미래에셋 해외교환 장학생 선발 요강 안내",
+   "first": {
+    "grades": [],
+    "depts": [
+     "이공·상경·인문사회계열"
+    ],
+    "regions": [],
+    "blockers": [
+     "INCOME",
+     "GPA",
+     "GROUP",
+     "OTHER"
+    ],
+    "evidence": "2027년 봄학기 모교 교환학생 등으로 해외 파견 예정인 학생"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "INCOME",
+     "GPA",
+     "GROUP"
+    ],
+    "evidence": "2027년 봄학기 모교 교환학생 등으로 해외 파견 예정인 학생"
+   }
+  },
+  "276187": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026년도 하반기 (재)논산시장학회 학업장려 장학생 선발 안내",
+   "first": {
+    "grades": [
+     1
+    ],
+    "depts": [],
+    "regions": [
+     "충청남도 논산시"
+    ],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "2026년도 국내 정규대학교 신입생 ※ 2년제 전문대학 포함"
+   },
+   "second": {
+    "grades": [
+     1
+    ],
+    "depts": [],
+    "regions": [
+     "충청남도 논산시"
+    ],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "2026년도 국내 정규대학교 신입생"
+   }
+  },
+  "276263": {
+   "category": "학사",
+   "title": "2026학년도 2학기 제적 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "2026학년도 2학기 제적 안내"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": ""
+   }
+  },
+  "276264": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026학년도 2학기 하나금융나눔재단 하나장학생 선발 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "INCOME",
+     "GPA"
+    ],
+    "evidence": "직전학기 12학점 이상 이수자"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "INCOME",
+     "GPA",
+     "OTHER"
+    ],
+    "evidence": "직전학기 성적이 3.0/4.5 이상인 자"
+   }
+  },
+  "276300": {
+   "category": "학사",
+   "title": "[학사행정팀] 2026-2학기 수강과목 취소 확정 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "2026-2학기 수강과목 취소가 확정되었음을 안내 드리며, 신청하신 학생들께서는 트리니티 내 수강신청확인원을 통해 취소 신청 처리내역을 반드시 확인하여 주시기 바랍니다."
+   }
+  },
+  "276332": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026년 우양재단 동행 장학생 모집",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": ""
+   }
+  },
+  "276341": {
+   "category": "장학",
+   "title": "[학생지원팀] 2027년도 대산농촌재단 장학생 선발 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": ""
+   }
+  },
+  "276345": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026학년도 2학기 직무인턴 3차 신청 안내(10/1~10/7)",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "GPA"
+    ],
+    "evidence": "직전학기 15학점/2.5이상인 자"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "GPA"
+    ],
+    "evidence": "직전학기 15학점/2.5이상인 자(※ 신·편입학 첫학기는 성적기준 적용 안함)"
+   }
+  },
+  "276423": {
+   "category": "장학",
+   "title": "[학부대학] 「이원길 장학금」 최종 선발 결과 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "심사 결과, 아래와 같이 최종 선발자를 확정하였으며, 선발된 학생들은 아래 일정의 시상식에 필수 참석해 주시기 바랍니다."
+   }
+  },
+  "276440": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026년도 하반기 마포인재육성장학재단 마포장학생 선발계획 공고",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "서울특별시 마포구"
+    ],
+    "blockers": [],
+    "evidence": "마포인재육성장학재단에서 2026년도 하반기 장학생을 선발하오니"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "서울특별시 마포구"
+    ],
+    "blockers": [],
+    "evidence": "마포인재육성장학재단에서 2026년도 하반기 장학생을 선발하오니, 신청을 희망하는 학생은 아래 내용과 붙임 공고문을 확인하시기 바랍니다."
+   }
+  },
+  "276474": {
+   "category": "장학",
+   "title": "[학생지원팀] <아산사회복지재단> 2027년 의생명과학분야 대학 장학생 선발 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [
+     "의생명과학분야"
+    ],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": "<아산사회복지재단> 2027년 의생명과학분야 대학 장학생 선발 안내"
+   }
+  },
+  "276477": {
+   "category": "장학",
+   "title": "[학생지원팀] ﻿2026년 2학기 문주장학재단 AI·ICT 분야 인재 장학생 선발 안(2026. 9. 21.(월) ~ 10. 8.(목))",
+   "first": {
+    "grades": [
+     2,
+     3,
+     4
+    ],
+    "depts": [
+     "AI·ICT 분야 전공"
+    ],
+    "regions": [
+     "서울특별시 서초구"
+    ],
+    "blockers": [],
+    "evidence": "AI·ICT 분야 전공 대학교(학부) 2학년 이상 재학생"
+   },
+   "second": {
+    "grades": [
+     2,
+     3,
+     4
+    ],
+    "depts": [
+     "AI·ICT 분야 전공"
+    ],
+    "regions": [
+     "서울특별시 서초구"
+    ],
+    "blockers": [],
+    "evidence": "지원자격 : AI·ICT 분야 전공 대학교(학부) 2학년 이상 재학생"
+   }
+  },
+  "276482": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026년도 2학기 진도군인재육성장학회 장학생 선발 안내(2026. 9. 21.(월) ~ 10. 8.(목))",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "전라남도 진도군"
+    ],
+    "blockers": [],
+    "evidence": "2025. 12. 31.부터 공고일 현재까지 진도군에 주민등록이 되어 있는 학생 또는 진도군민의 자녀"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "전라남도 진도군"
+    ],
+    "blockers": [
+     "GPA"
+    ],
+    "evidence": "2025. 12. 31.부터 공고일 현재까지 진도군에 주민등록이 되어 있는 학생 또는 진도군민의 자녀"
+   }
+  },
+  "276487": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026년 하반기 영주시 대학생 학자금대출 이자 지원 신청 안내( ~ 10. 8.(목) 18:00)",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "경상북도 영주시"
+    ],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "지원 기준일 현재 본인이 영주시에 주민등록을 두고 있는 대학생"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "경상북도 영주시"
+    ],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "지원 기준일 현재 본인이 영주시에 주민등록을 두고 있는 대학생"
+   }
+  },
+  "276506": {
+   "category": "장학",
+   "title": "[학생지원팀] <아산사회복지재단> 2027년도 북한이탈청소년 장학생 선발 안내(~10.26)",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "GROUP"
+    ],
+    "evidence": "2027년도 북한이탈청소년 장학생 선발 안내(~10.26)"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "GROUP"
+    ],
+    "evidence": "2027년도 북한이탈청소년 장학생 선발 안내(~10.26)"
+   }
+  },
+  "276532": {
+   "category": "학사",
+   "title": "[학부대학운영팀] 2026학년도 겨울 계절학기 개설 희망과목 수요조사",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   }
+  },
+  "276597": {
+   "category": "장학",
+   "title": "[학생지원팀] (재)인천광역시 계양구 인재양성장학교육재단 2026년 2학기 장학생 선발 안내(10. 1.(목) ~ 10. 12.(월))",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "인천광역시 계양구"
+    ],
+    "blockers": [],
+    "evidence": "(재)인천광역시 계양구 인재양성장학교육재단에서 다양한 분야의 우수한 청소년과 학생을 대상으로 장학생을 선발하오니"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "인천광역시 계양구"
+    ],
+    "blockers": [],
+    "evidence": "(재)인천광역시 계양구 인재양성장학교육재단에서 다양한 분야의 우수한 청소년과 학생을 대상으로 장학생을 선발하오니, 지원을 희망하는 학생은 기한 내 신청하시기 바랍니다."
+   }
+  },
+  "276603": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026년 2학기 한국선원복지고용센터 선원가족장학생 선발 안내(~10.30 접수기간 연장)",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "GROUP"
+    ],
+    "evidence": "2026년 2학기 한국선원복지고용센터 선원가족장학생 선발 안내(~10.30 접수기간 연장)"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "GROUP"
+    ],
+    "evidence": "2026년 2학기 한국선원복지고용센터 선원가족장학생 선발 안내(~10.30 접수기간 연장)"
+   }
+  },
+  "276604": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026년 2학기 전남인재육성 장학생 선발 안내(9. 21.(월) ~ 10. 23.(금) 18:00)",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "전라남도"
+    ],
+    "blockers": [],
+    "evidence": "전남인재평생교육진흥원에서 2026년 하반기 대학생 장학생을 선발하오니, 지원을 희망하는 학생은 기한 내 신청하시기 바랍니다."
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "전라남도"
+    ],
+    "blockers": [],
+    "evidence": "전남인재평생교육진흥원에서 2026년 하반기 대학생 장학생을 선발하오니, 지원을 희망하는 학생은 기한 내 신청하시기 바랍니다."
+   }
+  },
+  "276606": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026년 (재)순천시인재육성장학회 장학생 선발 모집 안내(9.28.(월)~10.23.(금))",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "전라남도 순천시"
+    ],
+    "blockers": [],
+    "evidence": "(재)순천시인재육성장학회에서 2026년 장학생을 모집하오니, 해당 학생은 기한 내 신청하시기 바랍니다."
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "전라남도 순천시"
+    ],
+    "blockers": [],
+    "evidence": "(재)순천시인재육성장학회에서 2026년 장학생을 모집하오니, 해당 학생은 기한 내 신청하시기 바랍니다."
+   }
+  },
+  "276607": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026년 양산시 대학생 학자금 대출 이자지원 접수 안내(9. 14.(월) ~ 10. 23.(금))",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "경상남도 양산시"
+    ],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "신청일 기준 본인 또는 부모 중 한 명이 1년 이상 양산시에 주민등록이 되어 있는 자"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "경상남도 양산시"
+    ],
+    "blockers": [
+     "OTHER"
+    ],
+    "evidence": "신청일 기준 본인 또는 부모 중 한 명이 1년 이상 양산시에 주민등록이 되어 있는 자"
+   }
+  },
+  "276635": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026년 하반기 은평구민장학재단 장학생 선발 안내(10. 12.(월) ~ 10. 28.(수))",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "서울특별시 은평구"
+    ],
+    "blockers": [
+     "INCOME",
+     "GPA"
+    ],
+    "evidence": "공고일 현재 은평구에 2년 이상 거주"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "서울특별시 은평구"
+    ],
+    "blockers": [
+     "INCOME",
+     "GPA"
+    ],
+    "evidence": "공고일 현재 은평구에 2년 이상 거주"
+   }
+  },
+  "276658": {
+   "category": "학사",
+   "title": "[학사행정팀] 2026-2학기 중간 수업평가 실시 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   }
+  },
+  "276686": {
+   "category": "장학",
+   "title": "[학생지원팀] (한국장학재단) 2026-2학기 국가근로장학금 추가신청기간 안내(10/21~10/29)",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "INCOME",
+     "GPA"
+    ],
+    "evidence": "직전 학기 12학점 이상 이수 및 성적 70점(평점 1.88/4.5) 이상"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "INCOME",
+     "GPA",
+     "OTHER"
+    ],
+    "evidence": "직전 학기 12학점 이상 이수 및 성적 70점(평점 1.88/4.5) 이상"
+   }
+  },
+  "276713": {
+   "category": "학사",
+   "title": "[학부대학운영팀] 2026학년도 2학기 9주차 <Career Master Class> 안내 [Career DESIGN 수강생 대상]",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "COURSE"
+    ],
+    "evidence": "<Career DESIGN> 과목을 수강하고 있는 학생들은 아래의 사항을 숙지하여 특강에 참여하기 바랍니다."
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "COURSE"
+    ],
+    "evidence": "<Career DESIGN> 과목을 수강하고 있는 학생들은 아래의 사항을 숙지하여 특강에 참여하기 바랍니다."
+   }
+  },
+  "276772": {
+   "category": "장학",
+   "title": "[학생지원팀] 2027년도 두산연강재단 대학 장학생 선발 안내(10. 14.(수) ~ 11. 13.(금) 18:00까지)",
+   "first": {
+    "grades": [
+     1
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "INCOME",
+     "GPA"
+    ],
+    "evidence": "지원 자격: 2027년 3월 기준, 4년제 대학 2학년 1학기 진학 예정자 중 성적 및 소득 요건을 충족하는 대한민국 국적 학부생"
+   },
+   "second": {
+    "grades": [
+     2
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "INCOME",
+     "GPA"
+    ],
+    "evidence": "2027년 3월 기준, 4년제 대학 2학년 1학기 진학 예정자 중 성적 및 소득 요건을 충족하는 대한민국 국적 학부생"
+   }
+  },
+  "276791": {
+   "category": "학사",
+   "title": "[학사행정팀] 2026학년도 겨울계절학기 서울 및 경인지역 대학교 학점교류 안내",
+   "first": {
+    "grades": [
+     2,
+     3,
+     4
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": "1학년 이상 수료한 학생"
+   },
+   "second": {
+    "grades": [
+     2,
+     3,
+     4
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": "1학년 이상 수료한 학생"
+   }
+  },
+  "276842": {
+   "category": "장학",
+   "title": "[학생지원팀] <한국고등교육재단> 2027년 인재림 제7기 장학생 선발 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": ""
+   }
+  },
+  "276848": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026년 2학기 거창군 지역출신 대학생 등록금 지원사업 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "경상남도 거창군"
+    ],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": "2026년 2학기 거창군 지역출신 대학생 등록금 지원사업 안내"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [
+     "경상남도 거창군"
+    ],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": "2026년 2학기 거창군 지역출신 대학생 등록금 지원사업 안내"
+   }
+  },
+  "276928": {
+   "category": "학사",
+   "title": "[융합전공학부] 2026-2학기 학생설계전공 신규·변경·포기 신청 안내",
+   "first": {
+    "grades": [
+     2,
+     3,
+     4
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": "신청대상 : 2학기 이상 재학생"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": "신청대상 : 2학기 이상 재학생 (단, 8학기(마지막 학기) 재학생의 경우 추가학기 재학 시 가능)"
+   }
+  },
+  "276941": {
+   "category": "장학",
+   "title": "[학생지원팀] 2026학년도 인송문화재단 인송장학생 선발 안내",
+   "first": {
+    "grades": [
+     1,
+     2,
+     3
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "INCOME",
+     "GPA",
+     "OTHER"
+    ],
+    "evidence": "2026년 2학기 기준, 현재까지 1개 학기 이상 이수하고, 졸업까지 2개 학기 이상 남은 자"
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "INCOME",
+     "GPA",
+     "OTHER"
+    ],
+    "evidence": "직전학기 평점평균 또는 전체 평균 3.0/4.5 이상인 자 (학생에게 유리한 성적으로 적용)"
+   }
+  },
+  "276984": {
+   "category": "학사",
+   "title": "[학사행정팀] 2026-겨울계절학기 숙명여자대학교 학점교류 안내",
+   "first": {
+    "grades": [
+     3
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "GPA"
+    ],
+    "evidence": "본교에 재학중인 학부생 중 4학기 이상 이수한 자(단, 졸업예정자 혹은 8학기 이상 재학중인 자는 지원 불가)"
+   },
+   "second": {
+    "grades": [
+     3
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "GPA"
+    ],
+    "evidence": "본교에 재학중인 학부생 중 4학기 이상 이수한 자(단, 졸업예정자 혹은 8학기 이상 재학중인 자는 지원 불가)"
+   }
+  },
+  "276997": {
+   "category": "학사",
+   "title": "[학사행정팀] 2026-2학기 일반휴학 신청 마감 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": ""
+   }
+  },
+  "277004": {
+   "category": "장학",
+   "title": "[학생지원팀][한국장학재단]2026년 2학기 푸른등대 기부장학금(2차) 신청 안내",
+   "first": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": ""
+   },
+   "second": {
+    "grades": [],
+    "depts": [],
+    "regions": [],
+    "blockers": [
+     "IMAGE_ONLY"
+    ],
+    "evidence": ""
+   }
+  },
+  "277031": {
+   "category": "학사",
+   "title": "2026-겨울학기 가톨릭계 대학 학점교류 안내(서강대, 가톨릭관동대, 대구가톨릭대, 부산가톨릭대)",
+   "first": {
+    "grades": [
+     2,
+     3,
+     4
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": "1학년 이상 수료한 학생"
+   },
+   "second": {
+    "grades": [
+     2,
+     3,
+     4
+    ],
+    "depts": [],
+    "regions": [],
+    "blockers": [],
+    "evidence": "1학년 이상 수료한 학생"
+   }
+  }
+ }
+}

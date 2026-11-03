@@ -1,0 +1,26 @@
+{
+  "measuredOn" : "2026-11-03",
+  "notices" : 61,
+  "students" : 336,
+  "humanChecked" : 0,
+  "runModel" : "claude-haiku-5-5",
+  "goldModel" : "Claude Opus 5.5",
+  "runSource" : "이 수치는 API 대신 Claude Code 세션의 Haiku에 같은 지시문을 줘 잰 근사치예요",
+  "agreed" : 40,
+  "regex" : {
+    "precision" : 0.95,
+    "recall" : 0.41,
+    "expected" : 1805,
+    "predicted" : 780,
+    "hit" : 741,
+    "exactNotices" : 52
+  },
+  "ai" : {
+    "precision" : 1.0,
+    "recall" : 0.736,
+    "expected" : 1805,
+    "predicted" : 1329,
+    "hit" : 1329,
+    "exactNotices" : 57
+  }
+}

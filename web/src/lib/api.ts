@@ -88,6 +88,8 @@ export type Card = {
   /** grade는 제목·자격 문단에 적힌 학년("2~4학년", "졸업예정자") */
   audience: { scope: Scope; label: string | null; excerpt: string | null; grade: string | null };
   mine: boolean;
+  /** 내게 맞는 이유("3학년·컴퓨터정보공학부 대상"). mine일 때만 있다 */
+  mineReason: string | null;
   deadline: Line | null;
   next: Line[];
 };
@@ -165,6 +167,31 @@ export type Quality = {
   };
   transcription: { images: number; skipped: number; inputTokens: number; outputTokens: number; costUsd: number };
   autoPublish: { published: number; waiting: number; reports: number };
+  /** 형광펜 백테스트. 아직 재지 않았으면 null */
+  audienceBacktest: AudienceBacktest | null;
+  audienceRead: { notices: number; agreed: number; inputTokens: number; outputTokens: number; costUsd: number };
+};
+
+export type AudienceScore = {
+  precision: number;
+  recall: number;
+  expected: number;
+  predicted: number;
+  hit: number;
+  exactNotices: number;
+};
+
+export type AudienceBacktest = {
+  measuredOn: string;
+  notices: number;
+  students: number;
+  goldModel: string;
+  humanChecked: number;
+  runModel: string;
+  runSource: string;
+  agreed: number;
+  regex: AudienceScore;
+  ai: AudienceScore;
 };
 
 export type ItemEdit = {

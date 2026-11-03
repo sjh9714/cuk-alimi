@@ -29,7 +29,7 @@ class DigestBodyTest {
     DigestService service() {
         AppProperties props = new AppProperties("https://www.catholic.ac.kr", 0, null, "https://cuk-alimi.example", "",
                 "", true, new AppProperties.Mail("console", "campus@example"), new AppProperties.Digest("0 0 8 * * *"),
-                null, null, null);
+                null, null, null, null);
         return new DigestService(props, null, null, null, null, null, null, null, Clock.systemUTC());
     }
 

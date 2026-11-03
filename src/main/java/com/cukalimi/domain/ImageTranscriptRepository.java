@@ -15,6 +15,9 @@ public interface ImageTranscriptRepository extends JpaRepository<ImageTranscript
 
     long countByInputTokens(long tokens);
 
+    /** 공지 한 건의 받아 적은 글. AI 대상 읽기가 그림 공지의 글로 쓴다. */
+    java.util.List<ImageTranscript> findByArticleNo(Long articleNo);
+
     interface Usage {
         long getImages();
 

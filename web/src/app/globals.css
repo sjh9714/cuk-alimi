@@ -935,6 +935,12 @@ legend + * {
   color: var(--body);
 }
 
+/* 형광펜을 칠한 이유. AI가 읽은 대상 조건과 내 프로필이 맞은 부분이다. */
+.it .m details p.why {
+  font-weight: 600;
+  color: var(--ink);
+}
+
 .it .m .report {
   display: flex;
   margin-top: 4px;

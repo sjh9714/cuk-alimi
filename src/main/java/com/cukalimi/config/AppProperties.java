@@ -16,7 +16,15 @@ public record AppProperties(
         Digest digest,
         Schedule schedule,
         Notice notice,
-        Transcribe transcribe) {
+        Transcribe transcribe,
+        AudienceRead audienceRead) {
+
+    /**
+     * AI가 공지 글에서 대상 조건을 읽는다 (ADR 013). 키는 transcribe와 같은 것을 쓴다. dailyLimit은 하루에 읽는 공지 수다.
+     * 공지 한 건을 두 번 읽으니 호출 수로는 두 배다.
+     */
+    public record AudienceRead(boolean enabled, String model, int dailyLimit, String cron) {
+    }
 
     public record Schedule(String cron, String campus, List<Integer> years) {
     }

@@ -13,6 +13,7 @@ export type Task = {
   at: string;
   kind: Kind;
   mine: boolean;
+  mineReason: string | null;
   url: string;
   sourceTitle: string;
   excerpt: string | null;
@@ -123,6 +124,7 @@ export function tasksOf(cards: Card[], today: string): Task[] {
         at: at ? `${at.slice(0, 5)}까지` : "",
         kind: card.kind,
         mine: card.mine,
+        mineReason: card.mineReason ?? null,
         url: card.url,
         sourceTitle: card.sourceTitle,
         excerpt: card.audience.excerpt,

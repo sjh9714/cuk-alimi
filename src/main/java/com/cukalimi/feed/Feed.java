@@ -38,9 +38,17 @@ public final class Feed {
         }
     }
 
-    /** kind는 schedule, scholarship, academic, career. deadline은 날짜 확인 중인 카드에서만 null이다. */
+    /**
+     * kind는 schedule, scholarship, academic, career. deadline은 날짜 확인 중인 카드에서만 null이다.
+     * mineReason은 내게 맞는 이유("3학년·컴퓨터정보공학부 대상"). mine일 때만 있다.
+     */
     public record Card(String key, String kind, String title, String sourceTitle, String url, AudienceView audience,
-            boolean mine, Line deadline, List<Line> next) {
+            boolean mine, String mineReason, Line deadline, List<Line> next) {
+
+        public Card(String key, String kind, String title, String sourceTitle, String url, AudienceView audience,
+                boolean mine, Line deadline, List<Line> next) {
+            this(key, kind, title, sourceTitle, url, audience, mine, null, deadline, next);
+        }
     }
 
     public record Section(String key, String title, String note, boolean collapsed, List<Card> cards) {
@@ -111,9 +119,10 @@ public final class Feed {
             }
             DateItem deadline = actions.get(0);
             List<Line> next = items.stream().filter(i -> i != deadline).map(i -> line(i, title, saved)).toList();
-            boolean isMine = mine(audience, deadline, viewer);
+            String reason = mineReason(audience, deadline, viewer);
+            boolean isMine = reason != null;
             Card card = new Card(entry.getKey(), kind(notice), title, notice.getTitle(), notice.getUrl(),
-                    AudienceView.of(audience), isMine, line(deadline, title, saved), next);
+                    AudienceView.of(audience), isMine, reason, line(deadline, title, saved), next);
             // 취업 공지는 학년이 맞아도 접힌 구간에 둔다. "내게 맞는 공지"와 아침 메일은 장학·학사만 다룬다.
             if (isMust(audience, title)) {
                 must.add(card);
@@ -187,24 +196,38 @@ public final class Feed {
         return i.getEndsOn().getYear();
     }
 
-    static boolean mine(Audience audience, DateItem deadline, Viewer viewer) {
+    /**
+     * 이 공지가 이 학생의 것이라는 이유. 아니면 null. AI가 읽은 대상 조건이 있으면 그것으로만 판단한다 (ADR 013).
+     * 없으면(키가 없거나 두 번 읽기가 어긋남) 제목·자격 문단의 정규식과 운영자 태그로 판단한다.
+     */
+    public static String mineReason(Audience audience, DateItem deadline, Viewer viewer) {
+        if (audience.ai() != null) {
+            return audience.ai().reasonFor(viewer);
+        }
         if (viewer.home() != null && Audience.REGION.equals(audience.scope())
                 && audience.regions().stream().anyMatch(r -> r.covers(viewer.home()))) {
-            return true;
+            return audience.label() + " 대상";
         }
         // 제목·자격 문단에 적힌 학년. 지역·계층 장학은 학년이 맞아도 그 조건이 먼저라 올리지 않는다.
         if (Audience.GENERAL.equals(audience.scope()) && audience.grade().covers(viewer.grade())) {
-            return true;
+            return audience.grade().label() + " 대상";
         }
         // 운영자가 검수 때 학년·학과를 붙인 항목 (ADR 008). 둘 다 전체면 모두의 것이라 "내 것"으로 따로 올리지 않는다.
+        if (deadline == null) {
+            return null;
+        }
         String g = deadline.getTargetGrade();
         String d = deadline.getTargetDept();
         if (g == null || d == null || ("ALL".equals(g) && "ALL".equals(d))) {
-            return false;
+            return null;
         }
         boolean gradeOk = "ALL".equals(g) || (viewer.grade() != null && g.equals(String.valueOf(viewer.grade())));
         boolean deptOk = "ALL".equals(d) || contains(d, viewer.major()) || contains(d, viewer.secondMajor());
-        return gradeOk && deptOk;
+        if (!gradeOk || !deptOk) {
+            return null;
+        }
+        return java.util.stream.Stream.of("ALL".equals(g) ? null : g + "학년", "ALL".equals(d) ? null : d)
+                .filter(java.util.Objects::nonNull).collect(java.util.stream.Collectors.joining("·")) + " 대상";
     }
 
     private static String kind(Notice n) {

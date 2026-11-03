@@ -13,8 +13,14 @@ import java.util.regex.Pattern;
  * @param regions REGION일 때 지역 후보
  * @param excerpt 본문의 지원자격·신청대상 문단 원문. 없으면 null
  * @param grade   제목과 자격 문단에 적힌 학년 범위. 범위와 따로 붙는다
+ * @param ai      AI가 공지 글에서 읽은 대상 조건 (ADR 013). 두 번 읽어 같았을 때만 있고, 있으면 "내게 맞음" 판단은 이것으로 한다
  */
-public record Audience(String scope, String label, List<Regions.Region> regions, String excerpt, GradeTag grade) {
+public record Audience(String scope, String label, List<Regions.Region> regions, String excerpt, GradeTag grade,
+        AudienceFacts ai) {
+
+    public Audience(String scope, String label, List<Regions.Region> regions, String excerpt, GradeTag grade) {
+        this(scope, label, regions, excerpt, grade, null);
+    }
 
     public static final String GENERAL = "GENERAL";
     public static final String REGION = "REGION";
@@ -76,7 +82,12 @@ public record Audience(String scope, String label, List<Regions.Region> regions,
 
     /** 공지의 대상 범위. 운영자가 고친 값이 있으면 그것이 이긴다. */
     public static Audience of(com.cukalimi.domain.Notice n) {
-        return classify(n.getCategory(), n.getTitle(), n.getBodyText()).overriddenBy(n.getAudienceScope(), n.getAudienceLabel());
+        Audience a = classify(n.getCategory(), n.getTitle(), n.getBodyText()).overriddenBy(n.getAudienceScope(), n.getAudienceLabel());
+        return a.withAi(AudienceFacts.fromJson(n.getAudienceAi()));
+    }
+
+    public Audience withAi(AudienceFacts facts) {
+        return new Audience(scope, label, regions, excerpt, grade, facts);
     }
 
     /** 운영자가 고친 범위가 있으면 그것을 쓴다. 발췌문과 학년은 그대로 둔다. */
@@ -85,7 +96,7 @@ public record Audience(String scope, String label, List<Regions.Region> regions,
             return this;
         }
         return new Audience(scope, label == null || label.isBlank() ? null : label.trim(),
-                REGION.equals(scope) ? regions : List.of(), excerpt, grade);
+                REGION.equals(scope) ? regions : List.of(), excerpt, grade, ai);
     }
 
     /** 자격 문단을 원문 그대로 짧게 자른다. 고쳐 쓰지 않는다. */

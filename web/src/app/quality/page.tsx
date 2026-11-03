@@ -198,6 +198,50 @@ export default function QualityPage() {
             </table>
           </section>
 
+          {q.audienceBacktest && (
+            <section className="panel">
+              <h2>형광펜 정확도</h2>
+              <p>
+                홈에서 형광펜은 내 학년·학과·연고 지역에 맞는 일에 칠해요. 공지의 대상 조건은 AI(Claude Haiku)가 두 번 따로
+                읽고, 두 번이 같을 때만 써요. 내 프로필과 맞는지는 AI가 아니라 코드가 비교하고, 프로필은 AI에 보내지 않아요.
+                공지 {q.audienceBacktest.notices}건마다 {q.audienceBacktest.students}가지 학생 프로필로 정답과 비교했어요.
+              </p>
+              <table className="facts">
+                <thead>
+                  <tr>
+                    <th scope="col">방법</th>
+                    <td>칠한 것 중 맞은 비율</td>
+                    <td>칠해야 할 것 중 칠한 비율</td>
+                    <td>모든 학생에게 맞게 칠한 공지</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">AI가 읽은 조건</th>
+                    <td>{percent(q.audienceBacktest.ai.precision)}</td>
+                    <td>{percent(q.audienceBacktest.ai.recall)}</td>
+                    <td>
+                      {q.audienceBacktest.ai.exactNotices}/{q.audienceBacktest.notices}건
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">이전 규칙(정규식)</th>
+                    <td>{percent(q.audienceBacktest.regex.precision)}</td>
+                    <td>{percent(q.audienceBacktest.regex.recall)}</td>
+                    <td>
+                      {q.audienceBacktest.regex.exactNotices}/{q.audienceBacktest.notices}건
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <p className="muted">
+                정답은 사람이 아니라 더 큰 모델({q.audienceBacktest.goldModel})이 같은 지시문으로 적었어요. 두 번 읽기가 같았던
+                공지는 {q.audienceBacktest.agreed}/{q.audienceBacktest.notices}건이에요. {q.audienceBacktest.runSource}. 운영 중에는
+                지금까지 공지 {q.audienceRead.notices}건을 읽었고 ${q.audienceRead.costUsd.toFixed(4)}이 들었어요.
+              </p>
+            </section>
+          )}
+
           <p className="muted">
             재는 방법과 이유는{" "}
             <a href={ADR_URL} target="_blank" rel="noreferrer">

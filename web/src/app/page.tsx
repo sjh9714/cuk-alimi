@@ -333,9 +333,10 @@ function Row({ task, done, canSave, onDone, onSave, onReport }: Omit<Board, "tod
           </span>
           {task.at && <em>{task.at}</em>}
           {task.mine && <i>내게 맞음</i>}
-          {(task.excerpt || canSave) && (
+          {(task.excerpt || task.mineReason || canSave) && (
             <details>
               <summary>자세히</summary>
+              {task.mineReason && <p className="why">내게 맞는 이유 · {task.mineReason}</p>}
               {task.excerpt && <p>{task.excerpt}</p>}
               {canSave && (
                 <button className="report" onClick={() => onReport(task.line)}>

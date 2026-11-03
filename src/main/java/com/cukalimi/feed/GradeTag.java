@@ -85,7 +85,7 @@ public record GradeTag(List<Integer> grades, String label) {
         return NEGATION.matcher(text.substring(end)).find();
     }
 
-    private static String label(TreeSet<Integer> grades) {
+    static String label(TreeSet<Integer> grades) {
         if (grades.last() - grades.first() + 1 == grades.size() && grades.size() > 1) {
             return grades.first() + "~" + grades.last() + "학년";
         }

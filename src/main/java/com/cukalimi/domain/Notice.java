@@ -45,6 +45,12 @@ public class Notice {
     /** 운영자가 고친 대상 범위. 비어 있으면 제목과 본문으로 정한다 (ADR 009). */
     private String audienceScope;
     private String audienceLabel;
+    /** AI가 읽은 대상 조건 JSON (ADR 013). 두 번 읽어 같을 때만 있다. 읽은 시각은 어긋나도 남아 다시 부르지 않는다. */
+    private String audienceAi;
+    private String audienceModel;
+    private OffsetDateTime audienceReadAt;
+    private long audienceInputTokens;
+    private long audienceOutputTokens;
 
     protected Notice() {
     }
@@ -79,6 +85,11 @@ public class Notice {
             this.status = STATUS_NEEDS_REVIEW;
             this.reviewedAt = null;
             this.reviewedBy = null;
+        }
+        if (changed) {
+            // 정정 공지는 대상이 바뀌었을 수 있다. 다음 차례에 다시 읽는다.
+            this.audienceAi = null;
+            this.audienceReadAt = null;
         }
         this.title = title;
         this.bodyText = bodyText;
@@ -147,5 +158,26 @@ public class Notice {
 
     public String getAudienceLabel() {
         return audienceLabel;
+    }
+
+    /** factsJson이 null이면 두 번 읽은 결과가 어긋났다는 뜻이다. 토큰은 쌓아서 센다. */
+    public void recordAudienceRead(String factsJson, String model, long inputTokens, long outputTokens, OffsetDateTime at) {
+        this.audienceAi = factsJson;
+        this.audienceModel = model;
+        this.audienceReadAt = at;
+        this.audienceInputTokens += inputTokens;
+        this.audienceOutputTokens += outputTokens;
+    }
+
+    public String getAudienceAi() {
+        return audienceAi;
+    }
+
+    public String getAudienceModel() {
+        return audienceModel;
+    }
+
+    public OffsetDateTime getAudienceReadAt() {
+        return audienceReadAt;
     }
 }

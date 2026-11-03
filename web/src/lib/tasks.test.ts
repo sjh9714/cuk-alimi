@@ -18,6 +18,7 @@ function card(title: string, lines: Line[], extra: Partial<Card> = {}): Card {
     url: "https://example/1",
     audience: { scope: "GENERAL", label: null, excerpt: null, grade: null },
     mine: false,
+    mineReason: null,
     deadline: lines[0] ?? null,
     next: lines.slice(1),
     ...extra,
