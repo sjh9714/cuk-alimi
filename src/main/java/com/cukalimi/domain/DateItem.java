@@ -24,6 +24,10 @@ public class DateItem {
     public static final String STATUS_CANDIDATE = "CANDIDATE";
     /** 그림을 두 번 받아 적어 날짜가 일치해 자동으로 공개한 항목 (ADR 010). */
     public static final String STATUS_AUTO_IMAGE = "AUTO_IMAGE";
+    /** 다시 뽑았더니 사라졌거나 다른 일이 된 자동 항목인데 학생의 저장이나 체크가 붙어 있어 지우지 않고 거둔 것. 화면과 알림에서 뺀다. */
+    public static final String STATUS_RETIRED = "RETIRED";
+    /** 학생에게 보이지 않는 상태. */
+    public static final java.util.List<String> HIDDEN = java.util.List.of(STATUS_CANDIDATE, STATUS_RETIRED);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -132,6 +136,14 @@ public class DateItem {
 
     public boolean isWithdrawn() {
         return withdrawnAt != null;
+    }
+
+    /** 저장이 붙은 자동 항목을 지우는 대신 거둔다. 자연 키를 비워 같은 자리에 새 항목이 들어올 수 있게 한다. */
+    public void retire() {
+        status = STATUS_RETIRED;
+        withdrawnAt = OffsetDateTime.now();
+        updatedAt = withdrawnAt;
+        naturalKey = naturalKey + "@retired:" + withdrawnAt.toEpochSecond();
     }
 
     /** 운영자가 손으로 넣은 항목. 이미지에만 날짜가 있는 공지가 여기로 온다. */

@@ -23,7 +23,7 @@ public final class Ics {
     private Ics() {
     }
 
-    /** 카드가 내게 맞으면 그 카드의 날짜 줄 모두, 아니면 저장한 줄만 넣는다. */
+    /** 카드가 내게 맞으면 그 카드의 할 일 날짜 모두, 아니면 저장한 날짜만 넣는다. 같은 날 줄은 하나다. */
     public static String of(Feed.View view, LocalDateTime stamp) {
         List<String> lines = new ArrayList<>();
         lines.add("BEGIN:VCALENDAR");
@@ -36,12 +36,12 @@ public final class Ics {
         String dtstamp = UTC.format(stamp.atZone(SEOUL).withZoneSameInstant(ZoneOffset.UTC));
         for (Feed.Section section : view.sections()) {
             for (Feed.Card card : section.cards()) {
-                if (card.deadline() != null && !card.deadline().done() && (card.mine() || card.deadline().saved())) {
-                    event(lines, card, card.deadline(), dtstamp);
-                }
-                for (Feed.Line next : card.next()) {
-                    if (!next.done() && (card.mine() || next.saved())) {
-                        event(lines, card, next, dtstamp);
+                // 홈과 같은 단위. 같은 날 줄은 하나의 일정이고, 그중 하나라도 끝냈으면 빼고, 하나라도 저장했으면 넣는다.
+                for (List<Feed.Line> group : Feed.sameDayGroups(card)) {
+                    boolean anyDone = group.stream().anyMatch(Feed.Line::done);
+                    boolean wanted = card.mine() || group.stream().anyMatch(Feed.Line::saved);
+                    if (!anyDone && wanted) {
+                        event(lines, card, group.get(0), group.size() > 1 ? null : group.get(0).label(), dtstamp);
                     }
                 }
             }
@@ -54,11 +54,11 @@ public final class Ics {
         return out.toString();
     }
 
-    private static void event(List<String> out, Feed.Card card, Feed.Line line, String dtstamp) {
+    private static void event(List<String> out, Feed.Card card, Feed.Line line, String label, String dtstamp) {
         out.add("BEGIN:VEVENT");
         out.add("UID:item-" + line.id() + "@cuk-alimi");
         out.add("DTSTAMP:" + dtstamp);
-        String title = line.label() == null || line.label().isBlank() ? card.title() : card.title() + " · " + line.label();
+        String title = label == null || label.isBlank() ? card.title() : card.title() + " · " + label;
         out.add("SUMMARY:" + escape(title));
         if (line.endsAt() == null) {
             LocalDate start = line.startsOn() == null || line.startsOn().isAfter(line.endsOn()) ? line.endsOn() : line.startsOn();

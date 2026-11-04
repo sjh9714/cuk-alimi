@@ -7,5 +7,7 @@ public interface SavedItemRepository extends JpaRepository<SavedItem, SavedItem.
 
     List<SavedItem> findByUserId(Long userId);
 
+    boolean existsByDateItemId(Long dateItemId);
+
     void deleteByUserId(Long userId);
 }

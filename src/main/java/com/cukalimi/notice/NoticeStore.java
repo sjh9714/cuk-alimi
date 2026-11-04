@@ -29,9 +29,13 @@ public class NoticeStore {
     private final NoticeRepository notices;
     private final NoticeRawRepository raws;
     private final DateItemRepository dateItems;
+    private final com.cukalimi.domain.SavedItemRepository saved;
+    private final com.cukalimi.domain.DoneItemRepository done;
 
     public NoticeStore(AppProperties props, NoticeRepository notices, NoticeRawRepository raws,
-            DateItemRepository dateItems) {
+            DateItemRepository dateItems, com.cukalimi.domain.SavedItemRepository saved, com.cukalimi.domain.DoneItemRepository done) {
+        this.saved = saved;
+        this.done = done;
         this.props = props;
         this.notices = notices;
         this.raws = raws;
@@ -41,10 +45,39 @@ public class NoticeStore {
     public record Saved(long noticeId, int items, String reason) {
     }
 
+    /** 본문의 낱말 절반 이상이 겹치면 같은 공지를 고쳐 다시 올린 것이다. 제목만 같은 다른 공지를 묵히지 않으려는 문턱이다. */
+    static boolean similarBody(String a, String b) {
+        Set<String> wa = new HashSet<>(List.of((a == null ? "" : a).split("\\s+")));
+        Set<String> wb = new HashSet<>(List.of((b == null ? "" : b).split("\\s+")));
+        if (wa.isEmpty() || wb.isEmpty()) {
+            return false;
+        }
+        long common = wa.stream().filter(wb::contains).count();
+        long union = wa.size() + wb.size() - common;
+        return common * 2 >= union;
+    }
+
+    /** 학생의 저장이나 체크가 붙어 있는가. 붙어 있으면 지우지 않는다. 지우면 저장과 알림이 함께 사라진다. */
+    private boolean hasUserRefs(DateItem item) {
+        return saved.existsByDateItemId(item.getId()) || done.existsByDateItemId(item.getId());
+    }
+
     /** 지워졌거나 묵은 공지로 표시한다. 날짜 항목은 그대로 두고 화면과 알림에서만 뺀다. */
     @Transactional
     public void retire(long noticeId, String reason) {
         notices.findById(noticeId).ifPresent(n -> n.markRemoved(reason));
+    }
+
+    /** 404를 봤다. 두 번째면 내린다. */
+    @Transactional
+    public boolean noteGone(long noticeId) {
+        return notices.findById(noticeId).map(Notice::noteGone).orElse(false);
+    }
+
+    /** 다시 열렸다. 되살렸으면 true. */
+    @Transactional
+    public boolean markAlive(long noticeId) {
+        return notices.findById(noticeId).map(Notice::noteAlive).orElse(false);
     }
 
     /**
@@ -56,7 +89,8 @@ public class NoticeStore {
             // 학과 게시판은 학과까지 같아야 한다. 다른 학과가 같은 날 같은 제목을 올릴 수 있다.
             if (other.getArticleNo() < fresh.getArticleNo() && !other.isRemoved()
                     && java.util.Objects.equals(other.getDept(), fresh.getDept())
-                    && NoticeCollector.normalize(other.getTitle()).equals(NoticeCollector.normalize(fresh.getTitle()))) {
+                    && NoticeCollector.normalize(other.getTitle()).equals(NoticeCollector.normalize(fresh.getTitle()))
+                    && similarBody(other.getBodyText(), fresh.getBodyText())) {
                 other.markRemoved(Notice.REMOVED_DUPLICATE);
                 log.info("notice {} retired as duplicate of {}", other.getArticleNo(), fresh.getArticleNo());
             }
@@ -109,15 +143,27 @@ public class NoticeStore {
             var existing = dateItems.findByNaturalKey(fresh.getNaturalKey());
             if (existing.isEmpty()) {
                 dateItems.save(fresh);
+            } else if (hasUserRefs(existing.get()) && !NoticeCollector.normalize(existing.get().getTitle()).equals(NoticeCollector.normalize(fresh.getTitle()))
+                    && DateItem.STATUS_AUTO.equals(existing.get().getStatus())) {
+                // 자연 키는 표 안의 자리라, 학교가 표에 행을 끼워 넣으면 같은 자리에 다른 일이 온다.
+                // 학생이 저장한 항목을 다른 마감으로 덮어쓰지 않고 거둔 뒤 새 항목을 넣는다.
+                existing.get().retire();
+                dateItems.saveAndFlush(existing.get());
+                dateItems.save(fresh);
+                log.info("notice {} item {} retired (label changed under a saved item)", view.articleNo(), existing.get().getId());
             } else {
                 existing.get().refreshFrom(fresh);
             }
         }
-        // 다시 처리했더니 사라진 자동 항목은 지운다. 사람이 고친 항목은 남긴다.
+        // 다시 처리했더니 사라진 자동 항목은 지운다. 사람이 고친 항목은 남기고, 학생의 저장이나 체크가 붙은 항목은 지우지 않고 거둔다.
         for (DateItem old : dateItems.findByNoticeIdOrderByEndsOnAsc(notice.getId())) {
             if (!seen.contains(old.getNaturalKey()) && DateItem.STATUS_AUTO.equals(old.getStatus())
                     && DateItem.SOURCE_NOTICE.equals(old.getSourceKind())) {
-                dateItems.delete(old);
+                if (hasUserRefs(old)) {
+                    old.retire();
+                } else {
+                    dateItems.delete(old);
+                }
             }
         }
         log.info("notice {} [{}] {} -> {} items ({})", view.articleNo(), category, view.title(), extracted.size(), reason);

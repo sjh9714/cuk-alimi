@@ -16,6 +16,11 @@ class IcsTest {
         return new Feed.Line(id, label, null, LocalDate.of(2026, 7, 12), null, endsAt, "ACTION", saved);
     }
 
+    /** 다른 날 줄. 같은 날 줄은 일정 하나로 묶이므로 줄마다 일정을 보려면 날을 나눈다. */
+    static Feed.Line lineOn(long id, String label, int day, boolean saved) {
+        return new Feed.Line(id, label, null, LocalDate.of(2026, 7, day), null, null, "ACTION", saved);
+    }
+
     static Feed.Card card(String title, boolean mine, Feed.Line deadline, Feed.Line... next) {
         return new Feed.Card("k", "scholarship", title, "원문 제목; 쉼표, 포함", "https://example.test/n/1",
                 new Feed.AudienceView("GENERAL", null, null, null), mine, mine ? "3학년 대상" : null, deadline, List.of(next));
@@ -28,8 +33,8 @@ class IcsTest {
     @Test
     void 내게_맞는_카드는_모든_줄이_저장한_카드는_그_줄만_들어간다() {
         String ics = Ics.of(view(
-                card("내게 맞는 장학", true, line(1, null, null, false), line(2, "서류 발표", null, false)),
-                card("저장만 한 공지", false, line(3, null, null, true), line(4, "안 저장한 줄", null, false)),
+                card("내게 맞는 장학", true, line(1, null, null, false), lineOn(2, "서류 발표", 14, false)),
+                card("저장만 한 공지", false, line(3, null, null, true), lineOn(4, "안 저장한 줄", 15, false)),
                 card("남의 공지", false, line(5, null, null, false))), LocalDateTime.of(2026, 7, 10, 9, 0));
         assertThat(ics).startsWith("BEGIN:VCALENDAR\r\n").endsWith("END:VCALENDAR\r\n");
         assertThat(ics).contains("UID:item-1@cuk-alimi").contains("UID:item-2@cuk-alimi").contains("UID:item-3@cuk-alimi")
@@ -39,6 +44,16 @@ class IcsTest {
         assertThat(ics).contains("DTSTART;VALUE=DATE:20260712").contains("DTEND;VALUE=DATE:20260713");
         // 긴 줄은 접히니 펴서 본다.
         assertThat(ics.replace("\r\n ", "")).contains("DESCRIPTION:3학년 대상\\n원문 제목\\; 쉼표\\, 포함\\nhttps://example.test/n/1");
+    }
+
+    @Test
+    void 같은_날_줄은_일정_하나이고_하나라도_끝냈으면_뺀다() {
+        Feed.Line a = line(21, "건국대학교 · 서울", null, false);
+        Feed.Line b = line(22, "상명대학교 · 서울", null, false);
+        String ics = Ics.of(view(card("학점교류 안내", true, a, b)), LocalDateTime.of(2026, 7, 10, 9, 0));
+        assertThat(ics).containsOnlyOnce("BEGIN:VEVENT").contains("SUMMARY:학점교류 안내\r\n");
+        Feed.Line doneB = new Feed.Line(22, "상명대학교 · 서울", null, LocalDate.of(2026, 7, 12), null, null, "ACTION", false, true);
+        assertThat(Ics.of(view(card("학점교류 안내", true, a, doneB)), LocalDateTime.of(2026, 7, 10, 9, 0))).doesNotContain("BEGIN:VEVENT");
     }
 
     @Test

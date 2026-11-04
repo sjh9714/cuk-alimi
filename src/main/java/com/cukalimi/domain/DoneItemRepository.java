@@ -7,5 +7,7 @@ public interface DoneItemRepository extends JpaRepository<DoneItem, DoneItem.Key
 
     List<DoneItem> findByUserId(Long userId);
 
+    boolean existsByDateItemId(Long dateItemId);
+
     void deleteByUserId(Long userId);
 }

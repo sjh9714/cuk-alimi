@@ -137,11 +137,17 @@ public class NoticeCollector {
                 .filter(Objects::nonNull).collect(Collectors.toSet());
         int changed = 0;
         for (Notice n : notices.findAllById(ids)) {
-            if (n.isRemoved()) {
+            // 묵은 글은 건너뛴다. 404로 내린 글은 되살아날 수 있으니 한 주 동안 더 본다.
+            if (n.isRemoved() && (!Notice.REMOVED_GONE.equals(n.getRemovedReason())
+                    || n.getRemovedAt().isBefore(java.time.OffsetDateTime.now().minusDays(7)))) {
                 continue;
             }
             try {
                 String html = fetcher.get(n.getUrl());
+                if (store.markAlive(n.getId())) {
+                    changed++;
+                    log.info("notice {} is back, revived", n.getArticleNo());
+                }
                 if (!normalize(NoticeViewParser.parse(html).bodyText()).equals(normalize(n.getBodyText()))) {
                     store.save(new NoticeSummary(n.getArticleNo(), n.getCategory(), n.getTitle(), n.getPostedOn(), n.getUrl(), n.getDept()), html);
                     changed++;
@@ -149,9 +155,12 @@ public class NoticeCollector {
             } catch (RuntimeException e) {
                 // 학교가 지운 글은 404다. 학생 화면과 알림에서 뺀다. 학교가 같은 공지를 고쳐 다시 올릴 때 흔하다.
                 if (isNotFound(e)) {
-                    store.retire(n.getId(), Notice.REMOVED_GONE);
-                    changed++;
-                    log.info("notice {} gone (404), retired", n.getArticleNo());
+                    if (store.noteGone(n.getId())) {
+                        changed++;
+                        log.info("notice {} gone (404 twice), retired", n.getArticleNo());
+                    } else {
+                        log.info("notice {} returned 404 once, watching", n.getArticleNo());
+                    }
                 } else {
                     log.warn("notice {} recheck failed: {}", n.getArticleNo(), e.getMessage());
                 }

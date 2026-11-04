@@ -150,17 +150,17 @@ public class PushService {
         Feed.View view = feeds.build(user, today).view();
         for (Feed.Section section : view.sections()) {
             for (Feed.Card card : section.cards()) {
-                List<Feed.Line> lines = new ArrayList<>(card.next());
-                if (card.deadline() != null) {
-                    lines.add(0, card.deadline());
-                }
-                for (Feed.Line line : lines) {
-                    if (line.done() || !"ACTION".equals(line.kind()) || !(card.mine() || line.saved())) {
+                // 홈은 같은 공지의 같은 날 줄을 한 행으로 합치고, 체크도 그 행 단위다. 알림도 같은 단위로 보낸다.
+                for (List<Feed.Line> group : Feed.sameDayGroups(card)) {
+                    Feed.Line line = group.get(0);
+                    boolean anyDone = group.stream().anyMatch(Feed.Line::done);
+                    boolean wanted = card.mine() || group.stream().anyMatch(Feed.Line::saved);
+                    if (anyDone || !wanted) {
                         continue;
                     }
                     for (int days : DAYS_BEFORE) {
                         if (line.endsOn().equals(today.plusDays(days))) {
-                            Reminder r = reminder(card, line, days);
+                            Reminder r = reminder(card, line, group.size() > 1 ? null : line.label(), days);
                             if (!already.contains(r.key())) {
                                 out.putIfAbsent(r.key(), r);
                             }
@@ -172,8 +172,8 @@ public class PushService {
         return new ArrayList<>(out.values());
     }
 
-    private static Reminder reminder(Feed.Card card, Feed.Line line, int days) {
-        String what = line.label() == null || line.label().isBlank() ? card.title() : card.title() + " · " + line.label();
+    private static Reminder reminder(Feed.Card card, Feed.Line line, String label, int days) {
+        String what = label == null || label.isBlank() ? card.title() : card.title() + " · " + label;
         String when = days == 1 ? "내일" : days + "일 뒤";
         String time = line.endsAt() == null ? "" : " " + line.endsAt().toString().substring(0, 5) + "까지";
         return new Reminder(line.id(), days, when + " 마감" + time, what, card.url());

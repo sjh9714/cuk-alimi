@@ -59,7 +59,7 @@ public class FeedService {
         Set<Long> doneIds = user == null ? Set.of()
                 : done.findByUserId(user.getId()).stream().map(DoneItem::getDateItemId).collect(Collectors.toSet());
 
-        List<DateItem> found = dateItems.findByEndsOnGreaterThanEqualAndStatusNot(from, DateItem.STATUS_CANDIDATE);
+        List<DateItem> found = dateItems.findByEndsOnGreaterThanEqualAndStatusNotIn(from, DateItem.HIDDEN);
         Map<Long, Notice> noticeById = new HashMap<>();
         Map<Long, Audience> audiences = new HashMap<>();
         Set<Long> removed = new java.util.HashSet<>();

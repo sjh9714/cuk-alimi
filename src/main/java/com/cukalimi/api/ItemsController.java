@@ -111,7 +111,7 @@ public class ItemsController {
                 : saved.findByUserId(user.getId()).stream().map(SavedItem::getDateItemId).collect(Collectors.toSet());
 
         List<DateItem> items = includePast ? dateItems.findByStatusNot(DateItem.STATUS_CANDIDATE)
-                : dateItems.findByEndsOnGreaterThanEqualAndStatusNot(today, DateItem.STATUS_CANDIDATE);
+                : dateItems.findByEndsOnGreaterThanEqualAndStatusNotIn(today, DateItem.HIDDEN);
         Map<Long, Notice> noticeById = new HashMap<>();
         for (Notice n : notices.findAllById(items.stream().map(DateItem::getNoticeId).filter(id -> id != null).toList())) {
             noticeById.put(n.getId(), n);

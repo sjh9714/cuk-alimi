@@ -75,7 +75,7 @@ public class AudienceReader {
         notices.findByAudienceReadAtIsNullAndPostedOnGreaterThanEqual(today.minusDays(FeedService.UNDATED_DAYS))
                 .forEach(n -> targets.put(n.getId(), n));
         // 오래된 공지라도 마감이 남아 홈에 나오면 읽는다.
-        List<Long> live = dateItems.findByEndsOnGreaterThanEqualAndStatusNot(today, DateItem.STATUS_CANDIDATE).stream()
+        List<Long> live = dateItems.findByEndsOnGreaterThanEqualAndStatusNotIn(today, DateItem.HIDDEN).stream()
                 .map(DateItem::getNoticeId).filter(Objects::nonNull).distinct().toList();
         notices.findAllById(live).stream().filter(n -> n.getAudienceReadAt() == null).forEach(n -> targets.putIfAbsent(n.getId(), n));
 

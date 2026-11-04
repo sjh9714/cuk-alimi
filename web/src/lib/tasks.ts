@@ -17,8 +17,10 @@ export type Task = {
   url: string;
   sourceTitle: string;
   excerpt: string | null;
-  /** 저장 대상. 한 줄로 합친 경우 첫 줄이다. */
+  /** 대표 줄. 한 줄로 합친 경우 첫 줄이다. */
   line: Line;
+  /** 이 행에 합친 줄 전부. 체크와 저장은 모두에 보낸다. 하나만 보내면 나머지 줄의 알림과 캘린더가 계속 나간다. */
+  lines: Line[];
   saved: boolean;
   /** 서버에 남은 끝냈어요. 로그인 전에는 false이고 브라우저 저장소가 대신한다. */
   done: boolean;
@@ -134,6 +136,7 @@ export function tasksOf(cards: Card[], today: string): Task[] {
         sourceTitle: card.sourceTitle,
         excerpt: card.audience.excerpt,
         line,
+        lines: group,
         saved: group.some((l) => l.saved),
         done: group.some((l) => l.done),
       });

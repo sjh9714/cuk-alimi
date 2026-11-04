@@ -85,7 +85,8 @@ function Planner({ today }: { today: Date }) {
       if (local.size > 0) writeDone(new Set());
       return;
     }
-    Promise.allSettled(pending.map((t) => api.markDone(t.line.id)))
+    // 하나라도 실패하면 로컬 체크를 지우지 않고 다음에 다시 옮긴다.
+    Promise.all(pending.flatMap((t) => t.lines.filter((l) => !l.done).map((l) => api.markDone(l.id))))
       .then(() => api.feed())
       .then((f) => {
         writeDone(new Set());
@@ -94,11 +95,12 @@ function Planner({ today }: { today: Date }) {
       .catch(() => {});
   }, [me, feed]);
 
-  const toggleSave = async (line: Line) => {
+  /** 행의 모든 줄을 같이 저장하거나 푼다. 하나라도 안 된 줄이 있으면 저장 쪽이다. */
+  const toggleSave = async (lines: Line[]) => {
     setError(null);
     try {
-      if (line.saved) await api.unsave(line.id);
-      else await api.save(line.id);
+      const saving = lines.some((l) => !l.saved);
+      await Promise.all(lines.filter((l) => l.saved !== saving).map((l) => (saving ? api.save(l.id) : api.unsave(l.id))));
       await refresh();
     } catch (e) {
       setError((e as Error).message);
@@ -110,8 +112,8 @@ function Planner({ today }: { today: Date }) {
     if (me && task) {
       setError(null);
       try {
-        if (task.done) await api.unmarkDone(task.line.id);
-        else await api.markDone(task.line.id);
+        // 행의 모든 줄에 보낸다. 첫 줄만 보내면 나머지 줄의 푸시와 캘린더가 계속 나간다.
+        await Promise.all(task.lines.filter((l) => l.done === task.done).map((l) => (task.done ? api.unmarkDone(l.id) : api.markDone(l.id))));
         await refresh();
       } catch (e) {
         setError((e as Error).message);

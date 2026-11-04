@@ -44,6 +44,8 @@ public class Notice {
     /** 학교가 지웠거나(GONE) 같은 날 같은 제목으로 다시 올려 묵은(DUPLICATE) 공지. 있으면 학생 화면과 알림에서 뺀다. */
     private OffsetDateTime removedAt;
     private String removedReason;
+    /** 재확인에서 404가 연속으로 난 횟수. 학교 CMS가 점검 중에 404를 주는 날 하나로 공지가 사라지지 않게 두 번째에 내린다. */
+    private int goneStrikes;
     private OffsetDateTime firstSeenAt = OffsetDateTime.now();
     private OffsetDateTime reviewedAt;
     private String reviewedBy;
@@ -104,6 +106,27 @@ public class Notice {
 
     public OffsetDateTime getRemovedAt() {
         return removedAt;
+    }
+
+    /** 404를 한 번 더 봤다. 두 번째면 내리고 true를 돌려준다. */
+    public boolean noteGone() {
+        goneStrikes++;
+        if (goneStrikes >= 2) {
+            markRemoved(REMOVED_GONE);
+            return true;
+        }
+        return false;
+    }
+
+    /** 다시 열렸다. 404 횟수를 지우고, 지워진 줄 알고 내렸던 것이면 되살린다. */
+    public boolean noteAlive() {
+        goneStrikes = 0;
+        if (removedAt != null && REMOVED_GONE.equals(removedReason)) {
+            removedAt = null;
+            removedReason = null;
+            return true;
+        }
+        return false;
     }
 
     public void markReviewed(String by) {

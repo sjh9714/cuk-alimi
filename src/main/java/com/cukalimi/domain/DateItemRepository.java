@@ -17,6 +17,8 @@ public interface DateItemRepository extends JpaRepository<DateItem, Long> {
     /** 학생 화면용. 그림에서 읽은 후보(CANDIDATE)는 운영자가 승인하기 전까지 빼고 본다. */
     List<DateItem> findByEndsOnGreaterThanEqualAndStatusNot(java.time.LocalDate day, String status);
 
+    List<DateItem> findByEndsOnGreaterThanEqualAndStatusNotIn(java.time.LocalDate day, java.util.Collection<String> statuses);
+
     List<DateItem> findByStatusNot(String status);
 
     long countBySourceKind(String sourceKind);

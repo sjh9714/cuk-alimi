@@ -62,6 +62,8 @@ class ApiFlowTest {
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine");
 
+    static final java.util.concurrent.atomic.AtomicBoolean ALIVE_999303 = new java.util.concurrent.atomic.AtomicBoolean(false);
+
     @TestConfiguration
     static class NoNetwork {
         @Bean
@@ -70,8 +72,11 @@ class ApiFlowTest {
             return new PageFetcher() {
                 @Override
                 public String get(String url) {
-                    // 학교가 지운 글. 다시 열면 404다.
+                    // 학교가 지운 글. 다시 열면 404다. ALIVE에 넣으면 저장해 둔 본문을 돌려준다.
                     if (url.contains("articleNo=999303")) {
+                        if (ALIVE_999303.get()) {
+                            return Fixtures.read("notice-273306.html").replace("273306", "999303").replace("수강신청 일정 안내", "수강신청 일정 재공지");
+                        }
                         throw new java.io.UncheckedIOException(new org.jsoup.HttpStatusException("not found", 404, url));
                     }
                     throw new IllegalStateException("no network in this test");
@@ -203,6 +208,42 @@ class ApiFlowTest {
     com.cukalimi.notice.NoticeCollector noticeCollector;
 
     @Test
+    void reparseKeepsSavedItemsAndPushTreatsSameDayLinesAsOne() {
+        String cookie = login("keep@catholic.ac.kr");
+        AppUser user = users.findByEmail("keep@catholic.ac.kr").orElseThrow();
+        String html = Fixtures.read("notice-273306.html").replace("273306", "999401").replace("수강신청 일정 안내", "수강신청 보존 시험");
+        store.save(new NoticeSummary(999401L, "학사", "", LocalDate.of(2026, 6, 29)), html);
+        Notice n = notices.findByArticleNo(999401L).orElseThrow();
+        try {
+            DateItem kept = dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId()).stream()
+                    .filter(i -> i.getTitle().contains("수강바구니")).findFirst().orElseThrow();
+            rest.exchange("/api/me/saved/" + kept.getId(), HttpMethod.POST, withCookie(cookie, null), Void.class);
+
+            // 표의 라벨이 바뀌어 같은 자리에 다른 일이 오면, 저장한 항목은 덮어쓰지 않고 거둔다. 저장은 남는다.
+            store.save(new NoticeSummary(999401L, "학사", "", LocalDate.of(2026, 6, 29)), html.replace("수강바구니", "전혀다른일"));
+            DateItem retired = dateItems.findById(kept.getId()).orElseThrow();
+            assertThat(retired.getStatus()).isEqualTo(DateItem.STATUS_RETIRED);
+            assertThat(retired.getEndsOn()).isEqualTo(kept.getEndsOn());
+            assertThat(rest.exchange("/api/feed", HttpMethod.GET, withCookie(cookie, null), String.class).getBody())
+                    .doesNotContain("\"id\":" + kept.getId() + ",").contains("전혀다른일");
+
+        // 같은 날 줄 둘(홈에서 한 행)은 푸시 하나이고, 하나라도 끝냈으면 보내지 않는다. 고정한 오늘은 7/10이라 D-3은 7/13이다.
+        long a = dateItems.save(DateItem.manual(n.getId(), "건국대학교 신청", null, LocalDate.of(2026, 7, 13), null, null, "ALL", "ALL", null, "t")).getId();
+        long b = dateItems.save(DateItem.manual(n.getId(), "상명대학교 신청", null, LocalDate.of(2026, 7, 13), null, null, "ALL", "ALL", null, "t")).getId();
+        rest.exchange("/api/me/saved/" + a, HttpMethod.POST, withCookie(cookie, null), Void.class);
+        rest.exchange("/api/me/saved/" + b, HttpMethod.POST, withCookie(cookie, null), Void.class);
+        assertThat(pushService.remindersFor(user, LocalDate.of(2026, 7, 10))).hasSize(1);
+        rest.exchange("/api/me/done/" + a, HttpMethod.POST, withCookie(cookie, null), Void.class);
+        assertThat(pushService.remindersFor(user, LocalDate.of(2026, 7, 10))).isEmpty();
+        } finally {
+            // 다른 테스트가 세는 카드 수에 끼지 않게 치운다.
+            rest.exchange("/api/me", HttpMethod.DELETE, withCookie(cookie, null), Void.class);
+            dateItems.deleteAll(dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId()));
+            notices.delete(n);
+        }
+    }
+
+    @Test
     void repostedAndDeletedNoticesLeaveTheFeed() {
         // 제목을 바꿔 둔다. 같은 제목이면 같이 심은 273306까지 묵혀 다른 테스트가 흔들린다.
         String html = Fixtures.read("notice-273306.html").replace("수강신청 일정 안내", "수강신청 일정 재공지");
@@ -219,16 +260,27 @@ class ApiFlowTest {
         long newerItem = dateItems.findByNoticeIdOrderByEndsOnAsc(newer.getId()).get(0).getId();
         assertThat(feed).contains("\"id\":" + newerItem + ",").doesNotContain("\"id\":" + olderItem + ",");
 
-        // 학교가 지운 글은 하루 한 번 재확인에서 404로 드러난다.
+        // 학교가 지운 글은 하루 한 번 재확인에서 404로 드러난다. 점검 중의 404 하루로 사라지지 않게 두 번째에 내리고, 다시 열리면 되살린다.
         store.save(new NoticeSummary(999303L, "학사", "", LocalDate.of(2026, 6, 30)), html.replace("273306", "999303"));
         Notice gone = notices.findByArticleNo(999303L).orElseThrow();
         long goneItem = dateItems.findByNoticeIdOrderByEndsOnAsc(gone.getId()).get(0).getId();
         assertThat(rest.getForObject("/api/feed", String.class)).contains("\"id\":" + goneItem + ",");
         noticeCollector.recheckOpenNotices(LocalDate.of(2026, 6, 1));
+        assertThat(notices.findByArticleNo(999303L).orElseThrow().isRemoved()).as("404 한 번은 지켜본다").isFalse();
+        noticeCollector.recheckOpenNotices(LocalDate.of(2026, 6, 1));
         Notice after = notices.findByArticleNo(999303L).orElseThrow();
         assertThat(after.isRemoved()).isTrue();
         assertThat(after.getRemovedReason()).isEqualTo(Notice.REMOVED_GONE);
         assertThat(rest.getForObject("/api/feed", String.class)).doesNotContain("\"id\":" + goneItem + ",");
+        ALIVE_999303.set(true);
+        try {
+            noticeCollector.recheckOpenNotices(LocalDate.of(2026, 6, 1));
+        } finally {
+            ALIVE_999303.set(false);
+        }
+        after = notices.findByArticleNo(999303L).orElseThrow();
+        assertThat(after.isRemoved()).as("다시 열리면 되살린다").isFalse();
+        assertThat(rest.getForObject("/api/feed", String.class)).contains("\"id\":" + goneItem + ",");
         // 나머지 테스트가 세는 공지 수에 영향을 주지 않게 치운다.
         for (Notice n : List.of(older, newer, after)) {
             dateItems.deleteAll(dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId()));

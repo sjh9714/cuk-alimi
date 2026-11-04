@@ -185,6 +185,15 @@ describe("monthCells", () => {
   });
 });
 
+describe("tasksOf 합친 줄", () => {
+  it("같은 날 줄을 합친 행은 줄 전부를 들고 있다", () => {
+    const c = card("겨울계절학기 서울 및 경인지역 대학교 학점교류 안내", [line("2026-11-10", "건국대학교 · 서울"), line("2026-11-10", "상명대학교 · 서울")]);
+    const [t] = tasksOf([c], TODAY);
+    expect(t.lines).toHaveLength(2);
+    expect(t.line).toBe(t.lines[0]);
+  });
+});
+
 describe("tasksOf 긴 이름", () => {
   it("같은 날 줄이 셋 넘으면 공문 제목을 쓴다", () => {
     const c = card("[중요] 2026-2학기 졸업시험 신청 및 대체요건 제출 안내", [

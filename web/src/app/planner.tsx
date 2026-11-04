@@ -16,7 +16,7 @@ export type Board = {
   done: Set<string>;
   canSave: boolean;
   onDone: (key: string) => void;
-  onSave: (line: Line) => void;
+  onSave: (lines: Line[]) => void;
 };
 
 export function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; tasks: Task[]; events: CampusEvent[] }) {
@@ -87,7 +87,7 @@ export function Row({ task, done, canSave, onDone, onSave }: Omit<Board, "todayI
         </div>
       </div>
       {canSave && (
-        <button className="keep" aria-pressed={task.saved} aria-label={task.saved ? "저장 해제" : "저장"} onClick={() => onSave(task.line)}>
+        <button className="keep" aria-pressed={task.saved} aria-label={task.saved ? "저장 해제" : "저장"} onClick={() => onSave(task.lines)}>
           <BookmarkIcon size={15} filled={task.saved} />
         </button>
       )}

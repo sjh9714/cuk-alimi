@@ -78,6 +78,25 @@ public final class Feed {
     }
 
     /**
+     * 카드의 할 일 줄을 같은 날끼리 묶는다. 홈이 같은 공지의 같은 날 줄을 한 행으로 합치므로(tasks.ts), 체크·저장·알림·캘린더도 이 단위로 본다.
+     * 안내 줄은 빼고, 첫 줄(대표 마감)이 앞에 온다.
+     */
+    public static List<List<Line>> sameDayGroups(Card card) {
+        List<Line> lines = new ArrayList<>();
+        if (card.deadline() != null) {
+            lines.add(card.deadline());
+        }
+        lines.addAll(card.next());
+        Map<LocalDate, List<Line>> byDay = new LinkedHashMap<>();
+        for (Line line : lines) {
+            if ("ACTION".equals(line.kind())) {
+                byDay.computeIfAbsent(line.endsOn(), d -> new ArrayList<>()).add(line);
+            }
+        }
+        return new ArrayList<>(byDay.values());
+    }
+
+    /**
      * @param upcoming    오늘 이후에 끝나는 날짜 항목
      * @param notices     항목이 가리키는 공지
      * @param audiences   공지 id별 대상 범위. undated의 공지도 들어 있다
