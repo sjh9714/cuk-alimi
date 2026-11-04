@@ -11,7 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
- * RUN_ONCE=schedule|notice|transcribe|all|digest|recheck|reparse 로 띄우면 수집(또는 아침 알림)을 한 번 돌리고 종료한다.
+ * RUN_ONCE=schedule|notice|transcribe|all|digest|recheck|reparse|audit 로 띄우면 수집(또는 아침 알림)을 한 번 돌리고 종료한다.
  * 운영에서는 비워 두고 스케줄러에 맡긴다.
  */
 @Component
@@ -27,11 +27,13 @@ public class RunOnceRunner implements ApplicationRunner {
     private final com.cukalimi.domain.NoticeRepository notices;
     private final com.cukalimi.domain.NoticeRawRepository raws;
     private final com.cukalimi.notice.NoticeStore store;
+    private final com.cukalimi.feed.FeedAudit audit;
 
     public RunOnceRunner(AppProperties props, ScheduleCollector schedules, NoticeCollector noticesCollector,
             ConfigurableApplicationContext context, com.cukalimi.digest.DigestService digest,
             com.cukalimi.notice.ImageNoticeReader imageReader, com.cukalimi.domain.NoticeRepository notices,
-            com.cukalimi.domain.NoticeRawRepository raws, com.cukalimi.notice.NoticeStore store) {
+            com.cukalimi.domain.NoticeRawRepository raws, com.cukalimi.notice.NoticeStore store, com.cukalimi.feed.FeedAudit audit) {
+        this.audit = audit;
         this.notices = notices;
         this.raws = raws;
         this.store = store;
@@ -82,6 +84,11 @@ public class RunOnceRunner implements ApplicationRunner {
                     }
                 }
                 System.out.println("reparse notices=" + n + " failed=" + failed);
+            }
+            if (mode.equals("audit")) {
+                var findings = audit.run(java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul")));
+                System.out.println("audit findings=" + findings.size());
+                findings.forEach(f -> System.out.println("audit " + f));
             }
             if (mode.equals("recheck")) {
                 System.out.println("recheck changed=" + noticesCollector.recheckOpenNotices(java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul"))));

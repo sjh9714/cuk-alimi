@@ -94,6 +94,13 @@ export default function QualityPage() {
                 <ScoreRow label="그림 공지" s={q.backtest.image} />
               </tbody>
             </table>
+            {q.backtest.labels && (
+              <p>
+                날짜만이 아니라 행의 제목도 봐요. 학생이 볼 제목을 정답으로 적어 두고 글자 그대로 같은지 세면{" "}
+                {q.backtest.labels.exact}/{q.backtest.labels.total}건({percent(q.backtest.labels.ratio)})이에요. 표의 설명 칸이
+                제목에 붙거나 자리 이름이 제목이 되는 오류를 잡으려고 2026-11-04에 더했어요.
+              </p>
+            )}
             <p className="muted">
               정밀도는 보여 준 마감 가운데 맞은 비율, 재현율은 있어야 할 마감 가운데 찾아낸 비율이에요. 정답은 뽑은 결과를
               보지 않고 공지 원문만 읽어 붙였어요. 그림 공지는 규칙을 고칠 때 함께 본 공지라 실제보다 높게 나올 수 있어요.

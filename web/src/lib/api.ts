@@ -170,6 +170,8 @@ export type Quality = {
     text: BacktestScore;
     image: BacktestScore;
     remaining: { type: string; description: string; missed: number; invented: number }[];
+    /** 행 제목이 정답과 글자 그대로 같은 마감 수. 정답에 label을 적은 뒤부터 있다. */
+    labels?: { total: number; exact: number; ratio: number };
   };
   review: {
     judged: number;

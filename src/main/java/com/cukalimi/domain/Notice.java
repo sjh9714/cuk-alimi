@@ -102,6 +102,10 @@ public class Notice {
         return removedReason;
     }
 
+    public OffsetDateTime getRemovedAt() {
+        return removedAt;
+    }
+
     public void markReviewed(String by) {
         this.status = STATUS_REVIEWED;
         this.reviewedAt = OffsetDateTime.now();

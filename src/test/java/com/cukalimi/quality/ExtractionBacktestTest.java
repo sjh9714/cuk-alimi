@@ -96,6 +96,12 @@ class ExtractionBacktestTest {
         JsonNode gold = JSON.readTree(Fixtures.read("gold/labels.json"));
         JsonNode labels = gold.get("notices");
         List<Outcome> outcomes = new java.util.ArrayList<>();
+        // 뽑은 항목을 공지별로 남긴다. 행 제목 정답지를 만들거나 고칠 때 본다.
+        ObjectNode itemsDump = JSON.createObjectNode();
+        // 행 제목. 정답의 label(빈 문자열이면 공지 제목)과 그 날짜의 할 일 항목 제목이 글자 그대로 같은지 센다 (2026-11-04 점검 노트 2번).
+        int labelTotal = 0;
+        int labelExact = 0;
+        List<String> labelMisses = new java.util.ArrayList<>();
         for (Iterator<Map.Entry<String, JsonNode>> it = labels.fields(); it.hasNext();) {
             Map.Entry<String, JsonNode> e = it.next();
             long no = Long.parseLong(e.getKey());
@@ -108,19 +114,51 @@ class ExtractionBacktestTest {
                     .map(i -> i.range().end()).collect(Collectors.toCollection(TreeSet::new));
             Set<LocalDate> want = new TreeSet<>();
             e.getValue().get("deadlines").forEach(d -> want.add(LocalDate.parse(d.get("date").asText())));
+            for (JsonNode d : e.getValue().get("deadlines")) {
+                if (!d.has("label")) {
+                    continue;
+                }
+                labelTotal++;
+                LocalDate day = LocalDate.parse(d.get("date").asText());
+                String expected = d.get("label").asText();
+                List<String> gotTitles = items.stream()
+                        .filter(i -> ItemKind.ACTION.equals(ItemKind.of(i.title())) && i.range().end().equals(day))
+                        .map(i -> i.title().equals(view.cleanTitle()) ? "" : i.title()).toList();
+                if (gotTitles.contains(expected)) {
+                    labelExact++;
+                } else {
+                    labelMisses.add(no + " " + day + " 정답 \"" + expected + "\" 결과 " + gotTitles);
+                }
+            }
             List<Known> known = new java.util.ArrayList<>();
             if (e.getValue().has("known")) {
                 e.getValue().get("known").forEach(k -> known.add(new Known(k.get("kind").asText(),
                         LocalDate.parse(k.get("date").asText()), k.get("type").asText())));
             }
             outcomes.add(new Outcome(no, source, view.category(), want, got, known));
+            ObjectNode dump = itemsDump.putObject(String.valueOf(no));
+            dump.put("title", view.title());
+            ArrayNode arr = dump.putArray("items");
+            for (ExtractedItem i : items) {
+                arr.addObject().put("title", i.title()).put("start", String.valueOf(i.range().start())).put("end", i.range().end().toString())
+                        .put("kind", ItemKind.of(i.title()));
+            }
         }
+        Files.createDirectories(Path.of("build/reports/extraction"));
+        JSON.writerWithDefaultPrettyPrinter().writeValue(Path.of("build/reports/extraction/items.json").toFile(), itemsDump);
 
         Score all = Score.of(outcomes);
         Score text = Score.of(outcomes.stream().filter(o -> "text".equals(o.source())).toList());
         Score image = Score.of(outcomes.stream().filter(o -> "image".equals(o.source())).toList());
         writeReport(all, text, image, outcomes);
-        checkPublishedSummary(summary(gold, all, text, image, outcomes));
+        Files.writeString(Path.of("build/reports/extraction/label-misses.txt"), String.join("\n", labelMisses) + "\n");
+        System.out.printf("row labels: exact=%d/%d%n", labelExact, labelTotal);
+        ObjectNode now = summary(gold, all, text, image, outcomes);
+        if (labelTotal > 0) {
+            now.putObject("labels").put("total", labelTotal).put("exact", labelExact)
+                    .put("ratio", Math.round(labelExact * 1000.0 / labelTotal) / 1000.0);
+        }
+        checkPublishedSummary(now);
 
         List<String> unclassified = new java.util.ArrayList<>();
         List<String> stale = new java.util.ArrayList<>();
