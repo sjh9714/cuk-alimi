@@ -315,7 +315,7 @@ function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; 
 function Row({ task, done, canSave, onDone, onSave, onReport }: Omit<Board, "todayIso"> & { task: Task }) {
   const finished = done.has(task.key);
   return (
-    <li className={`it ${task.kind} ${finished ? "done" : ""} ${task.mine || task.saved ? "picked" : ""}`}>
+    <li className={`it ${task.kind} ${finished ? "done" : ""} ${task.mine ? "picked" : ""}`}>
       <button className="box" aria-pressed={finished} aria-label={`${task.title} 끝냈어요`} onClick={() => onDone(task.key)}>
         <CheckIcon size={12} />
       </button>

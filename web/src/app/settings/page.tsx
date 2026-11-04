@@ -179,7 +179,7 @@ export default function Settings() {
           <section className="panel">
             <h2 className="panel-title">내 정보</h2>
             <p className="muted">
-              모두 선택이에요. 넣으면 내게 맞는 공지가 홈 위쪽으로 올라와요. 소득이나 성적은 받지 않아요.
+              모두 선택이에요. 넣으면 플래너에서 내게 맞는 일에 형광펜이 칠해지고, 접혀 있던 내 지역 장학이 플래너로 들어와요. 소득이나 성적은 받지 않아요.
             </p>
             <form onSubmit={saveProfile}>
               <div className="grid2">
@@ -286,7 +286,7 @@ export default function Settings() {
                   </div>
                 </div>
                 <p className="hint">
-                  본인이나 부모님 주민등록 주소예요. 그 지역 재단·지자체 장학금이 &lsquo;내게 맞는 공지&rsquo;로 올라와요.
+                  본인이나 부모님 주민등록 주소예요. 그 지역 재단·지자체 장학금이 접힌 구간에서 플래너로 들어오고 형광펜이 칠해져요.
                 </p>
               </fieldset>
               <div className="row" style={{ marginTop: 16 }}>

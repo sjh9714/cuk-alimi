@@ -160,7 +160,7 @@ public final class Feed {
         }
         add(sections, "career", "취업·창업 공지", "채용과 취업 프로그램이에요. 학교 공지에 올라온 것만 모았어요.", true, career);
         add(sections, "region", viewer.home() == null ? "지역 장학" : "다른 지역 장학",
-                viewer.home() == null ? "설정에서 연고 지역을 고르면 내 지역 장학이 위로 올라와요."
+                viewer.home() == null ? "설정에서 연고 지역을 고르면 내 지역 장학이 플래너로 들어와요."
                         : "본인이나 부모님 주소가 그 지역이어야 해요.",
                 true, region);
         add(sections, "group", "특정 대상·분야 장학", "특정 계층이나 전공만 신청할 수 있어요.", true, group);
