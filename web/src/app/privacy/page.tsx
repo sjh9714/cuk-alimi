@@ -48,6 +48,11 @@ export default function Privacy() {
               <td>마감 전에 알려 주려고</td>
             </tr>
             <tr>
+              <td>푸시 구독 주소 (브라우저가 만든 주소와 키)</td>
+              <td>설정에서 푸시를 켤 때</td>
+              <td>마감 3일 전과 하루 전에 이 기기로 알려 주려고. 끄면 바로 지워요</td>
+            </tr>
+            <tr>
               <td>&lsquo;날짜가 달라요&rsquo; 신고</td>
               <td>누를 때</td>
               <td>틀린 날짜를 내리고 고치려고</td>

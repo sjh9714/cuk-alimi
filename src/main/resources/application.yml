@@ -77,3 +77,9 @@ app:
     model: claude-haiku-5-5
     daily-limit: ${AUDIENCE_READ_DAILY_LIMIT:60}
     cron: "0 35 * * * *"
+  # 웹 푸시 (ADR 004). VAPID 키가 없으면 꺼진다. 키는 VapidKeyRun으로 한 번 만들어 환경 변수에 둔다. 아침 메일과 같은 시각에 D-3, D-1만 보낸다.
+  push:
+    public-key: ${VAPID_PUBLIC_KEY:}
+    private-key: ${VAPID_PRIVATE_KEY:}
+    subject: mailto:${ADMIN_EMAIL:cuk-alimi@localhost}
+    cron: "0 0 8 * * *"

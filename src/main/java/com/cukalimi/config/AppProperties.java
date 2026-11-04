@@ -17,7 +17,23 @@ public record AppProperties(
         Schedule schedule,
         Notice notice,
         Transcribe transcribe,
-        AudienceRead audienceRead) {
+        AudienceRead audienceRead,
+        Push push) {
+
+    /**
+     * 웹 푸시 (ADR 004). VAPID 키 쌍이 없으면 꺼진다. subject는 푸시 서비스가 문제 있을 때 연락할 mailto 주소다.
+     * toString에 비밀 키가 찍히지 않게 한다.
+     */
+    public record Push(String publicKey, String privateKey, String subject, String cron) {
+        public boolean enabled() {
+            return publicKey != null && !publicKey.isBlank() && privateKey != null && !privateKey.isBlank();
+        }
+
+        @Override
+        public String toString() {
+            return "Push[enabled=" + enabled() + "]";
+        }
+    }
 
     /**
      * AI가 공지 글에서 대상 조건을 읽는다 (ADR 013). 키는 transcribe와 같은 것을 쓴다. dailyLimit은 하루에 읽는 공지 수다.

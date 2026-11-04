@@ -75,6 +75,9 @@ export type Me = {
   calendarToken: string;
 };
 
+/** 푸시가 켜져 있는지, 구독에 쓰는 VAPID 공개 키, 이 계정에 등록된 기기 수. */
+export type PushState = { enabled: boolean; publicKey: string | null; devices: number };
+
 export type Scope = "GENERAL" | "REGION" | "GROUP" | "FIELD" | "RESULT";
 
 /** 카드 안의 날짜 한 줄. label이 없으면 공지 제목 그 자체의 마감이다. */
@@ -270,6 +273,9 @@ export const api = {
   logout: () => call<void>("POST", "/api/auth/logout"),
   setDigest: (enabled: boolean) => call<Me>("PUT", "/api/me/digest", { enabled }),
   rotateCalendar: () => call<Me>("POST", "/api/me/calendar/rotate"),
+  pushState: () => call<PushState>("GET", "/api/push"),
+  subscribePush: (sub: PushSubscriptionJSON) => call<void>("POST", "/api/me/push", sub),
+  unsubscribePush: (endpoint: string) => call<void>("DELETE", "/api/me/push", { endpoint }),
   deleteAccount: () => call<void>("DELETE", "/api/me"),
   leaveFeedback: (message: string) => call<void>("POST", "/api/feedback", { message }),
   feedback: () => call<FeedbackEntry[]>("GET", "/api/admin/feedback"),

@@ -51,6 +51,7 @@ public class AuthService {
     private final UserSessionRepository sessions;
     private final SavedItemRepository savedItems;
     private final com.cukalimi.domain.DoneItemRepository doneItems;
+    private final com.cukalimi.domain.PushSubscriptionRepository pushSubscriptions;
     private final UserBenefitRepository userBenefits;
     private final SentNotificationRepository sentNotifications;
     private final FeedbackRepository feedback;
@@ -59,7 +60,8 @@ public class AuthService {
             TransactionTemplate transaction, DateReportRepository reports,
             UserSessionRepository sessions, SavedItemRepository savedItems, UserBenefitRepository userBenefits,
             SentNotificationRepository sentNotifications, FeedbackRepository feedback,
-            com.cukalimi.domain.DoneItemRepository doneItems) {
+            com.cukalimi.domain.DoneItemRepository doneItems, com.cukalimi.domain.PushSubscriptionRepository pushSubscriptions) {
+        this.pushSubscriptions = pushSubscriptions;
         this.doneItems = doneItems;
         this.savedItems = savedItems;
         this.userBenefits = userBenefits;
@@ -141,6 +143,7 @@ public class AuthService {
         sessions.deleteByUserId(user.getId());
         savedItems.deleteByUserId(user.getId());
         doneItems.deleteByUserId(user.getId());
+        pushSubscriptions.deleteByUserId(user.getId());
         userBenefits.deleteByUserId(user.getId());
         sentNotifications.deleteByUserId(user.getId());
         feedback.deleteByUserId(user.getId());

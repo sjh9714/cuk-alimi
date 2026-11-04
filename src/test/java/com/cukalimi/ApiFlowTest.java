@@ -97,6 +97,12 @@ class ApiFlowTest {
             return new FakeAudienceClassifier();
         }
 
+        @Bean
+        @Primary
+        FakePushSender pushSender() {
+            return new FakePushSender();
+        }
+
         /** 픽스처 공지의 날짜(2026년 7월)가 아직 남아 있는 날로 고정한다. */
         @Bean
         @Primary
@@ -172,6 +178,91 @@ class ApiFlowTest {
             List<String> depts = title.contains("AI 대상") ? List.of("컴퓨터정보공학부") : List.of();
             return new Result(new com.cukalimi.feed.AudienceFacts(grades, depts, List.of(), List.of(), ""), "fake", 100, 20);
         }
+    }
+
+    /** 푸시 서비스 대신 보낸 내용을 모은다. gone을 켜면 구독이 사라진 것처럼 군다. */
+    static class FakePushSender implements com.cukalimi.push.PushService.Sender {
+        final List<String> payloads = new java.util.ArrayList<>();
+        boolean gone;
+
+        @Override
+        public com.cukalimi.push.WebPush.Outcome send(com.cukalimi.push.WebPush.Subscription sub, String payloadJson) {
+            if (gone) {
+                return com.cukalimi.push.WebPush.Outcome.GONE;
+            }
+            payloads.add(sub.endpoint() + " " + payloadJson);
+            return com.cukalimi.push.WebPush.Outcome.SENT;
+        }
+
+        @Override
+        public String publicKey() {
+            return "BFAKEKEY";
+        }
+
+        @Override
+        public boolean enabled() {
+            return true;
+        }
+    }
+
+    @Autowired
+    FakePushSender pushSender;
+    @Autowired
+    com.cukalimi.push.PushService pushService;
+    @Autowired
+    com.cukalimi.domain.PushSubscriptionRepository pushSubscriptions;
+
+    @Test
+    void pushGoesAtDMinus3OncePerDeviceAndGoneSubscriptionsAreDropped() {
+        String cookie = login("push@catholic.ac.kr");
+        AppUser user = users.findByEmail("push@catholic.ac.kr").orElseThrow();
+        // 공개 키는 로그인 없이 읽는다. 등록 기기 수는 로그인해야 센다.
+        ResponseEntity<Map> state = rest.getForEntity("/api/push", Map.class);
+        assertThat(state.getBody().get("enabled")).isEqualTo(true);
+        assertThat(state.getBody().get("publicKey")).isEqualTo("BFAKEKEY");
+
+        Map<String, Object> sub = Map.of("endpoint", "https://push.example/dev-1", "keys", Map.of("p256dh", "BPUB", "auth", "AUTH"));
+        assertThat(rest.exchange("/api/me/push", HttpMethod.POST, withCookie(cookie, sub), Void.class).getStatusCode())
+                .isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(rest.postForEntity("/api/me/push", sub, String.class).getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        assertThat(rest.exchange("/api/me/push", HttpMethod.POST,
+                withCookie(cookie, Map.of("endpoint", "http://plain.example/x", "keys", Map.of("p256dh", "B", "auth", "A"))), String.class)
+                .getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(((Number) rest.exchange("/api/push", HttpMethod.GET, withCookie(cookie, null), Map.class).getBody().get("devices"))
+                .longValue()).isEqualTo(1L);
+
+        // 고정한 오늘(7/10)에서 D-3인 항목을 넣고 학생이 저장한다. 푸시는 저장한 줄과 내게 맞는 줄만 본다.
+        long noticeId = notices.findByArticleNo(273306L).orElseThrow().getId();
+        long itemId = dateItems.save(DateItem.manual(noticeId, "푸시 확인 신청", null, LocalDate.of(2026, 7, 13), null,
+                java.time.LocalTime.of(17, 0), "ALL", "ALL", null, "test")).getId();
+        rest.exchange("/api/me/saved/" + itemId, HttpMethod.POST, withCookie(cookie, null), Void.class);
+
+        // 푸시 서비스가 410을 주면 구독을 지우고, 못 보냈으니 키도 남기지 않는다.
+        pushSender.gone = true;
+        assertThat(pushService.sendTo(user).gone()).isEqualTo(1);
+        assertThat(pushSubscriptions.findByUserId(user.getId())).isEmpty();
+        pushSender.gone = false;
+        rest.exchange("/api/me/push", HttpMethod.POST, withCookie(cookie, sub), Void.class);
+
+        assertThat(pushService.sendTo(user).sent()).isEqualTo(1);
+        assertThat(pushSender.payloads).hasSize(1);
+        assertThat(pushSender.payloads.get(0)).startsWith("https://push.example/dev-1 ").contains("3일 뒤 마감").contains("\"url\"");
+        // 같은 사건은 두 번 가지 않는다.
+        assertThat(pushService.sendTo(user).sent()).isEqualTo(0);
+
+        // 끝냈어요로 체크한 줄은 D-1이 와도 보내지 않는다 (여기서는 키가 이미 남아 있어 D-3도 다시 가지 않는다).
+        rest.exchange("/api/me/done/" + itemId, HttpMethod.POST, withCookie(cookie, null), Void.class);
+        assertThat(pushService.remindersFor(user, LocalDate.of(2026, 7, 12))).isEmpty();
+        rest.exchange("/api/me/done/" + itemId, HttpMethod.DELETE, withCookie(cookie, null), Void.class);
+        assertThat(pushService.remindersFor(user, LocalDate.of(2026, 7, 12))).hasSize(1);
+
+        // 이 기기만 끈다. 탈퇴하면 구독도 같이 지워진다.
+        assertThat(rest.exchange("/api/me/push", HttpMethod.DELETE, withCookie(cookie, Map.of("endpoint", "https://push.example/dev-1")),
+                Void.class).getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(pushSubscriptions.findByUserId(user.getId())).isEmpty();
+        rest.exchange("/api/me/push", HttpMethod.POST, withCookie(cookie, sub), Void.class);
+        rest.exchange("/api/me", HttpMethod.DELETE, withCookie(cookie, null), Void.class);
+        assertThat(pushSubscriptions.findByEndpoint("https://push.example/dev-1")).isEmpty();
     }
 
     @BeforeEach

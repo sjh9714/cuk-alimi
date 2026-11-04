@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { api, calendarUrl, type Me, type Sido } from "@/lib/api";
+import { api, calendarUrl, type Me, type PushState, type Sido } from "@/lib/api";
 
 export default function Settings() {
   const [me, setMe] = useState<Me | null | undefined>(undefined);
@@ -21,6 +21,10 @@ export default function Settings() {
   const [digestNote, setDigestNote] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [push, setPush] = useState<PushState | null>(null);
+  /** 이 브라우저의 구독. undefined는 아직 모름, null은 없음, false는 브라우저가 푸시를 못 함. */
+  const [thisDevice, setThisDevice] = useState<PushSubscription | null | false | undefined>(undefined);
+  const [pushNote, setPushNote] = useState<string | null>(null);
   const [confirmRotate, setConfirmRotate] = useState(false);
 
   useEffect(() => {
@@ -89,6 +93,59 @@ export default function Settings() {
     await api.logout();
     setMe(null);
     setSaved(false);
+  };
+
+  useEffect(() => {
+    if (!me) return;
+    api.pushState().then(setPush).catch(() => setPush(null));
+    if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+      setThisDevice(false);
+      return;
+    }
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then((reg) => reg.pushManager.getSubscription())
+      .then((sub) => setThisDevice(sub))
+      .catch(() => setThisDevice(false));
+  }, [me]);
+
+  const enablePush = async () => {
+    if (!push?.publicKey) return;
+    setBusy(true);
+    setError(null);
+    setPushNote(null);
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        setPushNote("브라우저에서 알림을 허용하지 않았어요. 주소창 옆 자물쇠에서 바꿀 수 있어요.");
+        return;
+      }
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: vapidKey(push.publicKey) });
+      await api.subscribePush(sub.toJSON() as PushSubscriptionJSON);
+      setThisDevice(sub);
+      setPush(await api.pushState());
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const disablePush = async () => {
+    if (!thisDevice) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await api.unsubscribePush(thisDevice.endpoint);
+      await thisDevice.unsubscribe();
+      setThisDevice(null);
+      setPush(await api.pushState());
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const copyCalendar = async () => {
@@ -349,6 +406,38 @@ export default function Settings() {
           </section>
 
           <section className="panel">
+            <h2 className="panel-title">마감 푸시</h2>
+            <p className="muted">
+              내게 맞는 마감과 저장한 마감의 3일 전과 하루 전 아침 8시에 이 기기로 알려요. 끝냈어요로 체크한 일은 보내지 않아요.
+            </p>
+            {push && !push.enabled && <p className="hint">지금은 서버에 푸시 키가 없어 꺼져 있어요.</p>}
+            {push?.enabled && thisDevice === false && (
+              <p className="hint">
+                이 브라우저는 푸시를 받을 수 없어요. 아이폰은 Safari의 공유 단추에서 &lsquo;홈 화면에 추가&rsquo;한 뒤 그 아이콘으로 열면
+                켤 수 있어요.
+              </p>
+            )}
+            {push?.enabled && thisDevice !== false && (
+              <div className="row between">
+                <span className="sub">
+                  {thisDevice ? "이 기기에서 켜져 있어요" : "이 기기에서 꺼져 있어요"}
+                  {push.devices > 0 && ` · 등록된 기기 ${push.devices}대`}
+                </span>
+                {thisDevice ? (
+                  <button type="button" disabled={busy} onClick={disablePush}>
+                    이 기기에서 끄기
+                  </button>
+                ) : (
+                  <button type="button" disabled={busy || thisDevice === undefined} onClick={enablePush}>
+                    이 기기에서 켜기
+                  </button>
+                )}
+              </div>
+            )}
+            {pushNote && <p className="hint">{pushNote}</p>}
+          </section>
+
+          <section className="panel">
             <h2 className="panel-title">캘린더 구독</h2>
             <p className="muted">
               이 주소를 구글·애플 캘린더에 &lsquo;URL로 구독&rsquo;으로 넣으면 내게 맞는 마감과 저장한 마감이 캘린더에 들어와요. 여기 오지
@@ -487,4 +576,13 @@ function FeedbackPanel() {
       )}
     </section>
   );
+}
+
+/** VAPID 공개 키(base64url)를 subscribe가 받는 바이트로 바꾼다. */
+function vapidKey(b64url: string): Uint8Array {
+  const padded = b64url.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - (b64url.length % 4)) % 4);
+  const raw = atob(padded);
+  const out = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) out[i] = raw.charCodeAt(i);
+  return out;
 }
