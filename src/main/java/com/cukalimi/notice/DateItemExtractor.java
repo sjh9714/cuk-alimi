@@ -42,8 +42,13 @@ public final class DateItemExtractor {
     /** 표 머리글의 자리 이름. 라벨이나 열 이름으로 쓰면 "구분 · 2/3 환불"처럼 뜻 없는 제목이 된다. */
     private static final Pattern GENERIC_HEADER = Pattern.compile("^(구\\s*분|내\\s*용|일\\s*정|일\\s*자|날\\s*짜|비\\s*고|기\\s*간|순\\s*번|번\\s*호|항\\s*목|no\\.?)$", Pattern.CASE_INSENSITIVE);
     /** 설명 칸. 글머리표나 문장 부호가 있거나 길면 라벨이 아니라 설명이다. 제목에 붙이면 "폐강과목 공고 (1차) 수강신청 인원이…"가 된다. */
-    private static final Pattern DESCRIPTION_CELL = Pattern.compile("[▶▷※:：;]|\\. |\\.$|다\\s*$|함\\s*$|음\\s*$|요\\s*$");
+    private static final Pattern DESCRIPTION_CELL = Pattern.compile("[▶▷※:：;]|\\. |\\.$|다\\s*$|함\\s*$|음\\s*$|요\\s*$|참조\\s*$|참고\\s*$");
     private static final int LABEL_CELL_LIMIT = 30;
+    /** "신청기간", "접수 기간", "마감 기한"처럼 일의 이름이 아니라 자리 이름인 라벨. 공지 제목이 곧 할 일이다. */
+    private static final Pattern GENERIC_LABEL = Pattern.compile(
+            "^((신청|접수|모집|조사|확인|평가|이벤트|행사|제출|운영|선발|지원)\\s*)?(기간|기한|마감(\\s*기한)?|일정|내용|일자)$|^신청\\s*접수$");
+    /** 설명 문장의 앞머리. 날짜 앞에 "명단 발송 및 제출 확인을 위해"처럼 이유가 적힌 줄이다. */
+    private static final Pattern DESCRIPTION_LEAD = Pattern.compile("(위해|위하여|바랍니다|주세요|합니다)\\s*$");
     /** 같은 행에 날짜 열이 여럿이고 기간이 같을 때 어느 열 이름을 쓸지. 할 일을 뜻하는 이름이 먼저다. */
     private static final Pattern ACTION_COLUMN = Pattern.compile("신청|접수|제출|납부|등록|모집|변경");
     private static final int LABEL_LINE_LIMIT = 20;
@@ -85,7 +90,16 @@ public final class DateItemExtractor {
                     .forEach(items::add);
         }
         items.removeIf(i -> i.range().end().isBefore(oldest));
-        return dedupe(items);
+        // "신청기간"처럼 자리 이름이거나 "명단 발송 및 제출 확인을 위해"처럼 이유 문장이면 공지 제목이 곧 할 일이다.
+        // 위의 문단 읽기 규칙(PERIOD_LINE)은 원래 라벨로 걸어야 하므로 맨 마지막에 바꾼다.
+        // 공지 제목이 "참가자 모집 공고"처럼 안내로 읽히면(ItemKind) 바꾸지 않는다. 할 일이 안내로 바뀌어 마감에서 빠진다.
+        boolean titleIsAction = com.cukalimi.feed.ItemKind.ACTION.equals(com.cukalimi.feed.ItemKind.of(cleanTitle));
+        List<ExtractedItem> named = new ArrayList<>();
+        for (ExtractedItem i : items) {
+            boolean generic = GENERIC_LABEL.matcher(i.title()).find() || DESCRIPTION_LEAD.matcher(i.title()).find();
+            named.add(generic && titleIsAction ? new ExtractedItem(cleanTitle, i.range(), i.targetGrade(), i.where()) : i);
+        }
+        return dedupe(named);
     }
 
     private static List<ExtractedItem> fromTable(Element table, KoreanDateParser parser, String fallbackTitle,
@@ -257,7 +271,7 @@ public final class DateItemExtractor {
     private static String leadOf(String text, DateRange merged) {
         int cut = text.indexOf(merged.matchedText().replaceFirst("^~", ""));
         String lead = cleanLabel(cut > 0 ? text.substring(0, cut) : "");
-        return lead.replaceAll("[\\s:：\\-–—·~∼〜～(\\[]+$", "").trim();
+        return lead.replaceAll("[\\s:：\\-–—·~∼〜～(\\[\\d.]+$", "").replaceAll("\\s*(안내는|안내|입니다|합니다)$", "").trim();
     }
 
     /** 한 칸 안에 날짜가 여럿이면(변경기간 2차처럼 날마다 한 줄) 처음부터 끝까지 한 기간으로 합친다. 칸을 넘어 합치지는 않는다. */
@@ -316,7 +330,8 @@ public final class DateItemExtractor {
     /** 라벨에서 주소, 글머리표, "1." "가." 같은 번호를 뗀다. */
     static String cleanLabel(String s) {
         String t = s.replaceAll("https?://\\S+", " ");
-        t = t.replaceFirst("^[\\s\\-–—·※▶▷•○●■□◦‣▪◆◇☞✔]+", "");
+        // 글머리표, 이모지, 쌍점처럼 글자가 아닌 앞머리는 뗀다. 괄호는 "(1차)"처럼 뜻이 있어 남긴다.
+        t = t.replaceFirst("^[^\\p{L}\\p{N}(\\[]+", "");
         t = t.replaceFirst("^(\\d{1,2}|[가-힣]|[①-⑳]|[a-zA-Z])\\s*[.)]\\s*", "");
         t = t.replaceFirst("^[\\s\\-–—·※▶▷•○●■□◦‣▪◆◇☞✔]+", "");
         return t.replaceAll("\\s+", " ").trim();

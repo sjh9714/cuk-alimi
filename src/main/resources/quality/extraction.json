@@ -1,5 +1,5 @@
 {
-  "measuredOn" : "2026-10-30",
+  "measuredOn" : "2026-11-04",
   "notices" : 89,
   "deadlines" : 86,
   "all" : {
@@ -39,5 +39,10 @@
     "description" : "문장 속 '~까지 보내 주세요' 같은 마감을 읽지 못해요",
     "missed" : 2,
     "invented" : 0
-  } ]
+  } ],
+  "labels" : {
+    "total" : 87,
+    "exact" : 78,
+    "ratio" : 0.897
+  }
 }

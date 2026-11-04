@@ -172,8 +172,11 @@ class NoticeParsersTest {
         List<ExtractedItem> items = extract("<p>신청기간</p><p>2026. 10. 22.(목) 9시 ~ 11. 12.(목) 18시</p>"
                 + "<p>결과발표</p><p>2026년 11월 말 예정</p>");
         assertThat(items).hasSize(1);
-        assertThat(items.get(0).title()).isEqualTo("신청기간");
+        // "신청기간"은 자리 이름이라 공지 제목(여기서는 "테스트")이 할 일이 된다. 일의 이름이 적힌 줄은 그대로 남는다.
+        assertThat(items.get(0).title()).isEqualTo("테스트");
         assertThat(items.get(0).range().end()).isEqualTo(LocalDate.of(2026, 11, 12));
+        List<ExtractedItem> named = extract("<p>서류 제출</p><p>2026. 10. 22.(목) 9시 ~ 11. 12.(목) 18시</p>");
+        assertThat(named).singleElement().satisfies(i -> assertThat(i.title()).isEqualTo("서류 제출"));
 
         List<ExtractedItem> dashed = extract("<p>모집기간</p><p>2026.<br>10.08(목)<br>–<br>10.29(목)<br>🕒 15:00</p>");
         assertThat(dashed).hasSize(1);
@@ -193,9 +196,9 @@ class NoticeParsersTest {
 
     @Test
     void headingAboveNamesTheDatesBelow() {
-        List<ExtractedItem> items = extract("<h3>3. 신청기간</h3><ol><li><p>2026.09.28.(월) 09:00 ~ 10. 30.(금) 18:00</p></li></ol>");
+        List<ExtractedItem> items = extract("<h3>3. 추천서 접수</h3><ol><li><p>2026.09.28.(월) 09:00 ~ 10. 30.(금) 18:00</p></li></ol>");
         assertThat(items).singleElement().satisfies(i -> {
-            assertThat(i.title()).isEqualTo("신청기간");
+            assertThat(i.title()).isEqualTo("추천서 접수");
             assertThat(i.range().end()).isEqualTo(LocalDate.of(2026, 10, 30));
         });
     }

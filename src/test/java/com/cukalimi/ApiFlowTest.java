@@ -529,7 +529,8 @@ class ApiFlowTest {
         List<DateItem> items = dateItems.findByNoticeIdOrderByEndsOnAsc(noticeId);
         assertThat(items).singleElement().satisfies(i -> {
             assertThat(i.getStatus()).isEqualTo(DateItem.STATUS_CANDIDATE);
-            assertThat(i.getTitle()).isEqualTo("신청기간");
+            // "신청기간"은 자리 이름이라 공지 제목이 할 일이 된다.
+            assertThat(i.getTitle()).isEqualTo("테스트 장학생 선발 안내");
             assertThat(i.getEndsOn()).isEqualTo(LocalDate.of(2026, 7, 31));
         });
         long itemId = items.get(0).getId();
