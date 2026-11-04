@@ -41,11 +41,13 @@ public class AuthController {
 
     /** semester는 이번 학기(9는 초과학기), grade는 거기서 나온 학년이다. */
     public record MeView(String email, Integer entryYear, String major, String secondMajor, String homeRegion,
-            Integer grade, Integer semester, Integer autoSemester, boolean semesterManual, boolean admin, boolean digestEnabled) {
+            Integer grade, Integer semester, Integer autoSemester, boolean semesterManual, boolean admin, boolean digestEnabled,
+            String calendarToken) {
         static MeView of(AppUser u, boolean admin) {
             LocalDate today = LocalDate.now();
             return new MeView(u.getEmail(), u.getEntryYear(), u.getMajor(), u.getSecondMajor(), u.getHomeRegion(),
-                    u.grade(today), u.semester(today), u.autoSemester(today), u.isSemesterManual(), admin, u.isDigestEnabled());
+                    u.grade(today), u.semester(today), u.autoSemester(today), u.isSemesterManual(), admin, u.isDigestEnabled(),
+                    u.getCalendarToken());
         }
     }
 

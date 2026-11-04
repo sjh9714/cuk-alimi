@@ -497,6 +497,19 @@ class ApiFlowTest {
         ResponseEntity<Map> on = rest.exchange("/api/me/digest", HttpMethod.PUT, withCookie(cookie, Map.of("enabled", true)), Map.class);
         assertThat(on.getBody().get("digestEnabled")).isEqualTo(true);
 
+        // 캘린더 구독 주소. 로그인 없이 토큰으로 읽고, 저장한 마감이 들어 있다. 다시 만들면 이전 주소는 404다.
+        String token = (String) on.getBody().get("calendarToken");
+        assertThat(token).hasSize(32);
+        ResponseEntity<String> ics = rest.getForEntity("/api/calendar/" + token + ".ics", String.class);
+        assertThat(ics.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(ics.getHeaders().getContentType().toString()).startsWith("text/calendar");
+        assertThat(ics.getBody()).startsWith("BEGIN:VCALENDAR").contains("UID:item-" + itemId + "@cuk-alimi");
+        ResponseEntity<Map> rotated = rest.exchange("/api/me/calendar/rotate", HttpMethod.POST, withCookie(cookie, null), Map.class);
+        String newToken = (String) rotated.getBody().get("calendarToken");
+        assertThat(newToken).hasSize(32).isNotEqualTo(token);
+        assertThat(rest.getForEntity("/api/calendar/" + token + ".ics", String.class).getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(rest.getForEntity("/api/calendar/" + newToken + ".ics", String.class).getStatusCode()).isEqualTo(HttpStatus.OK);
+
         // "이건 왜 없나요?" 한 줄. 빈 글은 받지 않는다. 남긴 글은 탈퇴할 때 같이 지운다(외래 키라 안 지우면 탈퇴가 실패한다).
         assertThat(rest.exchange("/api/feedback", HttpMethod.POST, withCookie(cookie, Map.of("message", "학과 공지도 보고 싶어요")),
                 Void.class).getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);

@@ -3,6 +3,12 @@
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
 
+/** 캘린더 앱에 넣는 구독 주소. API가 같은 origin이면 지금 주소에 붙인다. */
+export function calendarUrl(token: string): string {
+  const base = API_BASE || (typeof window === "undefined" ? "" : window.location.origin);
+  return `${base}/api/calendar/${token}.ics`;
+}
+
 export type NoticeRef = {
   articleNo: number;
   title: string;
@@ -65,6 +71,8 @@ export type Me = {
   semesterManual: boolean;
   admin: boolean;
   digestEnabled: boolean;
+  /** 캘린더 구독 주소의 토큰. 다시 만들면 이전 주소는 끊긴다. */
+  calendarToken: string;
 };
 
 export type Scope = "GENERAL" | "REGION" | "GROUP" | "FIELD" | "RESULT";
@@ -259,6 +267,7 @@ export const api = {
   requestLogin: (email: string) => call<{ message: string }>("POST", "/api/auth/request", { email }),
   logout: () => call<void>("POST", "/api/auth/logout"),
   setDigest: (enabled: boolean) => call<Me>("PUT", "/api/me/digest", { enabled }),
+  rotateCalendar: () => call<Me>("POST", "/api/me/calendar/rotate"),
   deleteAccount: () => call<void>("DELETE", "/api/me"),
   leaveFeedback: (message: string) => call<void>("POST", "/api/feedback", { message }),
   feedback: () => call<FeedbackEntry[]>("GET", "/api/admin/feedback"),

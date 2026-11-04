@@ -9,5 +9,7 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
     Optional<AppUser> findByUnsubscribeToken(String token);
 
+    Optional<AppUser> findByCalendarToken(String token);
+
     java.util.List<AppUser> findByDigestEnabledTrue();
 }

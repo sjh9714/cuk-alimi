@@ -26,6 +26,8 @@ public class AppUser {
     /** 아침 알림 메일을 받는가. 메일 안의 링크 하나로 끈다 (ADR 004). */
     private boolean digestEnabled = true;
     private String unsubscribeToken = java.util.UUID.randomUUID().toString().replace("-", "");
+    /** 캘린더 구독 주소의 토큰. 주소가 새면 설정에서 다시 만든다 (ADR 004). */
+    private String calendarToken = newToken();
     private OffsetDateTime createdAt = OffsetDateTime.now();
     private OffsetDateTime lastLoginAt;
 
@@ -56,6 +58,19 @@ public class AppUser {
 
     public String getUnsubscribeToken() {
         return unsubscribeToken;
+    }
+
+    public String getCalendarToken() {
+        return calendarToken;
+    }
+
+    /** 이전 구독 주소를 끊고 새 주소를 만든다. */
+    public void rotateCalendarToken() {
+        this.calendarToken = newToken();
+    }
+
+    private static String newToken() {
+        return java.util.UUID.randomUUID().toString().replace("-", "");
     }
 
     public void touchLogin() {

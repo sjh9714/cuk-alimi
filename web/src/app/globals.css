@@ -466,6 +466,25 @@ legend + * {
   gap: 8px;
 }
 
+/* 문장 속 글자 단추. 링크처럼 보이고 밑줄로만 구분한다. 설정의 "새로 만들기"가 쓴다. */
+button.link {
+  display: inline;
+  background: none;
+  border: 0;
+  padding: 0;
+  min-height: 0;
+  font: inherit;
+  color: var(--pen);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+button.link:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .row.between {
   justify-content: space-between;
 }

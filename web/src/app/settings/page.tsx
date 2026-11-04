@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { api, type Me, type Sido } from "@/lib/api";
+import { api, calendarUrl, type Me, type Sido } from "@/lib/api";
 
 export default function Settings() {
   const [me, setMe] = useState<Me | null | undefined>(undefined);
@@ -20,6 +20,8 @@ export default function Settings() {
   const [busy, setBusy] = useState(false);
   const [digestNote, setDigestNote] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [confirmRotate, setConfirmRotate] = useState(false);
 
   useEffect(() => {
     const flag = new URLSearchParams(window.location.search).get("digest");
@@ -87,6 +89,31 @@ export default function Settings() {
     await api.logout();
     setMe(null);
     setSaved(false);
+  };
+
+  const copyCalendar = async () => {
+    if (!me) return;
+    try {
+      await navigator.clipboard.writeText(calendarUrl(me.calendarToken));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      const input = document.getElementById("calendar-url") as HTMLInputElement | null;
+      input?.select();
+    }
+  };
+
+  const rotateCalendar = async () => {
+    setBusy(true);
+    setError(null);
+    try {
+      setMe(await api.rotateCalendar());
+      setConfirmRotate(false);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const setDigest = async (enabled: boolean) => {
@@ -319,6 +346,38 @@ export default function Settings() {
               <li>체크한 혜택 만료 7일 전</li>
             </ul>
             <p className="hint">같은 공지는 한 번만 보내요. 메일 맨 아래 링크로도 끌 수 있어요.</p>
+          </section>
+
+          <section className="panel">
+            <h2 className="panel-title">캘린더 구독</h2>
+            <p className="muted">
+              이 주소를 구글·애플 캘린더에 &lsquo;URL로 구독&rsquo;으로 넣으면 내게 맞는 마감과 저장한 마감이 캘린더에 들어와요. 여기 오지
+              않아도 캘린더 앱이 몇 시간에 한 번 새로 받아 가요.
+            </p>
+            <div className="row fit">
+              <input id="calendar-url" type="text" readOnly value={calendarUrl(me.calendarToken)} aria-label="캘린더 구독 주소" onFocus={(e) => e.currentTarget.select()} />
+              <button type="button" onClick={copyCalendar}>
+                {copied ? "복사했어요" : "복사"}
+              </button>
+            </div>
+            <p className="hint">
+              주소를 아는 사람은 누구나 내 마감 목록을 볼 수 있어요. 주소가 샜으면{" "}
+              {confirmRotate ? (
+                <>
+                  <button type="button" className="link" disabled={busy} onClick={rotateCalendar}>
+                    정말 새로 만들기
+                  </button>{" "}
+                  <button type="button" className="link" onClick={() => setConfirmRotate(false)}>
+                    취소
+                  </button>
+                </>
+              ) : (
+                <button type="button" className="link" onClick={() => setConfirmRotate(true)}>
+                  새로 만들기
+                </button>
+              )}
+              . 그러면 이전 주소는 바로 끊겨요.
+            </p>
           </section>
 
           <FeedbackPanel />
