@@ -166,7 +166,7 @@ export default function QualityPage() {
             <p>
               본문이 그림뿐인 공지는 AI(Claude Haiku)가 그림 속 글자를 두 번 따로 받아 적고, 날짜는 글 공지와 같은 규칙이
               뽑아요. 두 번의 날짜가 모두 같으면 바로 공개하고, 다르면 운영자가 원문과 맞춰 볼 때까지 공개하지 않아요. 공개한
-              날짜가 원문과 다르면 학생이 신고할 수 있고, 신고가 오면 바로 내려요.
+              날짜가 원문과 다르면 운영자가 검수 화면에서 고치거나 내려요.
             </p>
             <table className="facts">
               <tbody>
@@ -177,10 +177,6 @@ export default function QualityPage() {
                 <tr>
                   <th scope="row">어긋나서 운영자를 기다리는 날짜</th>
                   <td>{q.autoPublish.waiting}개</td>
-                </tr>
-                <tr>
-                  <th scope="row">학생 신고</th>
-                  <td>{q.autoPublish.reports}건</td>
                 </tr>
                 <tr>
                   <th scope="row">받아 적은 횟수</th>

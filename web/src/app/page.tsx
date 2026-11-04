@@ -81,17 +81,6 @@ function Planner({ today }: { today: Date }) {
     }
   };
 
-  const reportDate = async (line: Line) => {
-    if (!window.confirm("이 날짜가 학교 원문과 다른가요? 신고하면 운영자가 확인해요.")) return;
-    setError(null);
-    try {
-      await api.reportDate(line.id);
-      setFeed(await api.feed());
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  };
-
   const toggleDone = async (key: string) => {
     const task = tasksAll.find((t) => t.key === key);
     if (me && task) {
@@ -133,7 +122,7 @@ function Planner({ today }: { today: Date }) {
     .filter((s) => s.cards.length > 0);
   const saved = shown.filter((t) => t.saved);
 
-  const board = { todayIso, done: finishedKeys, canSave: !!me, onDone: toggleDone, onSave: toggleSave, onReport: reportDate };
+  const board = { todayIso, done: finishedKeys, canSave: !!me, onDone: toggleDone, onSave: toggleSave };
 
   return (
     <main id="main" className="planner">
@@ -300,7 +289,6 @@ type Board = {
   canSave: boolean;
   onDone: (key: string) => void;
   onSave: (line: Line) => void;
-  onReport: (line: Line) => void;
 };
 
 function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; tasks: Task[]; events: CampusEvent[] }) {
@@ -340,11 +328,6 @@ function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; 
                 {e.title}
               </a>
               {e.at && <span>{e.at}</span>}
-              {board.canSave && e.tag === "행사" && (
-                <button className="report" onClick={() => board.onReport(e.line)}>
-                  날짜가 달라요
-                </button>
-              )}
             </li>
           ))}
         </ul>
@@ -353,7 +336,7 @@ function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; 
   );
 }
 
-function Row({ task, done, canSave, onDone, onSave, onReport }: Omit<Board, "todayIso"> & { task: Task }) {
+function Row({ task, done, canSave, onDone, onSave }: Omit<Board, "todayIso"> & { task: Task }) {
   const finished = done.has(task.key);
   return (
     <li className={`it ${task.kind} ${finished ? "done" : ""} ${task.mine ? "picked" : ""}`}>
@@ -373,11 +356,6 @@ function Row({ task, done, canSave, onDone, onSave, onReport }: Omit<Board, "tod
             {task.from && <span>{task.from}</span>}
           </span>
           {task.at && <em>{task.at}</em>}
-          {canSave && (
-            <button className="report" onClick={() => onReport(task.line)}>
-              날짜가 달라요
-            </button>
-          )}
         </div>
       </div>
       {canSave && (

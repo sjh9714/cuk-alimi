@@ -289,7 +289,6 @@ export const api = {
   unsave: (id: number) => call<void>("DELETE", `/api/me/saved/${id}`),
   markDone: (id: number) => call<void>("POST", `/api/me/done/${id}`),
   unmarkDone: (id: number) => call<void>("DELETE", `/api/me/done/${id}`),
-  reportDate: (id: number) => call<void>("POST", `/api/items/${id}/report`),
   check: (id: number) => call<void>("POST", `/api/me/benefits/${id}`),
   uncheck: (id: number) => call<void>("DELETE", `/api/me/benefits/${id}`),
   review: () => call<ReviewQueue>("GET", "/api/admin/review"),

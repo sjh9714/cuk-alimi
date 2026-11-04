@@ -959,37 +959,6 @@ button.link:disabled {
   color: var(--c-gwa);
 }
 
-.it .m .report,
-.events .report {
-  padding: 0;
-  border: 0;
-  background: transparent;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--mute);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.it .m .report:hover,
-.events .report:hover {
-  background: transparent;
-  color: var(--alarm);
-}
-
-/* 행마다 달려 있어서 평소에는 감추고, 마우스를 올리거나 키보드로 닿을 때만 보인다. */
-@media (hover: hover) {
-  .events .report,
-  .it .m .report {
-    opacity: 0;
-  }
-  .events li:hover .report,
-  .it:hover .m .report,
-  .report:focus-visible {
-    opacity: 1;
-  }
-}
-
 .it.done .do,
 .it.done .m,
 .cell.past .it .do,
@@ -1867,9 +1836,7 @@ details.fold .note {
 /* 손가락으로 누르는 기기에서는 작은 체크와 책갈피의 누르는 면만 넓힌다. */
 @media (pointer: coarse) {
   .box,
-  .keep,
-  .report,
-  .it .m summary {
+  .keep {
     position: relative;
   }
   .box::after,
@@ -1877,12 +1844,6 @@ details.fold .note {
     content: "";
     position: absolute;
     inset: -13px;
-  }
-  .report::after,
-  .it .m summary::after {
-    content: "";
-    position: absolute;
-    inset: -9px -5px;
   }
 }
 
