@@ -24,6 +24,7 @@
   --c-jang: #0f7f55;
   --c-hak: #2b55d6;
   --c-chwi: #bf540b;
+  --c-gwa: #6d3bbd;
   --soon: #a35a00;
   --soon-2: #fdf1e1;
   --ok: #1c7a4b;
@@ -931,6 +932,10 @@ button.link:disabled {
 
 .it.career .m b {
   color: var(--c-chwi);
+}
+
+.it.dept .m b {
+  color: var(--c-gwa);
 }
 
 .it .m details[open] {

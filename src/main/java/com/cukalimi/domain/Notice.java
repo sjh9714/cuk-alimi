@@ -30,6 +30,8 @@ public class Notice {
     private Long id;
     private Long articleNo;
     private String category;
+    /** 학과 게시판 공지면 학과 이름. 중앙 게시판은 null (ADR 002). */
+    private String dept;
     private String title;
     private LocalDate postedOn;
     private String writer;
@@ -67,6 +69,16 @@ public class Notice {
         this.hasImages = hasImages;
         this.attachments = attachments;
         this.reviewReason = reviewReason;
+    }
+
+    public Notice(long articleNo, String category, String dept, String title, LocalDate postedOn, String writer,
+            String url, String bodyText, boolean hasImages, String attachments, String reviewReason) {
+        this(articleNo, category, title, postedOn, writer, url, bodyText, hasImages, attachments, reviewReason);
+        this.dept = dept;
+    }
+
+    public String getDept() {
+        return dept;
     }
 
     public void markReviewed(String by) {

@@ -97,7 +97,7 @@ export type Line = {
 /** deadline은 날짜가 그림에만 있어 확인 중인 카드(undated 구간)에서만 null이다. */
 export type Card = {
   key: string;
-  kind: "schedule" | "scholarship" | "academic" | "career";
+  kind: "schedule" | "scholarship" | "academic" | "career" | "dept";
   title: string;
   sourceTitle: string;
   url: string;
@@ -111,7 +111,7 @@ export type Card = {
 };
 
 export type Section = {
-  key: "must" | "mine" | "open" | "undated" | "career" | "region" | "group" | "events";
+  key: "must" | "mine" | "open" | "undated" | "career" | "region" | "group" | "dept" | "events";
   title: string;
   note: string;
   collapsed: boolean;

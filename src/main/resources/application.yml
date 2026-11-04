@@ -64,6 +64,12 @@ app:
         id: 22
       - name: 취창업
         id: 23
+    # 학과 게시판 (ADR 002 추가). 중앙 게시판과 같은 CMS다. 먼저 본인 학과 하나를 끝까지 잇고, 구조가 같은 게시판을 그때 센다.
+    boards:
+      - name: 컴퓨터정보공학부
+        dept: 컴퓨터정보공학부
+        list-url: https://csie.catholic.ac.kr/csie/community/notice.do?mode=list&articleLimit=30
+        view-url: https://csie.catholic.ac.kr/csie/community/notice.do?mode=view&articleNo=
   # 날짜가 그림에만 있는 공지를 AI가 받아 적는다 (ADR 010). 키가 없으면 꺼진다. 공지 수집(매시 07분) 뒤에 돈다.
   transcribe:
     api-key: ${ANTHROPIC_API_KEY:}

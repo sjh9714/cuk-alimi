@@ -57,6 +57,20 @@ class CollectorsIntegrationTest {
                 if (url.contains("calendar")) {
                     return Fixtures.read("calendar-2026.html");
                 }
+                // 학과 게시판(컴퓨터정보공학부). 목록은 글 하나만 남긴다.
+                if (url.contains("csie.catholic.ac.kr")) {
+                    if (url.contains("mode=view")) {
+                        return Fixtures.read("notice-csie-277297.html");
+                    }
+                    Document dept = Jsoup.parse(Fixtures.read("notice-list-csie.html"));
+                    dept.select("tbody > tr").forEach(tr -> {
+                        var a = tr.selectFirst("a.b-title[data-article-no]");
+                        if (a == null || !"277297".equals(a.attr("data-article-no"))) {
+                            tr.remove();
+                        }
+                    });
+                    return dept.outerHtml();
+                }
                 if (url.contains("mode=view")) {
                     String no = url.replaceAll(".*articleNo=(\\d+).*", "$1");
                     if (!KNOWN.contains(no)) {
@@ -94,10 +108,18 @@ class CollectorsIntegrationTest {
 
     @Test
     void noticesAreStoredOnceAndOneBrokenPageDoesNotStopTheRun() {
-        // 목록 첫 페이지 픽스처에는 최근 글 둘(276997 학사, 276772 장학)만 있다. 276772는 본문이 깨져 있다.
+        // 목록 첫 페이지 픽스처에는 최근 글 둘(276997 학사, 276772 장학)만 있고, 학과 게시판에 하나(277297)가 더 있다. 276772는 본문이 깨져 있다.
         NoticeCollector.Result first = noticeCollector.collectAll();
-        assertThat(first.fetched()).isEqualTo(1);
+        assertThat(first.fetched()).isEqualTo(2);
         assertThat(first.failed()).isEqualTo(1);
+
+        // 학과 게시판 글은 분류 "학과", 학과 이름, 학과 사이트 주소를 달고 들어온다 (ADR 002 추가).
+        Notice dept = notices.findByArticleNo(277297L).orElseThrow();
+        assertThat(dept.getCategory()).isEqualTo(NoticeCollector.CATEGORY_DEPT);
+        assertThat(dept.getDept()).isEqualTo("컴퓨터정보공학부");
+        assertThat(dept.getUrl()).isEqualTo("https://csie.catholic.ac.kr/csie/community/notice.do?mode=view&articleNo=277297");
+        assertThat(dept.getTitle()).isNotBlank();
+        assertThat(dept.getBodyText()).isNotBlank();
         Notice broken = notices.findByArticleNo(276772L).orElseThrow();
         assertThat(broken.getReviewReason()).isEqualTo(Notice.REASON_PARSE_FAILED);
         assertThat(broken.getStatus()).isEqualTo(Notice.STATUS_NEEDS_REVIEW);
@@ -132,7 +154,7 @@ class CollectorsIntegrationTest {
         NoticeCollector.Result second = noticeCollector.collectAll();
         assertThat(second.fetched()).isZero();
         assertThat(second.failed()).isZero();
-        assertThat(notices.count()).isEqualTo(4);
+        assertThat(notices.count()).isEqualTo(5);
     }
 
     @Test

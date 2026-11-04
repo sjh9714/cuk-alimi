@@ -30,6 +30,14 @@ class FeedTest {
         return n;
     }
 
+    Notice deptNotice(String dept, String title, String body) {
+        Notice n = new Notice(seq, "학과", dept, title, D.minusDays(3), "", "https://dept/" + seq, body, false, "", Notice.REASON_PARSED);
+        ReflectionTestUtils.setField(n, "id", seq++);
+        notices.put(n.getId(), n);
+        audiences.put(n.getId(), Audience.of(n));
+        return n;
+    }
+
     DateItem item(Notice n, String title, int days) {
         DateItem i = DateItem.fromNotice(n.getId(), "k" + seq, title, null, D.plusDays(days), null, null, null);
         ReflectionTestUtils.setField(i, "id", seq++);
@@ -50,6 +58,28 @@ class FeedTest {
 
     static Feed.Section section(Feed.View v, String key) {
         return v.sections().stream().filter(s -> s.key().equals(key)).findFirst().orElseThrow();
+    }
+
+    @Test
+    void departmentNoticeIsMineOnlyForThatDepartmentAndFoldedForOthers() {
+        Notice n = deptNotice("컴퓨터정보공학부", "[중요] 2026-2학기 졸업시험 신청 및 대체요건 제출 안내", "졸업시험 신청 기간 안내");
+        item(n, "졸업시험 신청", 5);
+
+        Feed.View mineView = build(new Feed.Viewer(3, "컴퓨터정보공학부", null, null));
+        Feed.Card card = section(mineView, "mine").cards().get(0);
+        assertThat(card.kind()).isEqualTo("dept");
+        assertThat(card.mine()).isTrue();
+        assertThat(card.mineReason()).isEqualTo("컴퓨터정보공학부 공지");
+
+        Feed.View secondMajor = build(new Feed.Viewer(2, "경영학과", "컴퓨터정보공학부", null));
+        assertThat(section(secondMajor, "mine").cards()).hasSize(1);
+
+        Feed.View other = build(new Feed.Viewer(2, "경영학과", null, null));
+        assertThat(other.sections()).extracting(Feed.Section::key).doesNotContain("mine", "must", "open");
+        assertThat(section(other, "dept").collapsed()).isTrue();
+        assertThat(section(other, "dept").cards().get(0).mine()).isFalse();
+
+        assertThat(section(build(Feed.Viewer.ANONYMOUS), "dept").cards()).hasSize(1);
     }
 
     @Test

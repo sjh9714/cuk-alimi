@@ -49,7 +49,17 @@ public record AppProperties(
     public record Digest(String cron) {
     }
 
-    public record Notice(String cron, int pageSize, List<Category> categories) {
+    public record Notice(String cron, int pageSize, List<Category> categories, List<Board> boards) {
+        public List<Board> boardsOrEmpty() {
+            return boards == null ? List.of() : boards;
+        }
+    }
+
+    /** 학과 게시판 하나 (ADR 002 추가). 같은 CMS라 글 번호는 중앙 게시판과 겹치지 않는다. viewUrl 뒤에 글 번호를 붙인다. */
+    public record Board(String name, String dept, String listUrl, String viewUrl) {
+        public String viewUrl(long articleNo) {
+            return viewUrl + articleNo;
+        }
     }
 
     /** 공지 게시판 분류. 학교 페이지의 srCategoryId 값과 짝이다. */

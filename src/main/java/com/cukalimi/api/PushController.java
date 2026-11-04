@@ -60,10 +60,13 @@ public class PushController {
         if (body.keys() == null || !com.cukalimi.push.WebPush.allowedEndpoint(body.endpoint())) {
             return ResponseEntity.badRequest().build();
         }
-        if (subscriptions.findByEndpoint(body.endpoint()).isEmpty() && subscriptions.countByUserId(user.getId()) >= MAX_DEVICES) {
+        // 새 기기이거나 다른 계정에서 넘어오는 기기면 이 계정의 기기 수를 센다. 같은 사람이 동시에 두 번 눌러 11대가 되는 것은 받아들인다.
+        var existing = subscriptions.findByEndpoint(body.endpoint());
+        boolean countsAsNew = existing.isEmpty() || !existing.get().getUserId().equals(user.getId());
+        if (countsAsNew && subscriptions.countByUserId(user.getId()) >= MAX_DEVICES) {
             return ResponseEntity.status(org.springframework.http.HttpStatus.CONFLICT).build();
         }
-        subscriptions.findByEndpoint(body.endpoint()).ifPresentOrElse(
+        existing.ifPresentOrElse(
                 s -> s.reassign(user.getId(), body.keys().p256dh(), body.keys().auth()),
                 () -> subscriptions.save(new PushSubscription(user.getId(), body.endpoint(), body.keys().p256dh(), body.keys().auth())));
         return ResponseEntity.noContent().build();

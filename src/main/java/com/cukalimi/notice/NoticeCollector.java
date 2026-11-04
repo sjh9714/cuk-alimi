@@ -72,12 +72,31 @@ public class NoticeCollector {
                 log.error("notice category {} list failed", category.name(), e);
             }
         }
+        for (AppProperties.Board board : props.notice().boardsOrEmpty()) {
+            try {
+                total = total.plus(collectBoard(board));
+            } catch (RuntimeException e) {
+                log.error("notice board {} list failed", board.name(), e);
+            }
+        }
         return total;
     }
 
     public Result collectCategory(int categoryId) {
-        String listHtml = fetcher.get(props.noticeListUrl(categoryId));
-        List<NoticeSummary> summaries = NoticeListParser.parse(listHtml);
+        return collect(NoticeListParser.parse(fetcher.get(props.noticeListUrl(categoryId))));
+    }
+
+    /** 학과 게시판. 목록의 분류 칸이 없으니 분류는 "학과"로 두고 학과 이름과 글 주소를 붙인다 (ADR 002 추가). */
+    public Result collectBoard(AppProperties.Board board) {
+        List<NoticeSummary> summaries = NoticeListParser.parse(fetcher.get(board.listUrl())).stream()
+                .map(s -> new NoticeSummary(s.articleNo(), CATEGORY_DEPT, s.title(), s.postedOn(), board.viewUrl(s.articleNo()), board.dept()))
+                .toList();
+        return collect(summaries);
+    }
+
+    public static final String CATEGORY_DEPT = "학과";
+
+    private Result collect(List<NoticeSummary> summaries) {
         int fetched = 0;
         int items = 0;
         int needsManual = 0;
@@ -90,7 +109,7 @@ public class NoticeCollector {
             }
             String html = null;
             try {
-                html = fetcher.get(props.noticeViewUrl(summary.articleNo()));
+                html = fetcher.get(summary.url() == null ? props.noticeViewUrl(summary.articleNo()) : summary.url());
                 NoticeStore.Saved saved = store.save(summary, html);
                 fetched++;
                 items += saved.items();
@@ -121,7 +140,7 @@ public class NoticeCollector {
             try {
                 String html = fetcher.get(n.getUrl());
                 if (!normalize(NoticeViewParser.parse(html).bodyText()).equals(normalize(n.getBodyText()))) {
-                    store.save(new NoticeSummary(n.getArticleNo(), n.getCategory(), n.getTitle(), n.getPostedOn()), html);
+                    store.save(new NoticeSummary(n.getArticleNo(), n.getCategory(), n.getTitle(), n.getPostedOn(), n.getUrl(), n.getDept()), html);
                     changed++;
                 }
             } catch (RuntimeException e) {

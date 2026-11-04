@@ -56,8 +56,9 @@ public class NoticeStore {
         raws.save(new NoticeRaw(view.articleNo(), html));
         Notice notice = notices.findByArticleNo(view.articleNo()).orElse(null);
         if (notice == null) {
-            notice = notices.save(new Notice(view.articleNo(), category, view.title(), view.postedOn(),
-                    view.writer(), props.noticeViewUrl(view.articleNo()), view.bodyText(), view.hasImages(),
+            String url = summary.url() == null ? props.noticeViewUrl(view.articleNo()) : summary.url();
+            notice = notices.save(new Notice(view.articleNo(), category, summary.dept(), view.title(), view.postedOn(),
+                    view.writer(), url, view.bodyText(), view.hasImages(),
                     String.join("\n", view.attachments()), reason));
         } else {
             boolean changed = notice.reparsed(view.title(), view.bodyText(), view.hasImages(),
@@ -146,7 +147,8 @@ public class NoticeStore {
             raws.save(new NoticeRaw(summary.articleNo(), ""));
         }
         notices.save(new Notice(summary.articleNo(), summary.category(), summary.title(), summary.postedOn(), "",
-                props.noticeViewUrl(summary.articleNo()), "읽기 실패: " + error, false, "", Notice.REASON_PARSE_FAILED));
+                summary.url() == null ? props.noticeViewUrl(summary.articleNo()) : summary.url(), "읽기 실패: " + error, false, "",
+                Notice.REASON_PARSE_FAILED));
         log.warn("notice {} parse failed: {}", summary.articleNo(), error);
     }
 }

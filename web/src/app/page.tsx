@@ -7,8 +7,8 @@ import { boardCards, cleanTitle, eventsOf, iso, startsOf, tasksOf, type CampusEv
 import { BookmarkIcon, CheckIcon, ChevronIcon } from "./icons";
 
 /** 학사일정 표와 학사 공지는 출처만 다르다. 학생에게는 둘 다 학사다. */
-const KIND_LABEL: Record<Kind, string> = { schedule: "학사", scholarship: "장학", academic: "학사", career: "취업" };
-const KINDS: (Kind | "all")[] = ["all", "scholarship", "academic", "career"];
+const KIND_LABEL: Record<Kind, string> = { schedule: "학사", scholarship: "장학", academic: "학사", career: "취업", dept: "학과" };
+const KINDS: (Kind | "all")[] = ["all", "scholarship", "academic", "career", "dept"];
 const WEEKDAY = ["일", "월", "화", "수", "목", "금", "토"];
 const TAG_CLASS = { 시작: "start", 마감: "end", 행사: "event" };
 const DONE_KEY = "cuk-alimi.done";
@@ -128,7 +128,7 @@ function Planner({ today }: { today: Date }) {
   const others = shown.filter((t) => t.date >= after && t.kind !== "schedule");
   const undated = (sections.find((s) => s.key === "undated")?.cards ?? []).filter((c) => inKind(c.kind));
   const folded = sections
-    .filter((s) => s.key === "region" || s.key === "group")
+    .filter((s) => s.key === "region" || s.key === "group" || s.key === "dept")
     .map((s) => ({ ...s, cards: s.cards.filter((c) => inKind(c.kind)) }))
     .filter((s) => s.cards.length > 0);
   const saved = shown.filter((t) => t.saved);

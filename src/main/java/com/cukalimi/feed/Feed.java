@@ -99,6 +99,7 @@ public final class Feed {
         List<Card> region = new ArrayList<>();
         List<Card> group = new ArrayList<>();
         List<Card> events = new ArrayList<>();
+        List<Card> dept = new ArrayList<>();
         for (var entry : groups.entrySet()) {
             List<DateItem> items = withoutTitleEcho(entry.getValue().stream().sorted(ITEM_ORDER).toList(), notices);
             DateItem first = items.get(0);
@@ -136,6 +137,14 @@ public final class Feed {
             }
             DateItem deadline = actions.get(0);
             List<Line> next = items.stream().filter(i -> i != deadline).map(i -> line(i, title, saved, done)).toList();
+            // 학과 게시판 공지는 그 학과 학생에게만 "내 것"이고, 다른 학생에게는 접힌 구간이다 (ADR 002 추가).
+            if (notice.getDept() != null) {
+                boolean myDept = contains(notice.getDept(), viewer.major()) || contains(notice.getDept(), viewer.secondMajor());
+                Card card = new Card(entry.getKey(), kind(notice), title, notice.getTitle(), notice.getUrl(),
+                        AudienceView.of(audience), myDept, myDept ? notice.getDept() + " 공지" : null, line(deadline, title, saved, done), next);
+                (myDept ? mine : dept).add(card);
+                continue;
+            }
             String reason = mineReason(audience, deadline, viewer);
             boolean isMine = reason != null;
             Card card = new Card(entry.getKey(), kind(notice), title, notice.getTitle(), notice.getUrl(),
@@ -158,7 +167,7 @@ public final class Feed {
 
         List<Section> sections = new ArrayList<>();
         add(sections, "must", "꼭 챙길 일정", "모든 재학생이 대상이에요.", false, must);
-        add(sections, "mine", "내게 맞는 공지", "연고 지역이나 학년·학과가 맞는 공지예요.", false, mine);
+        add(sections, "mine", "내게 맞는 공지", "연고 지역이나 학년·학과가 맞는 공지, 내 학과 게시판 공지예요.", false, mine);
         add(sections, "open", "장학·학사 공지", "지원 자격은 카드의 원문 발췌를 확인하세요.", false, open);
         List<Card> waiting = undated.stream()
                 .filter(n -> audiences.get(n.getId()) != null && !Audience.RESULT.equals(audiences.get(n.getId()).scope()))
@@ -176,6 +185,7 @@ public final class Feed {
                         : "본인이나 부모님 주소가 그 지역이어야 해요.",
                 true, region);
         add(sections, "group", "특정 대상·분야 장학", "특정 계층이나 전공만 신청할 수 있어요.", true, group);
+        add(sections, "dept", "다른 학과 공지", "설정에서 전공을 고르면 내 학과 공지가 플래너로 들어와요.", true, dept);
         add(sections, "events", "행사 일정", "신청할 것 없이 날짜만 알아 두면 되는 행사예요.", true, events);
         return new View(sections, signedIn, viewer.home() != null);
     }
@@ -251,6 +261,7 @@ public final class Feed {
         return switch (n.getCategory() == null ? "" : n.getCategory()) {
             case "장학" -> "scholarship";
             case "취창업" -> "career";
+            case "학과" -> "dept";
             default -> "academic";
         };
     }
