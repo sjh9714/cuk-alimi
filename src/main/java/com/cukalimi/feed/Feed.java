@@ -33,7 +33,12 @@ public final class Feed {
 
     /** label은 공지 안에서 이 날짜가 무엇인지("트리니티 신청", "서류 합격자 발표"). 공지 제목과 같으면 비운다. */
     public record Line(long id, String label, LocalDate startsOn, LocalDate endsOn, LocalTime startsAt, LocalTime endsAt,
-            String kind, boolean saved) {
+            String kind, boolean saved, boolean done) {
+
+        public Line(long id, String label, LocalDate startsOn, LocalDate endsOn, LocalTime startsAt, LocalTime endsAt,
+                String kind, boolean saved) {
+            this(id, label, startsOn, endsOn, startsAt, endsAt, kind, saved, false);
+        }
     }
 
     /** grade는 제목과 자격 문단에 적힌 학년("2~4학년", "졸업예정자"). 없으면 null. */
@@ -74,6 +79,13 @@ public final class Feed {
      */
     public static View build(List<DateItem> upcoming, Map<Long, Notice> notices, Map<Long, Audience> audiences,
             List<Notice> undated, Viewer viewer, boolean signedIn, Set<Long> saved, IntFunction<String> scheduleUrl) {
+        return build(upcoming, notices, audiences, undated, viewer, signedIn, saved, Set.of(), scheduleUrl);
+    }
+
+    /** done은 학생이 "끝냈어요"로 체크한 항목이다. 줄에만 표시하고 구간 배치는 바꾸지 않는다. */
+    public static View build(List<DateItem> upcoming, Map<Long, Notice> notices, Map<Long, Audience> audiences,
+            List<Notice> undated, Viewer viewer, boolean signedIn, Set<Long> saved, Set<Long> done,
+            IntFunction<String> scheduleUrl) {
         Map<String, List<DateItem>> groups = new LinkedHashMap<>();
         for (DateItem i : upcoming) {
             String key = i.getNoticeId() == null ? "item:" + i.getId() : "notice:" + i.getNoticeId();
@@ -97,11 +109,11 @@ public final class Feed {
                     if (ItemKind.ACTION.equals(ItemKind.of(i.getTitle()))) {
                         must.add(new Card("item:" + i.getId(), "schedule", i.getTitle(), i.getTitle(),
                                 scheduleUrl.apply(scheduleYear(i)), new AudienceView(Audience.GENERAL, null, null, null),
-                                false, line(i, null, saved), List.of()));
+                                false, line(i, null, saved, done), List.of()));
                     } else if (isEvent(i, null)) {
                         events.add(new Card("item:" + i.getId(), "schedule", i.getTitle(), i.getTitle(),
                                 scheduleUrl.apply(scheduleYear(i)), new AudienceView(Audience.GENERAL, null, null, null),
-                                false, line(i, null, saved), List.of()));
+                                false, line(i, null, saved, done), List.of()));
                     }
                 }
                 continue;
@@ -117,17 +129,17 @@ public final class Feed {
                 String named = "career".equals(kind(notice)) ? null : title;
                 items.stream().filter(i -> isEvent(i, named)).forEach(i -> events.add(
                         new Card("event:" + i.getId(), kind(notice), ItemKind.isWhenOnly(i.getTitle()) ? title : tidyLabel(i.getTitle()),
-                                notice.getTitle(), notice.getUrl(), AudienceView.of(audience), false, line(i, title, saved), List.of())));
+                                notice.getTitle(), notice.getUrl(), AudienceView.of(audience), false, line(i, title, saved, done), List.of())));
             }
             if (actions.isEmpty()) {
                 continue;
             }
             DateItem deadline = actions.get(0);
-            List<Line> next = items.stream().filter(i -> i != deadline).map(i -> line(i, title, saved)).toList();
+            List<Line> next = items.stream().filter(i -> i != deadline).map(i -> line(i, title, saved, done)).toList();
             String reason = mineReason(audience, deadline, viewer);
             boolean isMine = reason != null;
             Card card = new Card(entry.getKey(), kind(notice), title, notice.getTitle(), notice.getUrl(),
-                    AudienceView.of(audience), isMine, reason, line(deadline, title, saved), next);
+                    AudienceView.of(audience), isMine, reason, line(deadline, title, saved, done), next);
             // 취업 공지는 학년이 맞아도 접힌 구간에 둔다. "내게 맞는 공지"와 아침 메일은 장학·학사만 다룬다.
             if (isMust(audience, title)) {
                 must.add(card);
@@ -253,10 +265,10 @@ public final class Feed {
         }
     }
 
-    private static Line line(DateItem i, String noticeTitle, Set<Long> saved) {
+    private static Line line(DateItem i, String noticeTitle, Set<Long> saved, Set<Long> done) {
         String label = noticeTitle == null || sameThing(i.getTitle(), noticeTitle) ? null : tidyLabel(i.getTitle());
         return new Line(i.getId(), label, i.getStartsOn(), i.getEndsOn(), i.getStartsAt(), i.getEndsAt(),
-                ItemKind.of(i.getTitle()), saved.contains(i.getId()));
+                ItemKind.of(i.getTitle()), saved.contains(i.getId()), done.contains(i.getId()));
     }
 
     /** 표의 칸을 이어 붙인 이름("서강대학교 · 서강대학교 · 서울 · 첨부파일 참조")에서 겹친 칸과 안내 문구를 뺀다. */

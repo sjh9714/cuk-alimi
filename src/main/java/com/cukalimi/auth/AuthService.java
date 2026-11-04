@@ -50,6 +50,7 @@ public class AuthService {
     private final DateReportRepository reports;
     private final UserSessionRepository sessions;
     private final SavedItemRepository savedItems;
+    private final com.cukalimi.domain.DoneItemRepository doneItems;
     private final UserBenefitRepository userBenefits;
     private final SentNotificationRepository sentNotifications;
     private final FeedbackRepository feedback;
@@ -57,7 +58,9 @@ public class AuthService {
     public AuthService(AppProperties props, MailSender mail, AppUserRepository users, LoginTokenRepository tokens, LoginIpLimiter ipLimiter,
             TransactionTemplate transaction, DateReportRepository reports,
             UserSessionRepository sessions, SavedItemRepository savedItems, UserBenefitRepository userBenefits,
-            SentNotificationRepository sentNotifications, FeedbackRepository feedback) {
+            SentNotificationRepository sentNotifications, FeedbackRepository feedback,
+            com.cukalimi.domain.DoneItemRepository doneItems) {
+        this.doneItems = doneItems;
         this.savedItems = savedItems;
         this.userBenefits = userBenefits;
         this.sentNotifications = sentNotifications;
@@ -137,6 +140,7 @@ public class AuthService {
     public void deleteAccount(AppUser user) {
         sessions.deleteByUserId(user.getId());
         savedItems.deleteByUserId(user.getId());
+        doneItems.deleteByUserId(user.getId());
         userBenefits.deleteByUserId(user.getId());
         sentNotifications.deleteByUserId(user.getId());
         feedback.deleteByUserId(user.getId());

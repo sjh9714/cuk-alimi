@@ -12,6 +12,8 @@ import com.cukalimi.domain.DateReport;
 import com.cukalimi.domain.DateReportRepository;
 import com.cukalimi.domain.Notice;
 import com.cukalimi.domain.NoticeRepository;
+import com.cukalimi.domain.DoneItem;
+import com.cukalimi.domain.DoneItemRepository;
 import com.cukalimi.domain.SavedItem;
 import com.cukalimi.domain.SavedItemRepository;
 import com.cukalimi.domain.UserBenefit;
@@ -58,12 +60,14 @@ public class ItemsController {
     private final NoticeRepository notices;
     private final BenefitRepository benefits;
     private final SavedItemRepository saved;
+    private final DoneItemRepository done;
     private final UserBenefitRepository userBenefits;
 
     public ItemsController(AuthService auth, DateItemRepository dateItems, NoticeRepository notices,
-            BenefitRepository benefits, SavedItemRepository saved, UserBenefitRepository userBenefits,
+            BenefitRepository benefits, SavedItemRepository saved, DoneItemRepository done, UserBenefitRepository userBenefits,
             DateReportRepository reports, Clock clock,
             MailSender mail, AppProperties props) {
+        this.done = done;
         this.mail = mail;
         this.props = props;
         this.reports = reports;
@@ -206,6 +210,24 @@ public class ItemsController {
     public ResponseEntity<Void> unsave(HttpServletRequest request, @PathVariable long itemId) {
         AppUser user = auth.requireUser(request);
         saved.deleteById(new SavedItem.Key(user.getId(), itemId));
+        return ResponseEntity.noContent().build();
+    }
+
+    /** "끝냈어요" 체크. 로그인했으면 서버에 남아 다른 기기에서도 같다. 끝낸 마감은 알림 메일과 캘린더에서 빠진다. */
+    @PostMapping("/me/done/{itemId}")
+    @Transactional
+    public ResponseEntity<Void> markDone(HttpServletRequest request, @PathVariable long itemId) {
+        AppUser user = auth.requireUser(request);
+        dateItems.findById(itemId).orElseThrow();
+        done.save(new DoneItem(user.getId(), itemId));
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/me/done/{itemId}")
+    @Transactional
+    public ResponseEntity<Void> unmarkDone(HttpServletRequest request, @PathVariable long itemId) {
+        AppUser user = auth.requireUser(request);
+        done.deleteById(new DoneItem.Key(user.getId(), itemId));
         return ResponseEntity.noContent().build();
     }
 

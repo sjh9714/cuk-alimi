@@ -42,6 +42,13 @@ class IcsTest {
     }
 
     @Test
+    void 끝낸_줄은_넣지_않는다() {
+        Feed.Line done = new Feed.Line(7, null, null, LocalDate.of(2026, 7, 12), null, null, "ACTION", true, true);
+        String ics = Ics.of(view(card("끝낸 공지", true, done)), LocalDateTime.of(2026, 7, 10, 9, 0));
+        assertThat(ics).doesNotContain("BEGIN:VEVENT");
+    }
+
+    @Test
     void 시각이_있으면_서울_시각을_UTC로_적는다() {
         String ics = Ics.of(view(card("17시 마감", true, line(9, null, LocalTime.of(17, 0), false))), LocalDateTime.of(2026, 7, 10, 9, 0));
         assertThat(ics).contains("DTSTART:20260712T070000Z").contains("DTEND:20260712T080000Z");

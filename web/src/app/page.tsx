@@ -34,6 +34,8 @@ function Planner({ today }: { today: Date }) {
   const [error, setError] = useState<string | null>(null);
   const [kind, setKind] = useState<Kind | "all">("all");
   const [done, setDone] = useState<Set<string>>(new Set());
+  const todayIso = iso(today);
+  const tasksAll = useMemo(() => tasksOf(boardCards(feed?.sections ?? []), todayIso), [feed, todayIso]);
 
   const load = () =>
     Promise.all([api.feed(), api.me()])
@@ -48,6 +50,25 @@ function Planner({ today }: { today: Date }) {
     load();
     setDone(readDone());
   }, []);
+
+  // 로그인했으면 끝냈어요는 서버 값이다. 이 브라우저에만 있던 체크는 처음 한 번 서버로 옮기고 지운다.
+  const serverDone = useMemo(() => (me ? new Set(tasksAll.filter((t) => t.done).map((t) => t.key)) : null), [me, tasksAll]);
+  useEffect(() => {
+    if (!me || !feed) return;
+    const local = readDone();
+    const pending = tasksAll.filter((t) => local.has(t.key) && !t.done);
+    if (pending.length === 0) {
+      if (local.size > 0) writeDone(new Set());
+      return;
+    }
+    Promise.allSettled(pending.map((t) => api.markDone(t.line.id)))
+      .then(() => api.feed())
+      .then((f) => {
+        writeDone(new Set());
+        setFeed(f);
+      })
+      .catch(() => {});
+  }, [me, feed]);
 
   const toggleSave = async (line: Line) => {
     setError(null);
@@ -71,23 +92,35 @@ function Planner({ today }: { today: Date }) {
     }
   };
 
-  const toggleDone = (key: string) => {
+  const toggleDone = async (key: string) => {
+    const task = tasksAll.find((t) => t.key === key);
+    if (me && task) {
+      setError(null);
+      try {
+        if (task.done) await api.unmarkDone(task.line.id);
+        else await api.markDone(task.line.id);
+        setFeed(await api.feed());
+      } catch (e) {
+        setError((e as Error).message);
+      }
+      return;
+    }
     const next = new Set(done);
     if (!next.delete(key)) next.add(key);
     setDone(next);
     writeDone(next);
   };
 
-  const todayIso = iso(today);
   const monday = mondayOf(today);
   const sections = useMemo(() => feed?.sections ?? [], [feed]);
-  const tasks = useMemo(() => tasksOf(boardCards(sections), todayIso), [sections, todayIso]);
+  const tasks = tasksAll;
   const inKind = (k: Kind) => kind === "all" || k === kind || (kind === "academic" && k === "schedule");
   const shown = tasks.filter((t) => inKind(t.kind));
   const events = [...eventsOf(sections), ...startsOf(sections, todayIso)].filter((e) => inKind(e.kind));
   const week2 = iso(addDays(monday, 7));
   const after = iso(addDays(monday, 14));
-  const open = (t: Task) => !done.has(t.key);
+  const finishedKeys = serverDone ?? done;
+  const open = (t: Task) => !finishedKeys.has(t.key);
   const word = kind === "all" ? "일" : `${KIND_LABEL[kind]} 일정`;
   const todayCount = shown.filter((t) => t.date === todayIso && open(t)).length;
   const weekCount = shown.filter((t) => t.date >= todayIso && t.date < week2 && open(t)).length;
@@ -100,7 +133,7 @@ function Planner({ today }: { today: Date }) {
     .filter((s) => s.cards.length > 0);
   const saved = shown.filter((t) => t.saved);
 
-  const board = { todayIso, done, canSave: !!me, onDone: toggleDone, onSave: toggleSave, onReport: reportDate };
+  const board = { todayIso, done: finishedKeys, canSave: !!me, onDone: toggleDone, onSave: toggleSave, onReport: reportDate };
 
   return (
     <main id="main" className="planner">
@@ -192,7 +225,7 @@ function Planner({ today }: { today: Date }) {
                 <>
                   <ul>
                     {saved.slice(0, MEMO_MAX).map((t) => (
-                      <li key={t.key} className={done.has(t.key) || t.date < todayIso ? "done" : undefined}>
+                      <li key={t.key} className={finishedKeys.has(t.key) || t.date < todayIso ? "done" : undefined}>
                         <a href={t.url} target="_blank" rel="noreferrer">
                           {t.title}
                         </a>
@@ -442,7 +475,7 @@ function shortDate(isoDate: string): string {
   return `${Number(m)}.${Number(d)}`;
 }
 
-/** 끝냈어요 표시는 이 브라우저에만 남는다. 저장소를 못 쓰면 새로고침 때 사라질 뿐이다. */
+/** 로그인 전의 끝냈어요 표시. 이 브라우저에만 남고, 로그인하면 서버로 옮긴다. */
 function readDone(): Set<string> {
   try {
     return new Set(JSON.parse(localStorage.getItem(DONE_KEY) ?? "[]") as string[]);

@@ -43,7 +43,7 @@ export default function Privacy() {
               <td>내게 맞는 공지를 위로 올리려고</td>
             </tr>
             <tr>
-              <td>저장한 마감, 체크한 혜택</td>
+              <td>저장한 마감, 끝냈어요 표시, 체크한 혜택</td>
               <td>누를 때</td>
               <td>마감 전에 알려 주려고</td>
             </tr>

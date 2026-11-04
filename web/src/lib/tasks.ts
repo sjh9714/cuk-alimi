@@ -20,6 +20,8 @@ export type Task = {
   /** 저장 대상. 한 줄로 합친 경우 첫 줄이다. */
   line: Line;
   saved: boolean;
+  /** 서버에 남은 끝냈어요. 로그인 전에는 false이고 브라우저 저장소가 대신한다. */
+  done: boolean;
 };
 
 const EMPTY_LABEL = /^(마감 기한|마감|기간|신청기간|접수기간|모집기간|조사기간|내용|일정)$/;
@@ -130,6 +132,7 @@ export function tasksOf(cards: Card[], today: string): Task[] {
         excerpt: card.audience.excerpt,
         line,
         saved: group.some((l) => l.saved),
+        done: group.some((l) => l.done),
       });
     }
   }

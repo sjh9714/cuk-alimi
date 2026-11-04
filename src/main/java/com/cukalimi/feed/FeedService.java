@@ -4,6 +4,8 @@ import com.cukalimi.config.AppProperties;
 import com.cukalimi.domain.AppUser;
 import com.cukalimi.domain.DateItem;
 import com.cukalimi.domain.DateItemRepository;
+import com.cukalimi.domain.DoneItem;
+import com.cukalimi.domain.DoneItemRepository;
 import com.cukalimi.domain.Notice;
 import com.cukalimi.domain.NoticeRepository;
 import com.cukalimi.domain.SavedItem;
@@ -26,8 +28,11 @@ public class FeedService {
     private final DateItemRepository dateItems;
     private final NoticeRepository notices;
     private final SavedItemRepository saved;
+    private final DoneItemRepository done;
 
-    public FeedService(AppProperties props, DateItemRepository dateItems, NoticeRepository notices, SavedItemRepository saved) {
+    public FeedService(AppProperties props, DateItemRepository dateItems, NoticeRepository notices, SavedItemRepository saved,
+            DoneItemRepository done) {
+        this.done = done;
         this.props = props;
         this.dateItems = dateItems;
         this.notices = notices;
@@ -45,6 +50,8 @@ public class FeedService {
                         Regions.parse(user.getHomeRegion()).orElse(null));
         Set<Long> savedIds = user == null ? Set.of()
                 : saved.findByUserId(user.getId()).stream().map(SavedItem::getDateItemId).collect(Collectors.toSet());
+        Set<Long> doneIds = user == null ? Set.of()
+                : done.findByUserId(user.getId()).stream().map(DoneItem::getDateItemId).collect(Collectors.toSet());
 
         List<DateItem> upcoming = dateItems.findByEndsOnGreaterThanEqualAndStatusNot(today, DateItem.STATUS_CANDIDATE);
         Map<Long, Notice> noticeById = new HashMap<>();
@@ -55,7 +62,7 @@ public class FeedService {
         }
         List<Notice> undated = undated(today);
         undated.forEach(n -> audiences.put(n.getId(), Audience.of(n)));
-        return new Built(Feed.build(upcoming, noticeById, audiences, undated, viewer, user != null, savedIds,
+        return new Built(Feed.build(upcoming, noticeById, audiences, undated, viewer, user != null, savedIds, doneIds,
                 props::scheduleUrl), noticeById);
     }
 

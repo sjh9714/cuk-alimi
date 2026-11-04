@@ -177,7 +177,7 @@ public class DigestService {
                 List<Feed.Line> lines = new ArrayList<>(card.next());
                 lines.add(0, card.deadline());
                 for (Feed.Line line : lines) {
-                    if (line.saved() && "ACTION".equals(line.kind()) && !already.contains("saved:" + line.id())
+                    if (line.saved() && !line.done() && "ACTION".equals(line.kind()) && !already.contains("saved:" + line.id())
                             && !line.endsOn().isAfter(today.plusDays(SAVED_DAYS))) {
                         savedSoon.add(new SavedLine(card, line));
                     }

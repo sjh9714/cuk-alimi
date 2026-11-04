@@ -87,6 +87,8 @@ export type Line = {
   endsAt: string | null;
   kind: "ACTION" | "INFO";
   saved: boolean;
+  /** 로그인한 학생이 "끝냈어요"로 체크한 줄. 로그인 전에는 항상 false다. */
+  done: boolean;
 };
 
 /** deadline은 날짜가 그림에만 있어 확인 중인 카드(undated 구간)에서만 null이다. */
@@ -277,6 +279,8 @@ export const api = {
     call<Me>("PUT", "/api/me/profile", p),
   save: (id: number) => call<void>("POST", `/api/me/saved/${id}`),
   unsave: (id: number) => call<void>("DELETE", `/api/me/saved/${id}`),
+  markDone: (id: number) => call<void>("POST", `/api/me/done/${id}`),
+  unmarkDone: (id: number) => call<void>("DELETE", `/api/me/done/${id}`),
   reportDate: (id: number) => call<void>("POST", `/api/items/${id}/report`),
   check: (id: number) => call<void>("POST", `/api/me/benefits/${id}`),
   uncheck: (id: number) => call<void>("DELETE", `/api/me/benefits/${id}`),

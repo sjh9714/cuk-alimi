@@ -263,6 +263,17 @@ class ApiFlowTest {
         long itemId = ((Number) ((Map) rest.getForObject("/api/items?includePast=true", List.class).get(0)).get("id")).longValue();
         assertThat(rest.exchange("/api/me/saved/" + itemId, HttpMethod.POST, withCookie(cookie, null), Void.class)
                 .getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        // 끝냈어요 체크는 서버에 남고, 피드의 줄에 done으로 돌아온다. 로그인 없이는 못 한다.
+        assertThat(rest.exchange("/api/me/done/" + itemId, HttpMethod.POST, withCookie(cookie, null), Void.class)
+                .getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(rest.exchange("/api/feed", HttpMethod.GET, withCookie(cookie, null), String.class).getBody())
+                .contains("\"id\":" + itemId + ",").contains("\"done\":true");
+        assertThat(rest.exchange("/api/me/done/" + itemId, HttpMethod.DELETE, withCookie(cookie, null), Void.class)
+                .getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+        assertThat(rest.exchange("/api/feed", HttpMethod.GET, withCookie(cookie, null), String.class).getBody())
+                .doesNotContain("\"done\":true");
+        assertThat(rest.postForEntity("/api/me/done/" + itemId, null, String.class).getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         List<Map> items = rest.exchange("/api/items?includePast=true", HttpMethod.GET, withCookie(cookie, null), List.class).getBody();
         assertThat(items.stream().filter(i -> ((Number) i.get("id")).longValue() == itemId).findFirst().orElseThrow().get("saved"))
                 .isEqualTo(true);

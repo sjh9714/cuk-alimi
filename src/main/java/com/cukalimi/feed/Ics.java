@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * 홈 피드를 iCalendar(RFC 5545) 글로 바꾼다. 구글·애플 캘린더가 구독 주소로 읽는다 (ADR 004).
- * 넣는 것은 내게 맞는 일과 저장한 일이다. 시각이 없는 마감은 그 날 하루 일정, 시각이 있으면 그 시각으로 끝나는 일정이다.
+ * 넣는 것은 내게 맞는 일과 저장한 일이고, 끝냈어요로 체크한 줄은 뺀다. 시각이 없는 마감은 그 날 하루 일정, 시각이 있으면 그 시각으로 끝나는 일정이다.
  */
 public final class Ics {
 
@@ -36,11 +36,11 @@ public final class Ics {
         String dtstamp = UTC.format(stamp.atZone(SEOUL).withZoneSameInstant(ZoneOffset.UTC));
         for (Feed.Section section : view.sections()) {
             for (Feed.Card card : section.cards()) {
-                if (card.deadline() != null && (card.mine() || card.deadline().saved())) {
+                if (card.deadline() != null && !card.deadline().done() && (card.mine() || card.deadline().saved())) {
                     event(lines, card, card.deadline(), dtstamp);
                 }
                 for (Feed.Line next : card.next()) {
-                    if (card.mine() || next.saved()) {
+                    if (!next.done() && (card.mine() || next.saved())) {
                         event(lines, card, next, dtstamp);
                     }
                 }
