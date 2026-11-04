@@ -61,6 +61,20 @@ class FeedTest {
     }
 
     @Test
+    void surveyNoticeOnlyOffersItsOwnSurveyAsATask() {
+        // 수요조사 공지에 딸린 계절학기 일정 표. 수강신청은 다른 공지가 안내하므로 여기서는 할 일이 아니다.
+        Notice survey = notice("학사", "[학부대학운영팀] 2026학년도 겨울 계절학기 개설 희망과목 수요조사", "");
+        item(survey, "계절학기 수강신청", 6);
+        item(survey, "계절학기 수강변경", 20);
+        DateItem answer = item(survey, "희망과목 수요조사", 3);
+
+        Feed.View v = build(Feed.Viewer.ANONYMOUS);
+        Feed.Card card = v.sections().stream().flatMap(s -> s.cards().stream()).filter(c -> c.sourceTitle().contains("수요조사")).findFirst().orElseThrow();
+        assertThat(card.deadline().id()).isEqualTo(answer.getId());
+        assertThat(card.next()).extracting(Feed.Line::kind).doesNotContain("ACTION");
+    }
+
+    @Test
     void departmentNoticeIsMineOnlyForThatDepartmentAndFoldedForOthers() {
         Notice n = deptNotice("컴퓨터정보공학부", "[중요] 2026-2학기 졸업시험 신청 및 대체요건 제출 안내", "졸업시험 신청 기간 안내");
         item(n, "졸업시험 신청", 5);

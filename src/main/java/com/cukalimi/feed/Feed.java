@@ -19,6 +19,13 @@ import java.util.regex.Pattern;
  */
 public final class Feed {
 
+    /**
+     * 수요조사·설문 공지는 할 일이 조사 응답뿐이다. 본문에 딸린 "이후 일정" 표(수강신청, 수강변경 등)는 다른 공지가 따로 안내하므로
+     * 여기서 할 일로 올리면 제목(수요조사)과 내용(수강신청)이 어긋난 행이 생긴다. 조사 이야기가 아닌 날짜 줄은 할 일로 치지 않는다.
+     */
+    private static final Pattern SURVEY_TITLE = Pattern.compile("수요\\s*조사|설문|의견\\s*조사|선호도\\s*조사");
+    private static final Pattern SURVEY_LINE = Pattern.compile("조사|설문|응답");
+
     /** 모든 재학생이 놓치면 손해인 공지. 학사일정 표의 항목과 같은 무게로 맨 위에 둔다. */
     private static final Pattern MUST_TITLE = Pattern.compile("국가장학금|국가근로|등록금|수강신청|수강과목\\s*취소|휴학|복학");
 
@@ -124,7 +131,11 @@ public final class Feed {
                 continue;
             }
             String title = Titles.clean(notice.getTitle());
-            List<DateItem> actions = items.stream().filter(i -> ItemKind.ACTION.equals(ItemKind.of(i.getTitle()))).toList();
+            boolean survey = SURVEY_TITLE.matcher(notice.getTitle()).find();
+            List<DateItem> shown = items.stream()
+                    .filter(i -> !survey || !ItemKind.ACTION.equals(ItemKind.of(i.getTitle())) || SURVEY_LINE.matcher(i.getTitle()).find())
+                    .toList();
+            List<DateItem> actions = shown.stream().filter(i -> ItemKind.ACTION.equals(ItemKind.of(i.getTitle()))).toList();
             // 모두가 알아 둘 행사는 할 일이 있든 없든 날짜를 따로 올린다. 취업 공지의 "일시"는 특강이 많아 올리지 않는다.
             if (Audience.GENERAL.equals(audience.scope())) {
                 String named = "career".equals(kind(notice)) ? null : title;
@@ -136,7 +147,7 @@ public final class Feed {
                 continue;
             }
             DateItem deadline = actions.get(0);
-            List<Line> next = items.stream().filter(i -> i != deadline).map(i -> line(i, title, saved, done)).toList();
+            List<Line> next = shown.stream().filter(i -> i != deadline).map(i -> line(i, title, saved, done)).toList();
             // 학과 게시판 공지는 그 학과 학생에게만 "내 것"이고, 다른 학생에게는 접힌 구간이다 (ADR 002 추가).
             if (notice.getDept() != null) {
                 boolean myDept = contains(notice.getDept(), viewer.major()) || contains(notice.getDept(), viewer.secondMajor());
