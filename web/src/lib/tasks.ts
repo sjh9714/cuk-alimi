@@ -118,10 +118,13 @@ export function tasksOf(cards: Card[], today: string): Task[] {
       if (schools.length > 0) titles.unshift(`${schools.join(", ")} 학점교류 신청`);
       const line = group[0];
       const at = group.find((l) => l.endsAt)?.endsAt;
+      // 같은 날 줄이 셋 넘거나 이어 붙인 이름이 길면(졸업시험 대체요건 표) 공문 제목이 더 읽기 쉽다.
+      const joined = titles.join(", ");
+      const title = titles.length >= 3 || joined.length > 36 ? cleanTitle(card.title) : joined;
       tasks.push({
         key: `${card.key}:${date}`,
         date,
-        title: titles.join(", "),
+        title,
         from: [named[0].name.from, since(line, today)].filter(Boolean).join(", "),
         at: at ? `${at.slice(0, 5)}까지` : "",
         kind: card.kind,

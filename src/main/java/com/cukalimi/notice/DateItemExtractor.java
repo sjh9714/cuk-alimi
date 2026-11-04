@@ -19,7 +19,8 @@ import org.jsoup.nodes.Element;
  * <ol>
  * <li>제목. 장학 공지는 "(10. 14.(수) ~ 11. 13.(금))"처럼 제목에 기간을 적는 경우가 많다.</li>
  * <li>표. 수강신청 일정처럼 구분·학년·일정 열로 된 표는 행마다 항목이 된다. rowspan으로 묶인 라벨은 아래 행에도 붙인다.
- * 한 행에 날짜 열이 둘 이상이면(신청기간 | 결과발표) 열마다 따로 항목을 내고 머리글을 제목에 붙인다. 절대 합치지 않는다.</li>
+ * 한 행에 날짜 열이 둘 이상이면(신청기간 | 결과발표) 열마다 따로 항목을 내고 머리글을 제목에 붙인다. 기간이 다르면 절대 합치지 않는다.
+ * 기간이 같은 열(환불 신청일 | 일정)만 하나로 본다. 라벨은 짧은 칸만 쓰고 설명 칸("▶ 수강신청 인원이 15명 미만인 경우…")은 붙이지 않는다.</li>
  * <li>문단. 제목과 표에서 아무것도 못 찾았을 때만, "기간", "마감", "신청" 같은 말이 있는 줄에서 읽는다.
  * 날짜만 적힌 줄은 바로 윗줄이 "신청기간" 같은 짧은 라벨일 때 그 라벨을 붙여 읽는다.</li>
  * </ol>
@@ -38,6 +39,13 @@ public final class DateItemExtractor {
     private static final Pattern PERIOD_LINE = Pattern.compile("(신청|접수|모집|조사|제출)\\s*기간");
     private static final Pattern EVENT_DAY_LINE = Pattern.compile("((행사|특강|강연)\\s*)?일\\s*시");
     private static final int TITLE_LIMIT = 80;
+    /** 표 머리글의 자리 이름. 라벨이나 열 이름으로 쓰면 "구분 · 2/3 환불"처럼 뜻 없는 제목이 된다. */
+    private static final Pattern GENERIC_HEADER = Pattern.compile("^(구\\s*분|내\\s*용|일\\s*정|일\\s*자|날\\s*짜|비\\s*고|기\\s*간|순\\s*번|번\\s*호|항\\s*목|no\\.?)$", Pattern.CASE_INSENSITIVE);
+    /** 설명 칸. 글머리표나 문장 부호가 있거나 길면 라벨이 아니라 설명이다. 제목에 붙이면 "폐강과목 공고 (1차) 수강신청 인원이…"가 된다. */
+    private static final Pattern DESCRIPTION_CELL = Pattern.compile("[▶▷※:：;]|\\. |\\.$|다\\s*$|함\\s*$|음\\s*$|요\\s*$");
+    private static final int LABEL_CELL_LIMIT = 30;
+    /** 같은 행에 날짜 열이 여럿이고 기간이 같을 때 어느 열 이름을 쓸지. 할 일을 뜻하는 이름이 먼저다. */
+    private static final Pattern ACTION_COLUMN = Pattern.compile("신청|접수|제출|납부|등록|모집|변경");
     private static final int LABEL_LINE_LIMIT = 20;
 
     private DateItemExtractor() {
@@ -122,7 +130,7 @@ public final class DateItemExtractor {
                 List<DateRange> found = parser.parse(cell);
                 if (found.isEmpty()) {
                     String label = cleanLabel(cell);
-                    if (!label.isEmpty()) {
+                    if (isLabel(label)) {
                         labels.add(label);
                     }
                 } else {
@@ -137,17 +145,34 @@ public final class DateItemExtractor {
                 }
                 continue;
             }
+            // 한 행에 날짜 열이 여럿인데 기간이 같으면(환불 신청일 | 일정) 하나다. 할 일을 뜻하는 열 이름을 남긴다.
+            Set<Integer> skip = new java.util.HashSet<>();
+            for (int i = 0; i < dateCols.size(); i++) {
+                for (int j = i + 1; j < dateCols.size(); j++) {
+                    int a = dateCols.get(i);
+                    int b = dateCols.get(j);
+                    if (!skip.contains(a) && !skip.contains(b) && sameRange(rangesByCol.get(a), rangesByCol.get(b))) {
+                        String nameA = header != null && a < header.size() ? header.get(a) : "";
+                        String nameB = header != null && b < header.size() ? header.get(b) : "";
+                        skip.add(!ACTION_COLUMN.matcher(nameA).find() && ACTION_COLUMN.matcher(nameB).find() ? a : b);
+                    }
+                }
+            }
             for (int c : dateCols) {
+                if (skip.contains(c)) {
+                    continue;
+                }
                 List<String> titleParts = new ArrayList<>();
                 String columnName = header != null && c < header.size() ? header.get(c) : "";
                 if (RECORD_DATE_COLUMN.matcher(columnName).find()) {
                     continue;
                 }
                 // 날짜 열이 하나뿐이고 그 열이 첫 열이면 머리글이 곧 제목이다. 날짜 열이 여럿이면 열 이름으로 구분한다.
-                if ((dateCols.size() > 1 || c == 0) && !columnName.isEmpty()) {
+                // "구분", "일정" 같은 자리 이름은 제목이 되지 않는다.
+                if ((dateCols.size() - skip.size() > 1 || c == 0) && !columnName.isEmpty() && !GENERIC_HEADER.matcher(columnName).find()) {
                     titleParts.add(columnName);
                 }
-                titleParts.addAll(labels);
+                labels.stream().filter(l -> !titleParts.contains(l)).forEach(titleParts::add);
                 if (dateCols.size() > 1 && header == null) {
                     // 열 이름을 모르면 어느 날짜가 마감인지 알 수 없다. 추측하지 않고 검수로 보낸다.
                     continue;
@@ -209,6 +234,23 @@ public final class DateItemExtractor {
             items.add(new ExtractedItem(lead, merged, gradeOf(line), "line" + lineIndex));
         }
         return items;
+    }
+
+    /** 라벨로 쓸 수 있는 칸인가. 짧고, 숫자만은 아니고, 자리 이름이 아니고, 설명 문장이 아니어야 한다. */
+    static boolean isLabel(String cleaned) {
+        if (cleaned.isEmpty() || cleaned.length() > LABEL_CELL_LIMIT) {
+            return false;
+        }
+        if (cleaned.matches("[\\d\\s.,/-]+") || GENERIC_HEADER.matcher(cleaned).find()) {
+            return false;
+        }
+        return !DESCRIPTION_CELL.matcher(cleaned).find();
+    }
+
+    private static boolean sameRange(List<DateRange> a, List<DateRange> b) {
+        DateRange x = merge(a);
+        DateRange y = merge(b);
+        return java.util.Objects.equals(x.start(), y.start()) && x.end().equals(y.end());
     }
 
     /** 날짜 앞에 적힌 글. "접수기간 : 10. 1.(수)"에서 "접수기간". */

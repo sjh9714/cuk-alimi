@@ -45,10 +45,15 @@ public final class ItemKind {
         return WHEN_ONLY.matcher(itemTitle).find();
     }
 
+    /** "폐강과목 공고 (1차)"처럼 끝에 붙은 괄호는 떼고 본다. */
     public static String of(String itemTitle) {
-        if (itemTitle == null || ACTION_ENDING.matcher(itemTitle).find()) {
+        if (itemTitle == null) {
             return ACTION;
         }
-        return INFO_TITLE.matcher(itemTitle).find() ? INFO : ACTION;
+        String t = itemTitle.replaceAll("\\s*\\([^)]*\\)\\s*$", "").trim();
+        if (ACTION_ENDING.matcher(t).find()) {
+            return ACTION;
+        }
+        return INFO_TITLE.matcher(t).find() ? INFO : ACTION;
     }
 }

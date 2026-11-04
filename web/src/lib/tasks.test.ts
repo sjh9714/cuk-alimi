@@ -184,3 +184,21 @@ describe("monthCells", () => {
     expect(cells.filter((c) => c.inMonth)).toHaveLength(28);
   });
 });
+
+describe("tasksOf 긴 이름", () => {
+  it("같은 날 줄이 셋 넘으면 공문 제목을 쓴다", () => {
+    const c = card("[중요] 2026-2학기 졸업시험 신청 및 대체요건 제출 안내", [
+      line("2026-11-27", "수상 · <심의 불필요> ACM-ICPC"),
+      line("2026-11-27", "자격증 · 국가공인자격증(1급) 또는 국제공인자격증 제출자"),
+      line("2026-11-27", "어학 · TOEIC 700 이상"),
+    ]);
+    const [t] = tasksOf([c], TODAY);
+    expect(t.title).toBe("2학기 졸업시험 신청 및 대체요건 제출");
+  });
+
+  it("두 줄을 이은 이름이 길어도 공문 제목을 쓴다", () => {
+    const c = card("2026학년도 겨울 계절학기 수강신청 안내", [line("2026-12-24", "환불신청 (2차) · 수업개시 이후 수강취소를 신청할 경우"), line("2026-12-24", "환불 금액 · 2/3 환불")]);
+    const [t] = tasksOf([c], TODAY);
+    expect(t.title).toBe("겨울 계절학기 수강신청");
+  });
+});

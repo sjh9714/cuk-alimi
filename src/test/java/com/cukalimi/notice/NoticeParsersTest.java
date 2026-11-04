@@ -76,6 +76,25 @@ class NoticeParsersTest {
         assertThat(second.targetGrade()).isEqualTo("ALL");
     }
 
+    /** 2026-11-04 홈 점검에서 나온 표. 설명 칸이 제목에 붙고, 환불 행은 날짜 열 둘에서 항목이 넷 나왔다. */
+    @Test
+    void seasonalRegistrationTableKeepsLabelsShortAndMergesEqualDateColumns() {
+        NoticeView v = NoticeViewParser.parse(Fixtures.read("notice-277372.html"));
+        List<ExtractedItem> items = DateItemExtractor.extract(v);
+        List<String> titles = items.stream().map(ExtractedItem::title).toList();
+        assertThat(titles).contains("수강신청", "폐강과목 공고 (1차)", "수강신청 변경/취소 및 추가신청", "고지서 출력 및 수강료 납부 (등록)");
+        // 설명 칸("▶ 수강신청 인원이 15명 미만인 경우…")은 제목에 붙지 않고, 자리 이름("구분", "일정")도 제목이 되지 않는다.
+        assertThat(titles).allSatisfy(t -> assertThat(t).doesNotContain("▶").doesNotContain("구분 ·").doesNotContain("일정 ·"));
+        assertThat(titles).allSatisfy(t -> assertThat(t.length()).isLessThanOrEqualTo(40));
+        // 환불 행은 12.21~12.24가 두 열에 있어도 열마다 항목을 내지 않는다. 표 둘에 걸쳐 셋(환불신청 (2차), 2/3 환불, 환불 신청일)이고 전에는 다섯이었다.
+        assertThat(items.stream().filter(i -> i.range().end().equals(java.time.LocalDate.of(2026, 12, 24))).count()).isEqualTo(3);
+        // "폐강과목 공고(1차)"는 끝의 괄호를 떼면 공고라 안내다.
+        assertThat(com.cukalimi.feed.ItemKind.of("폐강과목 공고 (1차)")).isEqualTo(com.cukalimi.feed.ItemKind.INFO);
+        // 열 이름과 라벨이 같으면("성적확인 및 오류정정") 한 번만 적는다.
+        assertThat(titles).doesNotContain("성적확인 및 오류정정 · 성적확인 및 오류정정").contains("성적확인 및 오류정정");
+        assertThat(com.cukalimi.feed.ItemKind.of("성적확인 및 오류정정")).isEqualTo(com.cukalimi.feed.ItemKind.ACTION);
+    }
+
     @Test
     void imageOnlyNoticeYieldsNothing() {
         NoticeView v = NoticeViewParser.parse(Fixtures.read("notice-274128.html"));

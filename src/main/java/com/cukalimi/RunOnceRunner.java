@@ -11,7 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
- * RUN_ONCE=schedule|notice|transcribe|all|digest|recheck 로 띄우면 수집(또는 아침 알림)을 한 번 돌리고 종료한다.
+ * RUN_ONCE=schedule|notice|transcribe|all|digest|recheck|reparse 로 띄우면 수집(또는 아침 알림)을 한 번 돌리고 종료한다.
  * 운영에서는 비워 두고 스케줄러에 맡긴다.
  */
 @Component
@@ -24,10 +24,17 @@ public class RunOnceRunner implements ApplicationRunner {
     private final ConfigurableApplicationContext context;
     private final com.cukalimi.digest.DigestService digest;
     private final com.cukalimi.notice.ImageNoticeReader imageReader;
+    private final com.cukalimi.domain.NoticeRepository notices;
+    private final com.cukalimi.domain.NoticeRawRepository raws;
+    private final com.cukalimi.notice.NoticeStore store;
 
     public RunOnceRunner(AppProperties props, ScheduleCollector schedules, NoticeCollector noticesCollector,
             ConfigurableApplicationContext context, com.cukalimi.digest.DigestService digest,
-            com.cukalimi.notice.ImageNoticeReader imageReader) {
+            com.cukalimi.notice.ImageNoticeReader imageReader, com.cukalimi.domain.NoticeRepository notices,
+            com.cukalimi.domain.NoticeRawRepository raws, com.cukalimi.notice.NoticeStore store) {
+        this.notices = notices;
+        this.raws = raws;
+        this.store = store;
         this.imageReader = imageReader;
         this.props = props;
         this.schedules = schedules;
@@ -54,6 +61,21 @@ public class RunOnceRunner implements ApplicationRunner {
             }
             if (mode.equals("transcribe") || mode.equals("all")) {
                 System.out.println("transcribe " + imageReader.readPending(java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul"))));
+            }
+            if (mode.equals("reparse")) {
+                // 추출 규칙을 고친 뒤 저장해 둔 원문으로 최근 90일 공지의 날짜 항목을 다시 뽑는다. 학교에 요청하지 않는다.
+                int n = 0;
+                for (var notice : notices.findByPostedOnGreaterThanEqualAndRemovedAtIsNull(
+                        java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul")).minusDays(90))) {
+                    var raw = raws.findById(notice.getArticleNo()).orElse(null);
+                    if (raw == null) {
+                        continue;
+                    }
+                    store.save(new com.cukalimi.notice.NoticeSummary(notice.getArticleNo(), notice.getCategory(), notice.getTitle(),
+                            notice.getPostedOn(), notice.getUrl(), notice.getDept()), raw.getHtml());
+                    n++;
+                }
+                System.out.println("reparse notices=" + n);
             }
             if (mode.equals("recheck")) {
                 System.out.println("recheck changed=" + noticesCollector.recheckOpenNotices(java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul"))));
