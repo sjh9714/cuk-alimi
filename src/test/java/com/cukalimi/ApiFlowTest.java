@@ -221,13 +221,16 @@ class ApiFlowTest {
         assertThat(state.getBody().get("enabled")).isEqualTo(true);
         assertThat(state.getBody().get("publicKey")).isEqualTo("BFAKEKEY");
 
-        Map<String, Object> sub = Map.of("endpoint", "https://push.example/dev-1", "keys", Map.of("p256dh", "BPUB", "auth", "AUTH"));
+        Map<String, Object> sub = Map.of("endpoint", "https://fcm.googleapis.com/fcm/send/dev-1", "keys", Map.of("p256dh", "BPUB", "auth", "AUTH"));
         assertThat(rest.exchange("/api/me/push", HttpMethod.POST, withCookie(cookie, sub), Void.class).getStatusCode())
                 .isEqualTo(HttpStatus.NO_CONTENT);
         assertThat(rest.postForEntity("/api/me/push", sub, String.class).getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-        assertThat(rest.exchange("/api/me/push", HttpMethod.POST,
-                withCookie(cookie, Map.of("endpoint", "http://plain.example/x", "keys", Map.of("p256dh", "B", "auth", "A"))), String.class)
-                .getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        // 푸시 서비스가 아닌 주소는 받지 않는다. 서버가 남의 주소로 요청을 보내게 될 수 있다.
+        for (String bad : List.of("http://fcm.googleapis.com/x", "https://evil.example/x", "https://fcm.googleapis.com:8443/x")) {
+            assertThat(rest.exchange("/api/me/push", HttpMethod.POST,
+                    withCookie(cookie, Map.of("endpoint", bad, "keys", Map.of("p256dh", "B", "auth", "A"))), String.class)
+                    .getStatusCode()).as(bad).isEqualTo(HttpStatus.BAD_REQUEST);
+        }
         assertThat(((Number) rest.exchange("/api/push", HttpMethod.GET, withCookie(cookie, null), Map.class).getBody().get("devices"))
                 .longValue()).isEqualTo(1L);
 
@@ -246,7 +249,7 @@ class ApiFlowTest {
 
         assertThat(pushService.sendTo(user).sent()).isEqualTo(1);
         assertThat(pushSender.payloads).hasSize(1);
-        assertThat(pushSender.payloads.get(0)).startsWith("https://push.example/dev-1 ").contains("3일 뒤 마감").contains("\"url\"");
+        assertThat(pushSender.payloads.get(0)).startsWith("https://fcm.googleapis.com/fcm/send/dev-1 ").contains("3일 뒤 마감").contains("\"url\"");
         // 같은 사건은 두 번 가지 않는다.
         assertThat(pushService.sendTo(user).sent()).isEqualTo(0);
 
@@ -257,12 +260,12 @@ class ApiFlowTest {
         assertThat(pushService.remindersFor(user, LocalDate.of(2026, 7, 12))).hasSize(1);
 
         // 이 기기만 끈다. 탈퇴하면 구독도 같이 지워진다.
-        assertThat(rest.exchange("/api/me/push", HttpMethod.DELETE, withCookie(cookie, Map.of("endpoint", "https://push.example/dev-1")),
+        assertThat(rest.exchange("/api/me/push", HttpMethod.DELETE, withCookie(cookie, Map.of("endpoint", "https://fcm.googleapis.com/fcm/send/dev-1")),
                 Void.class).getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
         assertThat(pushSubscriptions.findByUserId(user.getId())).isEmpty();
         rest.exchange("/api/me/push", HttpMethod.POST, withCookie(cookie, sub), Void.class);
         rest.exchange("/api/me", HttpMethod.DELETE, withCookie(cookie, null), Void.class);
-        assertThat(pushSubscriptions.findByEndpoint("https://push.example/dev-1")).isEmpty();
+        assertThat(pushSubscriptions.findByEndpoint("https://fcm.googleapis.com/fcm/send/dev-1")).isEmpty();
     }
 
     @BeforeEach

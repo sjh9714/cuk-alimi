@@ -47,6 +47,19 @@ class WebPushTest {
     }
 
     @Test
+    void 알려진_푸시_서비스_주소만_받는다() {
+        assertThat(WebPush.allowedEndpoint("https://fcm.googleapis.com/fcm/send/abc")).isTrue();
+        assertThat(WebPush.allowedEndpoint("https://updates.push.services.mozilla.com/wpush/v2/abc")).isTrue();
+        assertThat(WebPush.allowedEndpoint("https://web.push.apple.com/abc")).isTrue();
+        assertThat(WebPush.allowedEndpoint("https://db5p.notify.windows.com/w/?token=x")).isTrue();
+        assertThat(WebPush.allowedEndpoint("http://fcm.googleapis.com/x")).isFalse();
+        assertThat(WebPush.allowedEndpoint("https://fcm.googleapis.com.evil.example/x")).isFalse();
+        assertThat(WebPush.allowedEndpoint("https://127.0.0.1/x")).isFalse();
+        assertThat(WebPush.allowedEndpoint("https://fcm.googleapis.com:8443/x")).isFalse();
+        assertThat(WebPush.allowedEndpoint("not a url")).isFalse();
+    }
+
+    @Test
     void 만든_키는_65바이트_공개_키와_32바이트_비밀_키다() throws Exception {
         String[] keys = WebPush.generateKeys();
         assertThat(B64D.decode(keys[0])).hasSize(65);

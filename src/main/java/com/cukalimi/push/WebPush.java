@@ -47,6 +47,24 @@ public final class WebPush {
 
     public enum Outcome { SENT, GONE, FAILED }
 
+    /** 브라우저가 주는 푸시 서비스 주소만 받는다. 아무 주소나 받으면 서버가 남의 주소로 요청을 보내는 통로가 된다. */
+    public static boolean allowedEndpoint(String endpoint) {
+        URI uri;
+        try {
+            uri = URI.create(endpoint);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+        String host = uri.getHost();
+        if (!"https".equals(uri.getScheme()) || host == null || uri.getPort() != -1 || uri.getUserInfo() != null) {
+            return false;
+        }
+        host = host.toLowerCase();
+        return host.equals("fcm.googleapis.com") || host.equals("updates.push.services.mozilla.com")
+                || host.equals("web.push.apple.com") || host.endsWith(".push.apple.com")
+                || host.endsWith(".notify.windows.com") || host.endsWith(".push.samsungosp.com");
+    }
+
     private final ECPrivateKey vapidPrivate;
     private final String vapidPublicRaw;
     private final String subject;
@@ -84,7 +102,8 @@ public final class WebPush {
                     .header("Urgency", "normal")
                     .POST(HttpRequest.BodyPublishers.ofByteArray(body))
                     .build();
-            HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
+            // 응답 본문은 쓰지 않으니 받지 않는다. 푸시 서비스가 큰 본문을 돌려줘도 메모리를 쓰지 않는다.
+            HttpResponse<Void> response = http.send(request, HttpResponse.BodyHandlers.discarding());
             int status = response.statusCode();
             if (status == 404 || status == 410) {
                 return Outcome.GONE;

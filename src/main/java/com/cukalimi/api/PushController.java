@@ -19,10 +19,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/** 푸시 구독 등록과 해제 (ADR 004). 공개 키는 누구나 읽고, 구독은 로그인한 사람만 남긴다. */
+/** 푸시 구독 등록과 해제 (ADR 004). 공개 키는 누구나 읽고, 구독은 로그인한 사람만 남긴다. 주소는 알려진 푸시 서비스만 받는다. */
 @RestController
 @RequestMapping("/api")
 public class PushController {
+
+    /** 한 계정에 기기 열 대면 넉넉하다. 더 받으면 보내는 쪽 일이 사용자 수가 아니라 요청 수에 비례해 커진다. */
+    static final int MAX_DEVICES = 10;
 
     private final AuthService auth;
     private final PushSubscriptionRepository subscriptions;
@@ -54,8 +57,11 @@ public class PushController {
     @Transactional
     public ResponseEntity<Void> subscribe(HttpServletRequest request, @Valid @RequestBody SubscriptionRequest body) {
         AppUser user = auth.requireUser(request);
-        if (body.keys() == null || !body.endpoint().startsWith("https://")) {
+        if (body.keys() == null || !com.cukalimi.push.WebPush.allowedEndpoint(body.endpoint())) {
             return ResponseEntity.badRequest().build();
+        }
+        if (subscriptions.findByEndpoint(body.endpoint()).isEmpty() && subscriptions.countByUserId(user.getId()) >= MAX_DEVICES) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.CONFLICT).build();
         }
         subscriptions.findByEndpoint(body.endpoint()).ifPresentOrElse(
                 s -> s.reassign(user.getId(), body.keys().p256dh(), body.keys().auth()),
