@@ -498,6 +498,43 @@ legend + * {
   font-size: 13px;
 }
 
+/* 관심 주제 고르기. 분류 고르기(.seg)와 같은 글자와 눌림 색이고, 줄이 넘치면 다음 줄로 간다. */
+.topic-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.topic-chips button {
+  padding: 7px 12px;
+  border: 1px solid var(--hair-2);
+  border-radius: 999px;
+  background: var(--paper);
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--mute);
+}
+
+.topic-chips button[aria-pressed="true"] {
+  border-color: var(--pen);
+  background: var(--select-2);
+  color: var(--pen);
+}
+
+fieldset.topics {
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+}
+
+fieldset.topics legend {
+  padding: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
 /* 문장 속 글자 단추. 링크처럼 보이고 밑줄로만 구분한다. 설정의 "새로 만들기"가 쓴다. */
 button.link {
   display: inline;

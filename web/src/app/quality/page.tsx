@@ -261,6 +261,18 @@ export default function QualityPage() {
             </section>
           )}
 
+          {q.topics && (
+            <section className="panel">
+              <h2>형광펜의 주제 나누기</h2>
+              <p>
+                형광펜은 고른 관심 주제(수강·학적, 장학금 등) 가운데 자격이 되는 일에만 칠해요. 공지의 주제는 제목 규칙으로 나누고, 공지{" "}
+                {q.topics.notices}건에 붙인 정답과 비교하면 {q.topics.exact}건({percent(q.topics.accuracy)})이 맞아요. 정답은 규칙을 보지 않은
+                AI가 적었고, 규칙은 이 정답을 보며 다듬어서 새 공지에서는 더 낮을 수 있어요. 기본 관심 주제는 학교 게시판에서 학생들이 가장 많이
+                여는 다섯 가지예요.
+              </p>
+            </section>
+          )}
+
           <p className="muted">
             재는 방법과 이유는{" "}
             <a href={ADR_URL} target="_blank" rel="noreferrer">

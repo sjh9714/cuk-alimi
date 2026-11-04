@@ -74,6 +74,54 @@ class FeedTest {
         assertThat(card.next()).extracting(Feed.Line::kind).doesNotContain("ACTION");
     }
 
+    static Feed.Card cardOf(Feed.View v, String sourceTitlePart) {
+        return v.sections().stream().flatMap(s -> s.cards().stream()).filter(c -> c.sourceTitle().contains(sourceTitlePart)).findFirst()
+                .orElseThrow();
+    }
+
+    /** 형광펜은 관심 주제이면서 자격에서 걸리지 않는 일이다 (ADR 014). */
+    @Test
+    void highlightNeedsInterestAndEligibility() {
+        // 3~7학기 대상 학점교류. 자격은 되지만 기본 관심 주제가 아니다.
+        Notice exchange = notice("학사", "[학사행정팀] 2026학년도 겨울계절학기 서울 및 경인지역 대학교 학점교류 안내", "");
+        audiences.put(exchange.getId(), Audience.of(exchange).withAi(
+                new AudienceFacts(List.of(), List.of(5, 6, 7), List.of(), List.of(), List.of(), "3~7학기")));
+        item(exchange, "건국대학교 · 서울", 5);
+        // 조건 없는 수강신청. 관심 주제이고 모두 대상이라 칠한다.
+        Notice course = notice("학사", "2026학년도 겨울 계절학기 수강신청 안내", "");
+        item(course, "수강신청", 6);
+        // 소득 조건만 있는 장학. 자격을 모르지만 관심 주제라 칠한다(사용자 결정).
+        Notice income = notice("장학", "[학생지원팀] 하나장학생 선발 안내", "");
+        audiences.put(income.getId(), Audience.of(income).withAi(
+                new AudienceFacts(List.of(), List.of(), List.of(), List.of(), List.of(AudienceFacts.Blocker.INCOME), "소득 8구간 이하")));
+        item(income, "신청기간", 7);
+        // 특정 계층 장학. 관심 주제여도 칠하지 않는다.
+        Notice group = notice("장학", "[학생지원팀] 북한이탈청소년 장학생 선발 안내", "");
+        audiences.put(group.getId(), Audience.of(group).withAi(
+                new AudienceFacts(List.of(), List.of(), List.of(), List.of(), List.of(AudienceFacts.Blocker.GROUP), "북한이탈")));
+        item(group, "신청기간", 8);
+
+        Feed.Viewer me = new Feed.Viewer(3, 6, "컴퓨터정보공학부", null, null, Topic.DEFAULTS);
+        Feed.View v = build(me);
+        assertThat(cardOf(v, "학점교류").mine()).isFalse();
+        assertThat(cardOf(v, "겨울 계절학기 수강신청").mine()).isTrue();
+        assertThat(cardOf(v, "겨울 계절학기 수강신청").mineReason()).isEqualTo("계절학기");
+        assertThat(cardOf(v, "하나장학생").mine()).isTrue();
+        assertThat(cardOf(v, "하나장학생").mineReason()).isEqualTo("장학금");
+        assertThat(cardOf(v, "북한이탈").mine()).isFalse();
+
+        // 학점교류를 관심에 더하면 칠하고, 이유에 주제와 자격을 적는다.
+        java.util.Set<Topic> withExchange = java.util.EnumSet.copyOf(Topic.DEFAULTS);
+        withExchange.add(Topic.EXCHANGE);
+        Feed.Card lit = cardOf(build(new Feed.Viewer(3, 6, "컴퓨터정보공학부", null, null, withExchange)), "학점교류");
+        assertThat(lit.mine()).isTrue();
+        assertThat(lit.mineReason()).isEqualTo("학점교류 · 5~7학기 대상");
+        assertThat(lit.topic()).isEqualTo("exchange");
+
+        // 로그인 전에는 칠하지 않는다.
+        assertThat(cardOf(build(Feed.Viewer.ANONYMOUS), "겨울 계절학기 수강신청").mine()).isFalse();
+    }
+
     @Test
     void departmentNoticeIsMineOnlyForThatDepartmentAndFoldedForOthers() {
         Notice n = deptNotice("컴퓨터정보공학부", "[중요] 2026-2학기 졸업시험 신청 및 대체요건 제출 안내", "졸업시험 신청 기간 안내");
@@ -83,7 +131,7 @@ class FeedTest {
         Feed.Card card = section(mineView, "mine").cards().get(0);
         assertThat(card.kind()).isEqualTo("dept");
         assertThat(card.mine()).isTrue();
-        assertThat(card.mineReason()).isEqualTo("컴퓨터정보공학부 공지");
+        assertThat(card.mineReason()).isEqualTo("졸업 · 컴퓨터정보공학부 공지");
 
         Feed.View secondMajor = build(new Feed.Viewer(2, "경영학과", "컴퓨터정보공학부", null));
         assertThat(section(secondMajor, "mine").cards()).hasSize(1);

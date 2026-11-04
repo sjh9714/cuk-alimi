@@ -29,12 +29,19 @@ public final class Feed {
     /** 모든 재학생이 놓치면 손해인 공지. 학사일정 표의 항목과 같은 무게로 맨 위에 둔다. */
     private static final Pattern MUST_TITLE = Pattern.compile("국가장학금|국가근로|등록금|수강신청|수강과목\\s*취소|휴학|복학");
 
-    /** semester는 이번 학기(9는 초과학기). 학기 조건이 있는 공지만 쓴다. */
-    public record Viewer(Integer grade, Integer semester, String major, String secondMajor, Regions.Region home) {
-        public static final Viewer ANONYMOUS = new Viewer(null, null, null, null, null);
+    /**
+     * semester는 이번 학기(9는 초과학기). 학기 조건이 있는 공지만 쓴다. interests는 관심 주제이고 형광펜은 이 안에서만 칠한다 (ADR 014).
+     * 로그인 전은 관심이 없어 칠하지 않는다.
+     */
+    public record Viewer(Integer grade, Integer semester, String major, String secondMajor, Regions.Region home, Set<Topic> interests) {
+        public static final Viewer ANONYMOUS = new Viewer(null, null, null, null, null, Set.of());
+
+        public Viewer(Integer grade, Integer semester, String major, String secondMajor, Regions.Region home) {
+            this(grade, semester, major, secondMajor, home, Topic.DEFAULTS);
+        }
 
         public Viewer(Integer grade, String major, String secondMajor, Regions.Region home) {
-            this(grade, null, major, secondMajor, home);
+            this(grade, null, major, secondMajor, home, Topic.DEFAULTS);
         }
     }
 
@@ -65,11 +72,16 @@ public final class Feed {
      * mineReason은 내게 맞는 이유("3학년·컴퓨터정보공학부 대상"). mine일 때만 있다.
      */
     public record Card(String key, String kind, String title, String sourceTitle, String url, AudienceView audience,
-            boolean mine, String mineReason, Line deadline, List<Line> next) {
+            boolean mine, String mineReason, Line deadline, List<Line> next, String topic) {
+
+        public Card(String key, String kind, String title, String sourceTitle, String url, AudienceView audience,
+                boolean mine, String mineReason, Line deadline, List<Line> next) {
+            this(key, kind, title, sourceTitle, url, audience, mine, mineReason, deadline, next, null);
+        }
 
         public Card(String key, String kind, String title, String sourceTitle, String url, AudienceView audience,
                 boolean mine, Line deadline, List<Line> next) {
-            this(key, kind, title, sourceTitle, url, audience, mine, null, deadline, next);
+            this(key, kind, title, sourceTitle, url, audience, mine, null, deadline, next, null);
         }
     }
 
@@ -139,9 +151,12 @@ public final class Feed {
                 // 학사일정 표의 항목. 표가 곧 출처라 대상은 전체 학생이다.
                 for (DateItem i : items) {
                     if (ItemKind.ACTION.equals(ItemKind.of(i.getTitle()))) {
+                        // 학사일정 표는 모든 재학생 대상이라 관심 주제면 칠한다.
+                        Topic topic = Topic.of(i.getTitle());
+                        boolean lit = viewer.interests().contains(topic);
                         must.add(new Card("item:" + i.getId(), "schedule", i.getTitle(), i.getTitle(),
                                 scheduleUrl.apply(scheduleYear(i)), new AudienceView(Audience.GENERAL, null, null, null),
-                                false, line(i, null, saved, done), List.of()));
+                                lit, lit ? topic.label() : null, line(i, null, saved, done), List.of(), topic.key()));
                     } else if (isEvent(i, null)) {
                         events.add(new Card("item:" + i.getId(), "schedule", i.getTitle(), i.getTitle(),
                                 scheduleUrl.apply(scheduleYear(i)), new AudienceView(Audience.GENERAL, null, null, null),
@@ -172,18 +187,25 @@ public final class Feed {
             }
             DateItem deadline = actions.get(0);
             List<Line> next = shown.stream().filter(i -> i != deadline).map(i -> line(i, title, saved, done)).toList();
+            // 형광펜은 관심 주제이면서 자격에서 걸리지 않는 일이다 (ADR 014). 구간 배치는 자격(eligibleReason)으로 정해 지금처럼 둔다.
+            Topic topic = Topic.of(notice.getTitle());
             // 학과 게시판 공지는 그 학과 학생에게만 "내 것"이고, 다른 학생에게는 접힌 구간이다 (ADR 002 추가).
             if (notice.getDept() != null) {
                 boolean myDept = contains(notice.getDept(), viewer.major()) || contains(notice.getDept(), viewer.secondMajor());
+                String why = myDept ? notice.getDept() + " 공지" : null;
+                boolean lit = myDept && viewer.interests().contains(topic);
                 Card card = new Card(entry.getKey(), kind(notice), title, notice.getTitle(), notice.getUrl(),
-                        AudienceView.of(audience), myDept, myDept ? notice.getDept() + " 공지" : null, line(deadline, title, saved, done), next);
+                        AudienceView.of(audience), lit, lit ? topic.label() + " · " + why : null, line(deadline, title, saved, done), next,
+                        topic.key());
                 (myDept ? mine : dept).add(card);
                 continue;
             }
             String reason = mineReason(audience, deadline, viewer);
             boolean isMine = reason != null;
+            boolean lit = viewer.interests().contains(topic) && (isMine || openToAll(audience, deadline, viewer));
+            String why = !lit ? null : isMine ? topic.label() + " · " + reason.replace(", 자격 조건은 원문 확인", "") : topic.label();
             Card card = new Card(entry.getKey(), kind(notice), title, notice.getTitle(), notice.getUrl(),
-                    AudienceView.of(audience), isMine, reason, line(deadline, title, saved, done), next);
+                    AudienceView.of(audience), lit, why, line(deadline, title, saved, done), next, topic.key());
             // 취업 공지는 학년이 맞아도 접힌 구간에 둔다. "내게 맞는 공지"와 아침 메일은 장학·학사만 다룬다.
             if (isMust(audience, title)) {
                 must.add(card);
@@ -262,6 +284,35 @@ public final class Feed {
      * 이 공지가 이 학생의 것이라는 이유. 아니면 null. AI가 읽은 대상 조건이 있으면 그것으로만 판단한다 (ADR 013).
      * 없으면(키가 없거나 두 번 읽기가 어긋남) 제목·자격 문단의 정규식과 운영자 태그로 판단한다.
      */
+    /**
+     * 조건이 적히지 않아 모두가 지원할 수 있는가. 자격을 모르는 조건(소득·성적·그림·그 밖)만 있으면 모두로 본다(ADR 014, 사용자 결정).
+     * 지역·학년·학기·학과 조건이 있거나 특정 계층·과목 대상이면 아니다. 그런 공지는 {@link #mineReason}이 맞아야 칠한다.
+     */
+    static boolean openToAll(Audience audience, DateItem deadline, Viewer viewer) {
+        if (audience.ai() != null) {
+            AudienceFacts f = audience.ai().normalized();
+            return !f.restricted() && f.blockers().stream().noneMatch(AudienceFacts.BLOCKING::contains);
+        }
+        if (!Audience.GENERAL.equals(audience.scope())) {
+            return false;
+        }
+        if (audience.grade() != GradeTag.NONE && audience.grade().label() != null && viewer.grade() != null
+                && !audience.grade().covers(viewer.grade())) {
+            return false;
+        }
+        if (deadline != null) {
+            String g = deadline.getTargetGrade();
+            String d = deadline.getTargetDept();
+            if (g != null && !"ALL".equals(g) && (viewer.grade() == null || !g.equals(String.valueOf(viewer.grade())))) {
+                return false;
+            }
+            if (d != null && !"ALL".equals(d) && !contains(d, viewer.major()) && !contains(d, viewer.secondMajor())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static String mineReason(Audience audience, DateItem deadline, Viewer viewer) {
         if (audience.ai() != null) {
             return audience.ai().reasonFor(viewer);

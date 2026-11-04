@@ -1,0 +1,49 @@
+{
+  "notices" : 232,
+  "exact" : 224,
+  "accuracy" : 0.966,
+  "labeler" : "Claude Opus 5.5",
+  "humanChecked" : 0,
+  "byTopic" : {
+    "career" : {
+      "notices" : 32,
+      "exact" : 27
+    },
+    "course" : {
+      "notices" : 54,
+      "exact" : 52
+    },
+    "exchange" : {
+      "notices" : 13,
+      "exact" : 13
+    },
+    "extracurricular" : {
+      "notices" : 11,
+      "exact" : 11
+    },
+    "grad" : {
+      "notices" : 1,
+      "exact" : 1
+    },
+    "graduation" : {
+      "notices" : 9,
+      "exact" : 9
+    },
+    "other" : {
+      "notices" : 2,
+      "exact" : 1
+    },
+    "scholarship" : {
+      "notices" : 93,
+      "exact" : 93
+    },
+    "seasonal" : {
+      "notices" : 7,
+      "exact" : 7
+    },
+    "workstudy" : {
+      "notices" : 10,
+      "exact" : 10
+    }
+  }
+}

@@ -73,7 +73,23 @@ export type Me = {
   digestEnabled: boolean;
   /** 캘린더 구독 주소의 토큰. 다시 만들면 이전 주소는 끊긴다. */
   calendarToken: string;
+  /** 관심 주제 키. 형광펜과 알림은 이 주제 안에서 자격이 되는 일만 (ADR 014). */
+  interests: TopicKey[];
 };
+
+/** 공지 주제. 서버 `feed/Topic.java`와 같은 키와 순서다. */
+export const TOPICS = [
+  { key: "course", label: "수강·학적" },
+  { key: "seasonal", label: "계절학기" },
+  { key: "scholarship", label: "장학금" },
+  { key: "workstudy", label: "근로·인턴장학" },
+  { key: "graduation", label: "졸업" },
+  { key: "exchange", label: "학점교류" },
+  { key: "career", label: "취업·채용" },
+  { key: "extracurricular", label: "비교과·대회·특강" },
+  { key: "grad", label: "대학원" },
+] as const;
+export type TopicKey = (typeof TOPICS)[number]["key"];
 
 /** 푸시가 켜져 있는지, 구독에 쓰는 VAPID 공개 키, 이 계정에 등록된 기기 수. */
 export type PushState = { enabled: boolean; publicKey: string | null; devices: number };
@@ -106,8 +122,10 @@ export type Card = {
   /** grade는 제목·자격 문단에 적힌 학년("2~4학년", "졸업예정자") */
   audience: { scope: Scope; label: string | null; excerpt: string | null; grade: string | null };
   mine: boolean;
-  /** 내게 맞는 이유("3학년·컴퓨터정보공학부 대상"). mine일 때만 있다 */
+  /** 형광펜 이유("장학금 · 3학년 대상"). mine일 때만 있다 */
   mineReason: string | null;
+  /** 공지 주제 키. 학사일정 표 항목과 공지 카드에 있다 */
+  topic?: TopicKey | "other" | null;
   deadline: Line | null;
   next: Line[];
 };
@@ -190,6 +208,8 @@ export type Quality = {
   /** 형광펜 백테스트. 아직 재지 않았으면 null */
   audienceBacktest: AudienceBacktest | null;
   audienceRead: { enabled: boolean; notices: number; agreed: number; inputTokens: number; outputTokens: number; costUsd: number };
+  /** 공지 주제 규칙의 정확도 (ADR 014). */
+  topics: { notices: number; exact: number; accuracy: number; humanChecked: number } | null;
 };
 
 export type AudienceScore = {
@@ -288,7 +308,7 @@ export const api = {
   feedback: () => call<FeedbackEntry[]>("GET", "/api/admin/feedback"),
   meta: () => call<{ contactEmail: string }>("GET", "/api/meta"),
   quality: () => call<Quality>("GET", "/api/quality"),
-  updateProfile: (p: { entryYear: number | null; semester: number | null; major: string; secondMajor: string; homeRegion: string }) =>
+  updateProfile: (p: { entryYear: number | null; semester: number | null; major: string; secondMajor: string; homeRegion: string; interests: TopicKey[] }) =>
     call<Me>("PUT", "/api/me/profile", p),
   save: (id: number) => call<void>("POST", `/api/me/saved/${id}`),
   unsave: (id: number) => call<void>("DELETE", `/api/me/saved/${id}`),

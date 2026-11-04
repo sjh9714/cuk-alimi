@@ -20,6 +20,8 @@ public class AppUser {
     private Integer entryYear;
     /** 입학년도로 센 학기와 실제 학기의 차이. 휴학이나 군 복무로 늦어지면 음수다. */
     private int semesterAdjust;
+    /** 관심 주제 키를 쉼표로 이은 것 (ADR 014). null이면 기본값. */
+    private String interests;
     private String major;
     private String secondMajor;
     private String homeRegion;
@@ -140,5 +142,14 @@ public class AppUser {
 
     public String getHomeRegion() {
         return homeRegion;
+    }
+
+    public java.util.Set<com.cukalimi.feed.Topic> interests() {
+        return com.cukalimi.feed.Topic.parse(interests);
+    }
+
+    /** 고른 관심 주제를 남긴다. 빈 모음도 "아무것도 칠하지 않음"으로 남긴다. */
+    public void updateInterests(java.util.Set<com.cukalimi.feed.Topic> topics) {
+        this.interests = com.cukalimi.feed.Topic.join(topics);
     }
 }

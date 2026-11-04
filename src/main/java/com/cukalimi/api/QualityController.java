@@ -42,6 +42,8 @@ public class QualityController {
     private final NoticeRepository notices;
     private final com.cukalimi.notice.AudienceClassifier audienceClassifier;
     private final JsonNode audienceBacktest;
+    /** 공지 주제 규칙의 정확도 (ADR 014). */
+    private final JsonNode topics;
     private volatile Quality cached;
     private volatile long cachedAt;
     static final long CACHE_MILLIS = 60_000;
@@ -53,6 +55,11 @@ public class QualityController {
         this.audienceClassifier = audienceClassifier;
         try (InputStream in = getClass().getResourceAsStream("/quality/audience.json")) {
             this.audienceBacktest = in == null ? null : json.readTree(in);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        try (InputStream in = getClass().getResourceAsStream("/quality/topics.json")) {
+            this.topics = in == null ? null : json.readTree(in);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -93,7 +100,7 @@ public class QualityController {
 
     /** audienceBacktest는 형광펜 백테스트의 마지막 결과다. 아직 측정하지 않았으면 null이다. */
     public record Quality(JsonNode backtest, Review review, Transcription transcription, AutoPublish autoPublish,
-            JsonNode audienceBacktest, AudienceRead audienceRead) {
+            JsonNode audienceBacktest, AudienceRead audienceRead, JsonNode topics) {
     }
 
     @GetMapping("/quality")
@@ -106,7 +113,7 @@ public class QualityController {
             q = new Quality(backtest, review(), transcription(), new AutoPublish(dateItems.countByStatus(DateItem.STATUS_AUTO_IMAGE),
                     dateItems.countByStatus(DateItem.STATUS_CANDIDATE), reports.count()), audienceBacktest,
                     new AudienceRead(audienceClassifier.enabled(), u.getNotices(), u.getAgreed(), u.getInputTokens(), u.getOutputTokens(),
-                            Math.round((u.getInputTokens() * PRICE_IN + u.getOutputTokens() * PRICE_OUT) / 1e6 * 10000) / 10000.0));
+                            Math.round((u.getInputTokens() * PRICE_IN + u.getOutputTokens() * PRICE_OUT) / 1e6 * 10000) / 10000.0), topics);
             cached = q;
             cachedAt = now;
         }

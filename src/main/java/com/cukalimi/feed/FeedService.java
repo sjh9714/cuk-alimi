@@ -53,7 +53,7 @@ public class FeedService {
     public Built build(AppUser user, LocalDate today, LocalDate from) {
         Feed.Viewer viewer = user == null ? Feed.Viewer.ANONYMOUS
                 : new Feed.Viewer(user.grade(today), user.semester(today), user.getMajor(), user.getSecondMajor(),
-                        Regions.parse(user.getHomeRegion()).orElse(null));
+                        Regions.parse(user.getHomeRegion()).orElse(null), user.interests());
         Set<Long> savedIds = user == null ? Set.of()
                 : saved.findByUserId(user.getId()).stream().map(SavedItem::getDateItemId).collect(Collectors.toSet());
         Set<Long> doneIds = user == null ? Set.of()

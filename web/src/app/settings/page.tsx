@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { api, calendarUrl, type Me, type PushState, type Sido } from "@/lib/api";
+import { api, calendarUrl, TOPICS, type Me, type PushState, type Sido, type TopicKey } from "@/lib/api";
 
 export default function Settings() {
   const [me, setMe] = useState<Me | null | undefined>(undefined);
@@ -15,6 +15,7 @@ export default function Settings() {
   const [sido, setSido] = useState("");
   const [sigungu, setSigungu] = useState("");
   const [regions, setRegions] = useState<Sido[]>([]);
+  const [interests, setInterests] = useState<TopicKey[]>([]);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -40,6 +41,7 @@ export default function Settings() {
           setSemester(m.semesterManual && m.semester ? String(m.semester) : "");
           setMajor(m.major ?? "");
           setSecondMajor(m.secondMajor ?? "");
+          setInterests(m.interests ?? []);
           const [s, g] = (m.homeRegion ?? "").split(" ");
           setSido(s ?? "");
           setSigungu(g ?? "");
@@ -78,6 +80,7 @@ export default function Settings() {
         major,
         secondMajor,
         homeRegion: sido ? [sido, sigungu].filter(Boolean).join(" ") : "",
+        interests,
       });
       setMe(updated);
       setSemester(updated.semesterManual && updated.semester ? String(updated.semester) : "");
@@ -263,9 +266,33 @@ export default function Settings() {
           <section className="panel">
             <h2 className="panel-title">내 정보</h2>
             <p className="muted">
-              모두 선택이에요. 넣으면 플래너에서 내게 맞는 일에 형광펜이 칠해지고, 접혀 있던 내 지역 장학이 플래너로 들어와요. 소득이나 성적은 받지 않아요.
+              모두 선택이에요. 형광펜은 고른 관심 주제 가운데 자격이 되는 일에만 칠하고, 알림도 그 일만 보내요. 소득이나 성적은 받지 않아요.
             </p>
             <form onSubmit={saveProfile}>
+              <fieldset className="topics">
+                <legend>관심 있는 일</legend>
+                <div className="topic-chips">
+                  {TOPICS.map((t) => {
+                    const on = interests.includes(t.key);
+                    return (
+                      <button
+                        key={t.key}
+                        type="button"
+                        aria-pressed={on}
+                        onClick={() => {
+                          setInterests(on ? interests.filter((k) => k !== t.key) : [...interests, t.key]);
+                          setSaved(false);
+                        }}
+                      >
+                        {t.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="hint">
+                  처음에는 학생들이 학교 게시판에서 가장 많이 여는 다섯 가지가 켜져 있어요. 모두 끄면 형광펜을 칠하지 않아요.
+                </p>
+              </fieldset>
               <div className="grid2">
                 <div>
                   <label htmlFor="entryYear">입학년도</label>

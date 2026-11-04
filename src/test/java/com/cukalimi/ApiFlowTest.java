@@ -497,6 +497,19 @@ class ApiFlowTest {
                 withCookie(cookie, Map.of("semester", 3)), String.class).getStatusCode())
                 .isEqualTo(HttpStatus.BAD_REQUEST);
 
+        // 관심 주제. 처음에는 기본 다섯 개이고, 고르면 그대로 남고, 모르는 키는 받지 않는다 (ADR 014).
+        ResponseEntity<Map> plain = rest.exchange("/api/me", HttpMethod.GET, withCookie(cookie, null), Map.class);
+        assertThat((List<String>) plain.getBody().get("interests")).containsExactlyInAnyOrder("graduation", "seasonal", "workstudy", "course", "scholarship");
+        ResponseEntity<Map> picked = rest.exchange("/api/me/profile", HttpMethod.PUT,
+                withCookie(cookie, Map.of("entryYear", 2010, "semester", 6, "interests", List.of("course", "exchange"))), Map.class);
+        assertThat((List<String>) picked.getBody().get("interests")).containsExactly("exchange", "course");
+        assertThat(rest.exchange("/api/me/profile", HttpMethod.PUT,
+                withCookie(cookie, Map.of("entryYear", 2010, "interests", List.of("nope"))), String.class).getStatusCode())
+                .isEqualTo(HttpStatus.BAD_REQUEST);
+        // interests를 안 보내면 바꾸지 않는다.
+        ResponseEntity<Map> kept = rest.exchange("/api/me/profile", HttpMethod.PUT, withCookie(cookie, Map.of("entryYear", 2010, "semester", 6)), Map.class);
+        assertThat((List<String>) kept.getBody().get("interests")).containsExactly("exchange", "course");
+
         // 항목 저장과 혜택 체크
         long itemId = ((Number) ((Map) rest.getForObject("/api/items?includePast=true", List.class).get(0)).get("id")).longValue();
         assertThat(rest.exchange("/api/me/saved/" + itemId, HttpMethod.POST, withCookie(cookie, null), Void.class)
@@ -675,7 +688,7 @@ class ApiFlowTest {
     void aiAudienceReadTwiceMarksMineWithReasonAndDisagreementFallsBack() {
         String html = Fixtures.read("notice-273306.html");
         store.save(new NoticeSummary(999101L, "학사", "", LocalDate.of(2026, 7, 1)), html.replace("273306", "999101")
-                .replace("[학사지원팀] 2026학년도 2학기 수강신청 일정 안내", "[학사지원팀] AI 대상 일정 안내"));
+                .replace("[학사지원팀] 2026학년도 2학기 수강신청 일정 안내", "[학사지원팀] AI 대상 수강 일정 안내"));
         store.save(new NoticeSummary(999102L, "학사", "", LocalDate.of(2026, 7, 1)), html.replace("273306", "999102")
                 .replace("[학사지원팀] 2026학년도 2학기 수강신청 일정 안내", "[학사지원팀] 어긋남 일정 안내"));
         Notice agreedNotice = notices.findByArticleNo(999101L).orElseThrow();
@@ -704,7 +717,8 @@ class ApiFlowTest {
         Feed.Card card = feeds.build(third, LocalDate.of(2026, 7, 10)).view().sections().stream()
                 .flatMap(s -> s.cards().stream()).filter(c -> key.equals(c.key())).findFirst().orElseThrow();
         assertThat(card.mine()).isTrue();
-        assertThat(card.mineReason()).isEqualTo("3학년·컴퓨터정보공학부 대상");
+        // 형광펜 이유는 주제와 자격을 함께 적는다 (ADR 014).
+        assertThat(card.mineReason()).isEqualTo("수강·학적 · 3학년·컴퓨터정보공학부 대상");
 
         third.updateProfile(2024, 3, "컴퓨터정보공학부", null, null, LocalDate.of(2026, 7, 10));
         users.save(third);
@@ -713,7 +727,7 @@ class ApiFlowTest {
 
         // 학교가 공지를 고치면 대상도 다시 읽는다.
         store.save(new NoticeSummary(999101L, "학사", "", LocalDate.of(2026, 7, 1)), html.replace("273306", "999101")
-                .replace("[학사지원팀] 2026학년도 2학기 수강신청 일정 안내", "[학사지원팀] AI 대상 일정 안내(정정)"));
+                .replace("[학사지원팀] 2026학년도 2학기 수강신청 일정 안내", "[학사지원팀] AI 대상 수강 일정 안내(정정)"));
         assertThat(notices.findById(agreedNotice.getId()).orElseThrow().getAudienceReadAt()).isNull();
         audienceReader.readPending(LocalDate.of(2026, 7, 10));
         assertThat(audienceClassifier.calls).isEqualTo(calls + 2);

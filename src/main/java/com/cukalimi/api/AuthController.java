@@ -42,12 +42,12 @@ public class AuthController {
     /** semester는 이번 학기(9는 초과학기), grade는 거기서 나온 학년이다. */
     public record MeView(String email, Integer entryYear, String major, String secondMajor, String homeRegion,
             Integer grade, Integer semester, Integer autoSemester, boolean semesterManual, boolean admin, boolean digestEnabled,
-            String calendarToken) {
+            String calendarToken, java.util.List<String> interests) {
         static MeView of(AppUser u, boolean admin) {
             LocalDate today = LocalDate.now();
             return new MeView(u.getEmail(), u.getEntryYear(), u.getMajor(), u.getSecondMajor(), u.getHomeRegion(),
                     u.grade(today), u.semester(today), u.autoSemester(today), u.isSemesterManual(), admin, u.isDigestEnabled(),
-                    u.getCalendarToken());
+                    u.getCalendarToken(), u.interests().stream().map(com.cukalimi.feed.Topic::key).toList());
         }
     }
 
@@ -55,7 +55,9 @@ public class AuthController {
      * semester는 학생이 고른 이번 학기(1~8, 9는 초과학기)이고 null이면 입학년도로 센다.
      * homeRegion은 "전라남도 순천시"나 "전라남도". 목록(regions.yml)에 없는 값은 받지 않는다.
      */
-    public record ProfileRequest(Integer entryYear, Integer semester, String major, String secondMajor, String homeRegion) {
+    /** interests는 관심 주제 키 목록이다. null이면 바꾸지 않는다 (ADR 014). */
+    public record ProfileRequest(Integer entryYear, Integer semester, String major, String secondMajor, String homeRegion,
+            java.util.List<String> interests) {
     }
 
     @PostMapping("/auth/request")
@@ -119,6 +121,9 @@ public class AuthController {
                         .orElseThrow(() -> new IllegalArgumentException("연고 지역은 목록에서 골라 주세요"));
         AppUser managed = users.findById(user.getId()).orElseThrow();
         managed.updateProfile(body.entryYear(), body.semester(), body.major(), body.secondMajor(), home, LocalDate.now());
+        if (body.interests() != null) {
+            managed.updateInterests(com.cukalimi.feed.Topic.parse(String.join(",", body.interests())));
+        }
         return MeView.of(managed, auth.isAdmin(managed));
     }
 }

@@ -74,6 +74,14 @@ public class FeedAudit {
                 });
             }
         }
+        // 주제 규칙이 못 나눈 최근 공지 (ADR 014). 10%를 넘으면 규칙을 하나 더한다.
+        List<Notice> recent = notices.findByPostedOnGreaterThanEqualAndRemovedAtIsNull(today.minusDays(30));
+        long other = recent.stream().filter(n -> Topic.of(n.getTitle()) == Topic.OTHER).count();
+        if (!recent.isEmpty() && other * 10 > recent.size()) {
+            out.add(new Finding("주제 기타 " + other + "/" + recent.size(), today.toString(), "", "최근 30일 공지의 10% 넘게 주제를 못 나눔"));
+        }
+        recent.stream().filter(n -> Topic.of(n.getTitle()) == Topic.OTHER).limit(10)
+                .forEach(n -> out.add(new Finding("주제 기타", n.getPostedOn().toString(), "", n.getTitle())));
         OffsetDateTime weekAgo = OffsetDateTime.now().minusDays(7);
         for (Notice n : notices.findAll()) {
             if (n.isRemoved() && n.getRemovedAt() != null && n.getRemovedAt().isAfter(weekAgo)) {
