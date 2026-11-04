@@ -205,6 +205,8 @@ export type AudienceBacktest = {
   students: number;
   goldModel: string;
   humanChecked: number;
+  /** 사람이 확인해 고친 정답 수. */
+  humanFixed: number;
   runModel: string;
   runSource: string;
   agreed: number;

@@ -147,6 +147,7 @@ class AudienceBacktestTest {
         summary.put("notices", cases.size());
         summary.put("students", viewers.size());
         summary.put("humanChecked", gold.path("humanChecked").asInt(0));
+        summary.put("humanFixed", gold.path("humanReview").path("wrong").asInt(0));
         summary.put("runModel", AudienceLabelRun.HAIKU);
         summary.put("goldModel", gold.path("labeler").asText(AudienceLabelRun.OPUS));
         summary.put("runSource", haiku.path("source").asText(""));

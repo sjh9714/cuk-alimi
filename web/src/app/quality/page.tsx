@@ -243,7 +243,11 @@ export default function QualityPage() {
                 </tbody>
               </table>
               <p className="muted">
-                정답은 사람이 아니라 더 큰 모델({q.audienceBacktest.goldModel})이 같은 지시문으로 적었어요. 두 번 읽기가 같았던
+                정답은 더 큰 모델({q.audienceBacktest.goldModel})이 같은 지시문으로 적었고
+                {q.audienceBacktest.humanChecked > 0
+                  ? `, 그중 ${q.audienceBacktest.humanChecked}건은 사람이 원문과 대조해 ${q.audienceBacktest.humanFixed}건을 고쳤어요.`
+                  : " 사람 확인은 아직 없어요."}{" "}
+                두 번 읽기가 같았던
                 공지는 {q.audienceBacktest.agreed}/{q.audienceBacktest.notices}건이에요. {q.audienceBacktest.runSource}. 운영 중에는
                 지금까지 공지 {q.audienceRead.notices}건을 읽었고 ${q.audienceRead.costUsd.toFixed(4)}이 들었어요.
               </p>
