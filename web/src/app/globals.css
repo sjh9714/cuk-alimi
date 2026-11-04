@@ -698,6 +698,33 @@ button.link:disabled {
   color: var(--ink);
 }
 
+/* 머리글 오른쪽. 형광펜 범례와 종류 거르기. */
+.head-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  min-width: 0;
+}
+
+.legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* 행 제목의 형광펜과 같은 칠. */
+.legend .swatch {
+  width: 22px;
+  height: 12px;
+  border-radius: 3px 6px 5px 3px;
+  background: var(--hl);
+}
+
 .seg {
   display: flex;
   gap: 2px;
@@ -912,12 +939,6 @@ button.link:disabled {
   color: var(--ink);
 }
 
-.it .m i {
-  font-style: normal;
-  font-weight: 700;
-  color: var(--pen);
-}
-
 .it.scholarship .m b {
   color: var(--c-jang);
 }
@@ -938,38 +959,6 @@ button.link:disabled {
   color: var(--c-gwa);
 }
 
-.it .m details[open] {
-  flex-basis: 100%;
-}
-
-.it .m summary {
-  cursor: pointer;
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  list-style: none;
-}
-
-.it .m summary::-webkit-details-marker {
-  display: none;
-}
-
-.it .m details p {
-  margin-top: 4px;
-  color: var(--body);
-}
-
-/* 형광펜을 칠한 이유. AI가 읽은 대상 조건과 내 프로필이 맞은 부분이다. */
-.it .m details p.why {
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.it .m .report {
-  display: flex;
-  margin-top: 4px;
-}
-
 .it .m .report,
 .events .report {
   padding: 0;
@@ -988,12 +977,14 @@ button.link:disabled {
   color: var(--alarm);
 }
 
-/* 행사마다 달려 있어서 평소에는 감추고, 마우스를 올리거나 키보드로 닿을 때만 보인다. */
+/* 행마다 달려 있어서 평소에는 감추고, 마우스를 올리거나 키보드로 닿을 때만 보인다. */
 @media (hover: hover) {
-  .events .report {
+  .events .report,
+  .it .m .report {
     opacity: 0;
   }
   .events li:hover .report,
+  .it:hover .m .report,
   .report:focus-visible {
     opacity: 1;
   }

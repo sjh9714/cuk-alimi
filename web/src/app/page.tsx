@@ -151,12 +151,20 @@ function Planner({ today }: { today: Date }) {
           )}
         </div>
         {feed && (
-          <div className="seg" role="group" aria-label="종류">
-            {KINDS.map((k) => (
-              <button key={k} aria-pressed={kind === k} onClick={() => setKind(k)}>
-                {k === "all" ? "전체" : KIND_LABEL[k]}
-              </button>
-            ))}
+          <div className="head-tools">
+            {me && (
+              <p className="legend">
+                <span className="swatch" aria-hidden="true" />
+                내게 맞음
+              </p>
+            )}
+            <div className="seg" role="group" aria-label="종류">
+              {KINDS.map((k) => (
+                <button key={k} aria-pressed={kind === k} onClick={() => setKind(k)}>
+                  {k === "all" ? "전체" : KIND_LABEL[k]}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -365,18 +373,10 @@ function Row({ task, done, canSave, onDone, onSave, onReport }: Omit<Board, "tod
             {task.from && <span>{task.from}</span>}
           </span>
           {task.at && <em>{task.at}</em>}
-          {task.mine && <i>내게 맞음</i>}
-          {(task.excerpt || task.mineReason || canSave) && (
-            <details>
-              <summary>자세히</summary>
-              {task.mineReason && <p className="why">내게 맞는 이유 · {task.mineReason}</p>}
-              {task.excerpt && <p>{task.excerpt}</p>}
-              {canSave && (
-                <button className="report" onClick={() => onReport(task.line)}>
-                  날짜가 달라요
-                </button>
-              )}
-            </details>
+          {canSave && (
+            <button className="report" onClick={() => onReport(task.line)}>
+              날짜가 달라요
+            </button>
           )}
         </div>
       </div>
