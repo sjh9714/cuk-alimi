@@ -52,6 +52,13 @@ public final class DateItemExtractor {
     /** 같은 행에 날짜 열이 여럿이고 기간이 같을 때 어느 열 이름을 쓸지. 할 일을 뜻하는 이름이 먼저다. */
     private static final Pattern ACTION_COLUMN = Pattern.compile("신청|접수|제출|납부|등록|모집|변경");
     private static final int LABEL_LINE_LIMIT = 20;
+    /**
+     * 문장 속 마감. "9월 30일 오전 11시까지 … 자소서를 노진영(…)에게 보내주세요"처럼 날짜 뒤 "까지"에 목적어와 제출 동사가 오는 줄.
+     * 목적어(…를)와 동사로 "자소서 제출"을 만든다. 목적어 없이 "까지 이메일 접수"면 날짜 앞 "추천서 작성 후"의 명사를 쓴다.
+     */
+    private static final Pattern SENTENCE_OBJECT = Pattern.compile("^\\s*[^。]{0,40}?([가-힣A-Za-z]{2,10})\\s*[을를]\\s+[^。]{0,60}?(보내|송부|발송|제출|업로드)");
+    private static final Pattern SENTENCE_RECEIVE = Pattern.compile("^\\s*(\\([^)]{0,6}\\))?\\s*(이메일|메일|온라인)?\\s*(접수|제출|신청)");
+    private static final Pattern WRITE_BEFORE = Pattern.compile("([가-힣]{2,10})\\s*작성\\s*후\\s*$");
 
     private DateItemExtractor() {
     }
@@ -86,7 +93,8 @@ public final class DateItemExtractor {
             Set<LocalDate> ends = new java.util.HashSet<>();
             items.forEach(i -> ends.add(i.range().end()));
             fromLines(view, parser, cleanTitle).stream()
-                    .filter(i -> PERIOD_LINE.matcher(i.title()).find() && !ends.contains(i.range().end()))
+                    .filter(i -> (PERIOD_LINE.matcher(i.title()).find() && !ends.contains(i.range().end()))
+                            || i.where().startsWith("sentence"))
                     .forEach(items::add);
         }
         items.removeIf(i -> i.range().end().isBefore(oldest));
@@ -243,7 +251,22 @@ public final class DateItemExtractor {
             // "일시"는 마감이 아니라 행사 날이다. ItemKind가 안내로 분류해 마감 목록에는 들어가지 않는다.
             boolean eventDay = EVENT_DAY_LINE.matcher(lead).matches();
             if (lead.length() < 2 || lead.length() > 40 || !(eventDay || LINE_KEYWORD.matcher(lead).find())) {
+                // 앞의 글로는 일 이름을 못 찾았다. 문장 속 마감인지 본다.
+                for (DateRange r : ranges) {
+                    String name = sentenceName(line, r);
+                    if (name != null) {
+                        items.add(new ExtractedItem(name, r, gradeOf(line), "sentence" + lineIndex));
+                    }
+                }
                 continue;
+            }
+            // 앞의 글이 "명단 발송 및 제출 확인을 위해"처럼 이유 문장이면 문장 속 이름("자소서 제출")이 더 낫다.
+            if (DESCRIPTION_LEAD.matcher(lead).find()) {
+                String name = sentenceName(line, merged);
+                if (name != null) {
+                    items.add(new ExtractedItem(name, merged, gradeOf(line), "sentence" + lineIndex));
+                    continue;
+                }
             }
             items.add(new ExtractedItem(lead, merged, gradeOf(line), "line" + lineIndex));
         }
@@ -265,6 +288,39 @@ public final class DateItemExtractor {
         DateRange x = merge(a);
         DateRange y = merge(b);
         return java.util.Objects.equals(x.start(), y.start()) && x.end().equals(y.end());
+    }
+
+    /** 문장 속 마감의 이름. 날짜 바로 뒤가 "까지"이고 그 뒤에 목적어와 제출 동사가 있을 때만. 없으면 null. */
+    static String sentenceName(String line, DateRange r) {
+        String matched = r.matchedText().replaceFirst("^~", "");
+        int at = line.indexOf(matched);
+        if (at < 0) {
+            return null;
+        }
+        String rest = line.substring(at + matched.length());
+        String after;
+        if (matched.endsWith("까지")) {
+            after = rest;
+        } else {
+            // 날짜 뒤 "(수)", "오전 11시" 같은 말을 건너뛰고 "까지"가 와야 한다.
+            Matcher until = Pattern.compile("^\\s*(\\([^)]{0,6}\\))?\\s*((오전|오후)\\s*)?(\\d{1,2}\\s*시(\\s*\\d{1,2}\\s*분)?)?\\s*까지").matcher(rest);
+            if (!until.find()) {
+                return null;
+            }
+            after = rest.substring(until.end());
+        }
+        Matcher obj = SENTENCE_OBJECT.matcher(after);
+        if (obj.find()) {
+            return obj.group(1) + " 제출";
+        }
+        Matcher recv = SENTENCE_RECEIVE.matcher(after);
+        if (recv.find()) {
+            Matcher before = WRITE_BEFORE.matcher(line.substring(0, at));
+            if (before.find()) {
+                return before.group(1) + (recv.group(2) == null ? " " : " " + recv.group(2) + " ") + recv.group(3);
+            }
+        }
+        return null;
     }
 
     /** 날짜 앞에 적힌 글. "접수기간 : 10. 1.(수)"에서 "접수기간". */

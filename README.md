@@ -1,6 +1,6 @@
 # CUK-Alimi
 
-> A deadline tracker for Catholic University of Korea students. It collects school notices every hour, extracts the deadlines students must act on, and sends one morning email. Deadlines that only exist inside images are transcribed twice by Claude Haiku, parsed by the same rules, and published when both reads agree. Image-read dates carry a small "check" tag where students can report a wrong date. Extraction accuracy is measured on an 89-notice gold set in CI (precision and recall 0.977) and published on a public page.
+> A deadline tracker for Catholic University of Korea students. It collects school notices every hour, extracts the deadlines students must act on, and sends one morning email. Deadlines that only exist inside images are transcribed twice by Claude Haiku, parsed by the same rules, and published when both reads agree. Image-read dates carry a small "check" tag where students can report a wrong date. Extraction accuracy is measured on an 89-notice gold set in CI (precision 0.977, recall 1.000 on the set the rules were tuned on) and published on a public page.
 
 가톨릭대 학생이 놓치기 쉬운 장학·학사 공지의 마감을 뽑아, 출처가 붙은 것만 홈과 아침 메일로 알려 주는 개인 서비스입니다.
 
@@ -31,12 +31,12 @@
 
 | 항목 | 값 |
 |---|---|
-| 마감 추출 정밀도 / 재현율 (정답셋 89건, 마감 86개) | 0.977 / 0.977 (처음 잰 값 0.886 / 0.886) |
-| 글 공지 71건 | 0.973 / 0.973 |
+| 마감 추출 정밀도 / 재현율 (정답셋 89건, 마감 86개, 규칙을 고칠 때 본 셋) | 0.977 / 1.000 (처음 잰 값 0.886 / 0.886) |
+| 글 공지 71건 | 0.974 / 1.000 |
 | 그림 공지 18건 | 1.000 / 1.000 |
 | 그림 받아 적기 비용 | 1회 약 $0.0007, 지금까지 15회에 $0.009 |
 | 형광펜 (시험용 69건, 지시문 고칠 때 안 본 셋) | 칠한 것 중 맞음 91.4%, 칠해야 할 것 중 칠함 50.8%. 공지 단위로 모두 맞은 공지 54/69(정규식 50/69) |
-| 행 제목 회귀 기록 (마감 87개) | 78/87이 기대 라벨과 같음. 기대 라벨은 추출 결과를 보고 적어 정확도가 아니다 |
+| 행 제목 회귀 기록 (마감 87개) | 83/87이 기대 라벨과 같음. 기대 라벨은 추출 결과를 보고 적어 정확도가 아니다 |
 | 사람이 확인한 정답 | 마감 10건, 형광펜 30건(1건 고침), 행 제목 0건 |
 
 0.886에서 0.977로 올리는 동안 백테스트가 두 번 변경을 막았습니다. 한 번은 "까지 학점교류"의 "학점"을 "2.5학점" 같은 수치로 보고 마감을 버리던 숨은 버그였고, 한 번은 라벨러 사이에 갈린 정답 기준이었습니다.
@@ -47,7 +47,7 @@
 - 마감 날짜 정답은 추출 결과를 보지 않는 AI 에이전트가 원문만 읽고 붙였고, 추출기와 엇갈린 건은 원문으로 다시 판정했습니다. 행 제목 정답(2026-11-04)은 추출 결과를 보고 썼기 때문에 정확도가 아니라 회귀 기록입니다. 사람은 무작위 10건만 확인했고, 9건이 맞았고 1건은 행사 날짜를 어떻게 다룰지 이의가 나왔습니다 (`docs/verification/2026-11-02-label-check.md`).
 - 프로필 다섯 칸(입학년도, 이번 학기, 전공, 복수전공, 연고 지역)으로 "내 것"이라고 정직하게 말할 수 있는 공지는 24%뿐입니다. 완벽한 개인화는 되지 않습니다.
 - 그림에서 읽은 날짜는 두 번 읽기가 일치하면 사람 확인 없이 공개됩니다. 같은 모델이 같은 글자를 똑같이 잘못 읽으면 틀린 날짜가 나갈 수 있고, 시험에서 어긋난 사례가 없어 오류 검출력은 아직 재지 못했습니다.
-- 남은 오류는 문장 속 마감("10월 3일 오전까지 보내 주세요")과 특강 일정표입니다.
+- 남은 오류는 특강 일정표의 "일정" 칸을 마감으로 읽는 2건입니다. 문장 속 마감("10월 3일 오전까지 자소서를 보내 주세요")은 2026-11-04에 읽게 했습니다. 이 수치는 규칙을 고칠 때 본 셋의 점수라 새 공지에서는 더 낮을 수 있습니다.
 - 학교 `robots.txt`가 막는 경로에서 공지 그림을 받습니다. 학교에 문의할지, 끄고 배포할지는 배포 직전에 정합니다 (ADR 010).
 - 아직 배포 전이라 실사용자 지표는 없습니다. 운영을 시작하면 검수 기록(`review_event`)이 같은 페이지에 쌓입니다.
 
