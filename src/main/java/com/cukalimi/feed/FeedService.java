@@ -59,14 +59,21 @@ public class FeedService {
         Set<Long> doneIds = user == null ? Set.of()
                 : done.findByUserId(user.getId()).stream().map(DoneItem::getDateItemId).collect(Collectors.toSet());
 
-        List<DateItem> upcoming = dateItems.findByEndsOnGreaterThanEqualAndStatusNot(from, DateItem.STATUS_CANDIDATE);
+        List<DateItem> found = dateItems.findByEndsOnGreaterThanEqualAndStatusNot(from, DateItem.STATUS_CANDIDATE);
         Map<Long, Notice> noticeById = new HashMap<>();
         Map<Long, Audience> audiences = new HashMap<>();
-        for (Notice n : notices.findAllById(upcoming.stream().map(DateItem::getNoticeId).filter(Objects::nonNull).toList())) {
+        Set<Long> removed = new java.util.HashSet<>();
+        for (Notice n : notices.findAllById(found.stream().map(DateItem::getNoticeId).filter(Objects::nonNull).toList())) {
+            if (n.isRemoved()) {
+                removed.add(n.getId());
+                continue;
+            }
             noticeById.put(n.getId(), n);
             audiences.put(n.getId(), Audience.of(n));
         }
-        List<Notice> undated = undated(today);
+        // 학교가 지웠거나 다시 올려 묵은 공지의 날짜는 뺀다.
+        List<DateItem> upcoming = found.stream().filter(i -> i.getNoticeId() == null || !removed.contains(i.getNoticeId())).toList();
+        List<Notice> undated = undated(today).stream().filter(n -> !n.isRemoved()).toList();
         undated.forEach(n -> audiences.put(n.getId(), Audience.of(n)));
         return new Built(Feed.build(upcoming, noticeById, audiences, undated, viewer, user != null, savedIds, doneIds,
                 props::scheduleUrl), noticeById);

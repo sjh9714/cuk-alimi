@@ -84,7 +84,7 @@ public class AudienceReader {
         int agreed = 0;
         for (Notice n : targets.values().stream()
                 .sorted(Comparator.comparing(Notice::getPostedOn, Comparator.nullsLast(Comparator.reverseOrder()))).toList()) {
-            if (!FeedService.undatedCategory(n) || Audience.RESULT.equals(Audience.of(n).scope()) || waitingForTranscript(n)) {
+            if (n.isRemoved() || !FeedService.undatedCategory(n) || Audience.RESULT.equals(Audience.of(n).scope()) || waitingForTranscript(n)) {
                 continue;
             }
             if (notices.countByAudienceReadAtAfter(startOfDay) >= props.audienceRead().dailyLimit()) {

@@ -41,6 +41,9 @@ public class Notice {
     private String attachments;
     private String status = STATUS_NEEDS_REVIEW;
     private String reviewReason;
+    /** 학교가 지웠거나(GONE) 같은 날 같은 제목으로 다시 올려 묵은(DUPLICATE) 공지. 있으면 학생 화면과 알림에서 뺀다. */
+    private OffsetDateTime removedAt;
+    private String removedReason;
     private OffsetDateTime firstSeenAt = OffsetDateTime.now();
     private OffsetDateTime reviewedAt;
     private String reviewedBy;
@@ -79,6 +82,24 @@ public class Notice {
 
     public String getDept() {
         return dept;
+    }
+
+    public static final String REMOVED_GONE = "GONE";
+    public static final String REMOVED_DUPLICATE = "DUPLICATE";
+
+    public void markRemoved(String reason) {
+        if (removedAt == null) {
+            this.removedAt = OffsetDateTime.now();
+            this.removedReason = reason;
+        }
+    }
+
+    public boolean isRemoved() {
+        return removedAt != null;
+    }
+
+    public String getRemovedReason() {
+        return removedReason;
     }
 
     public void markReviewed(String by) {

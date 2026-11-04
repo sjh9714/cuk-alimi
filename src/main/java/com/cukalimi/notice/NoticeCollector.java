@@ -137,6 +137,9 @@ public class NoticeCollector {
                 .filter(Objects::nonNull).collect(Collectors.toSet());
         int changed = 0;
         for (Notice n : notices.findAllById(ids)) {
+            if (n.isRemoved()) {
+                continue;
+            }
             try {
                 String html = fetcher.get(n.getUrl());
                 if (!normalize(NoticeViewParser.parse(html).bodyText()).equals(normalize(n.getBodyText()))) {
@@ -144,7 +147,14 @@ public class NoticeCollector {
                     changed++;
                 }
             } catch (RuntimeException e) {
-                log.warn("notice {} recheck failed: {}", n.getArticleNo(), e.getMessage());
+                // 학교가 지운 글은 404다. 학생 화면과 알림에서 뺀다. 학교가 같은 공지를 고쳐 다시 올릴 때 흔하다.
+                if (isNotFound(e)) {
+                    store.retire(n.getId(), Notice.REMOVED_GONE);
+                    changed++;
+                    log.info("notice {} gone (404), retired", n.getArticleNo());
+                } else {
+                    log.warn("notice {} recheck failed: {}", n.getArticleNo(), e.getMessage());
+                }
             }
         }
         return changed;
@@ -159,12 +169,21 @@ public class NoticeCollector {
         }
     }
 
+    static boolean isNotFound(Throwable e) {
+        for (Throwable t = e; t != null; t = t.getCause()) {
+            if (t instanceof org.jsoup.HttpStatusException h && h.getStatusCode() == 404) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** 공백과 보이지 않는 글자는 무시한다. 목록과 본문 페이지가 제목을 조금 다르게 찍어도 매시간 다시 읽지 않게. */
     static boolean titleChanged(String stored, String listed) {
         return listed != null && !listed.isBlank() && !normalize(stored).equals(normalize(listed));
     }
 
-    private static String normalize(String s) {
+    static String normalize(String s) {
         return s == null ? "" : s.replaceAll("[\\s\\uFEFF\\u200B-\\u200D]", "");
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
- * RUN_ONCE=schedule|notice|transcribe|all|digest 로 띄우면 수집(또는 아침 알림)을 한 번 돌리고 종료한다.
+ * RUN_ONCE=schedule|notice|transcribe|all|digest|recheck 로 띄우면 수집(또는 아침 알림)을 한 번 돌리고 종료한다.
  * 운영에서는 비워 두고 스케줄러에 맡긴다.
  */
 @Component
@@ -54,6 +54,9 @@ public class RunOnceRunner implements ApplicationRunner {
             }
             if (mode.equals("transcribe") || mode.equals("all")) {
                 System.out.println("transcribe " + imageReader.readPending(java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul"))));
+            }
+            if (mode.equals("recheck")) {
+                System.out.println("recheck changed=" + noticesCollector.recheckOpenNotices(java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul"))));
             }
             if (mode.equals("digest")) {
                 System.out.println("digest " + digest.sendAll());

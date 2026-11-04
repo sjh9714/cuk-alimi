@@ -41,6 +41,26 @@ public class NoticeStore {
     public record Saved(long noticeId, int items, String reason) {
     }
 
+    /** 지워졌거나 묵은 공지로 표시한다. 날짜 항목은 그대로 두고 화면과 알림에서만 뺀다. */
+    @Transactional
+    public void retire(long noticeId, String reason) {
+        notices.findById(noticeId).ifPresent(n -> n.markRemoved(reason));
+    }
+
+    /**
+     * 학교가 같은 공지를 고쳐 다시 올리면 같은 날 같은 제목의 글이 둘이 된다. 지운 쪽을 알아채는 재확인은 하루 한 번이라,
+     * 새 글이 들어올 때 같은 분류·날짜·제목의 번호 작은 글을 바로 묵힌다.
+     */
+    private void retireDuplicates(Notice fresh) {
+        for (Notice other : notices.findByCategoryAndPostedOn(fresh.getCategory(), fresh.getPostedOn())) {
+            if (other.getArticleNo() < fresh.getArticleNo() && !other.isRemoved()
+                    && NoticeCollector.normalize(other.getTitle()).equals(NoticeCollector.normalize(fresh.getTitle()))) {
+                other.markRemoved(Notice.REMOVED_DUPLICATE);
+                log.info("notice {} retired as duplicate of {}", other.getArticleNo(), fresh.getArticleNo());
+            }
+        }
+    }
+
     /** 본문을 읽고 저장한다. 이미 있는 글이면 원문과 항목을 다시 처리한다(검수 완료 항목은 건드리지 않는다). */
     @Transactional
     public Saved save(NoticeSummary summary, String html) {
@@ -60,6 +80,7 @@ public class NoticeStore {
             notice = notices.save(new Notice(view.articleNo(), category, summary.dept(), view.title(), view.postedOn(),
                     view.writer(), url, view.bodyText(), view.hasImages(),
                     String.join("\n", view.attachments()), reason));
+            retireDuplicates(notice);
         } else {
             boolean changed = notice.reparsed(view.title(), view.bodyText(), view.hasImages(),
                     String.join("\n", view.attachments()), reason);

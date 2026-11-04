@@ -104,7 +104,7 @@ public class ImageNoticeReader {
         notices.findAllById(dateItems.findNoticeIdsWithOpenItems(DateItem.STATUS_CANDIDATE, today))
                 .forEach(n -> targets.putIfAbsent(n.getId(), n));
         for (Notice n : targets.values()) {
-            if (!FeedService.undatedCategory(n) || !waitingForImageRead(n)) {
+            if (n.isRemoved() || !FeedService.undatedCategory(n) || !waitingForImageRead(n)) {
                 continue;
             }
             seen++;

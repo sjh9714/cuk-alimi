@@ -70,6 +70,10 @@ class ApiFlowTest {
             return new PageFetcher() {
                 @Override
                 public String get(String url) {
+                    // 학교가 지운 글. 다시 열면 404다.
+                    if (url.contains("articleNo=999303")) {
+                        throw new java.io.UncheckedIOException(new org.jsoup.HttpStatusException("not found", 404, url));
+                    }
                     throw new IllegalStateException("no network in this test");
                 }
 
@@ -193,6 +197,43 @@ class ApiFlowTest {
         assertThat(rest.getForObject("/api/feed?from=2026-12-01", String.class)).doesNotContain(marker);
         assertThat(rest.getForObject("/api/feed?from=2000-01-01", String.class)).contains(marker);
         dateItems.deleteById(pastId);
+    }
+
+    @Autowired
+    com.cukalimi.notice.NoticeCollector noticeCollector;
+
+    @Test
+    void repostedAndDeletedNoticesLeaveTheFeed() {
+        // 제목을 바꿔 둔다. 같은 제목이면 같이 심은 273306까지 묵혀 다른 테스트가 흔들린다.
+        String html = Fixtures.read("notice-273306.html").replace("수강신청 일정 안내", "수강신청 일정 재공지");
+        // 학교가 같은 공지를 고쳐 다시 올리면 같은 날 같은 제목의 글이 둘이다. 번호 작은 쪽을 묵힌다.
+        store.save(new NoticeSummary(999301L, "학사", "", LocalDate.of(2026, 6, 29)), html.replace("273306", "999301"));
+        store.save(new NoticeSummary(999302L, "학사", "", LocalDate.of(2026, 6, 29)), html.replace("273306", "999302"));
+        Notice older = notices.findByArticleNo(999301L).orElseThrow();
+        Notice newer = notices.findByArticleNo(999302L).orElseThrow();
+        assertThat(older.isRemoved()).isTrue();
+        assertThat(older.getRemovedReason()).isEqualTo(Notice.REMOVED_DUPLICATE);
+        assertThat(newer.isRemoved()).isFalse();
+        String feed = rest.getForObject("/api/feed", String.class);
+        long olderItem = dateItems.findByNoticeIdOrderByEndsOnAsc(older.getId()).get(0).getId();
+        long newerItem = dateItems.findByNoticeIdOrderByEndsOnAsc(newer.getId()).get(0).getId();
+        assertThat(feed).contains("\"id\":" + newerItem + ",").doesNotContain("\"id\":" + olderItem + ",");
+
+        // 학교가 지운 글은 하루 한 번 재확인에서 404로 드러난다.
+        store.save(new NoticeSummary(999303L, "학사", "", LocalDate.of(2026, 6, 30)), html.replace("273306", "999303"));
+        Notice gone = notices.findByArticleNo(999303L).orElseThrow();
+        long goneItem = dateItems.findByNoticeIdOrderByEndsOnAsc(gone.getId()).get(0).getId();
+        assertThat(rest.getForObject("/api/feed", String.class)).contains("\"id\":" + goneItem + ",");
+        noticeCollector.recheckOpenNotices(LocalDate.of(2026, 6, 1));
+        Notice after = notices.findByArticleNo(999303L).orElseThrow();
+        assertThat(after.isRemoved()).isTrue();
+        assertThat(after.getRemovedReason()).isEqualTo(Notice.REMOVED_GONE);
+        assertThat(rest.getForObject("/api/feed", String.class)).doesNotContain("\"id\":" + goneItem + ",");
+        // 나머지 테스트가 세는 공지 수에 영향을 주지 않게 치운다.
+        for (Notice n : List.of(older, newer, after)) {
+            dateItems.deleteAll(dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId()));
+            notices.delete(n);
+        }
     }
 
     /** 푸시 서비스 대신 보낸 내용을 모은다. gone을 켜면 구독이 사라진 것처럼 군다. */

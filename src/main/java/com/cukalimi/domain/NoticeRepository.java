@@ -13,6 +13,8 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     java.util.List<Notice> findByStatusOrderByPostedOnDesc(String status);
 
+    java.util.List<Notice> findByCategoryAndPostedOn(String category, java.time.LocalDate postedOn);
+
     java.util.List<Notice> findByStatusAndReviewReasonAndPostedOnGreaterThanEqual(String status, String reviewReason,
             java.time.LocalDate since);
 

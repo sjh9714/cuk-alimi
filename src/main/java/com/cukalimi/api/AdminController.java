@@ -118,6 +118,9 @@ public class AdminController {
         Map<String, Integer> closed = new LinkedHashMap<>(Map.of(CLOSED_PAST, 0, CLOSED_RESULT, 0, CLOSED_STALE, 0));
         List<ReviewNotice> queue = new java.util.ArrayList<>();
         for (Notice n : notices.findByStatusOrderByPostedOnDesc(Notice.STATUS_NEEDS_REVIEW)) {
+            if (n.isRemoved()) {
+                continue;
+            }
             Audience audience = Audience.of(n);
             List<DateItem> items = dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId());
             String reason = closedReason(n, audience, items, today);
