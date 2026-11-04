@@ -128,7 +128,8 @@ class NoticeParsersTest {
         assertThat(item.range().end()).isEqualTo(LocalDate.of(2026, 10, 23));
         assertThat(item.range().startsAt()).isNull();
         assertThat(item.range().endsAt()).isEqualTo(LocalTime.of(17, 30));
-        assertThat(item.naturalKey(276997L)).isEqualTo("notice:276997:table1.r2.c0");
+        assertThat(item.where()).isEqualTo("table1.r2.c0");
+        assertThat(item.naturalKey(276997L, 1)).startsWith("notice:276997:t:일반휴학원제출마감일").endsWith("#1");
     }
 
     @Test

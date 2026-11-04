@@ -218,6 +218,32 @@ class ApiFlowTest {
     }
 
     @Test
+    void rowInsertedIntoTableKeepsSavedItemOnItsOwnDeadline() {
+        String cookie = login("insert@catholic.ac.kr");
+        String html = Fixtures.read("notice-273306.html").replace("273306", "999501").replace("수강신청 일정 안내", "수강신청 끼움 시험");
+        store.save(new NoticeSummary(999501L, "학사", "", LocalDate.of(2026, 6, 29)), html);
+        Notice n = notices.findByArticleNo(999501L).orElseThrow();
+        try {
+            DateItem kept = dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId()).stream()
+                    .filter(i -> i.getTitle().contains("수강바구니")).findFirst().orElseThrow();
+            rest.exchange("/api/me/saved/" + kept.getId(), HttpMethod.POST, withCookie(cookie, null), Void.class);
+            // 학교가 표 맨 위에 행을 하나 끼워 넣는다. 자리가 한 칸씩 밀려도 저장한 항목은 같은 마감에 붙어 있어야 한다.
+            int first = html.indexOf("<tr", html.indexOf("<tbody"));
+            String inserted = html.substring(0, first) + "<tr><td>새로 생긴 신청</td><td>2026.07.20.(월) ~ 07.21.(화)</td></tr>" + html.substring(first);
+            store.save(new NoticeSummary(999501L, "학사", "", LocalDate.of(2026, 6, 29)), inserted);
+            DateItem after = dateItems.findById(kept.getId()).orElseThrow();
+            assertThat(after.getStatus()).isEqualTo(DateItem.STATUS_AUTO);
+            assertThat(after.getTitle()).isEqualTo(kept.getTitle());
+            assertThat(after.getEndsOn()).isEqualTo(kept.getEndsOn());
+            assertThat(dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId())).anyMatch(i -> i.getTitle().contains("새로 생긴 신청"));
+        } finally {
+            rest.exchange("/api/me", HttpMethod.DELETE, withCookie(cookie, null), Void.class);
+            dateItems.deleteAll(dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId()));
+            notices.delete(n);
+        }
+    }
+
+    @Test
     void reparseKeepsSavedItemsAndPushTreatsSameDayLinesAsOne() {
         String cookie = login("keep@catholic.ac.kr");
         AppUser user = users.findByEmail("keep@catholic.ac.kr").orElseThrow();

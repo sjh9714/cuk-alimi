@@ -138,6 +138,11 @@ public class DateItem {
         return withdrawnAt != null;
     }
 
+    /** 키 방식을 바꿀 때 기존 항목이 새 키를 이어받는다. 저장과 체크가 그대로 붙어 있게. */
+    public void rekey(String naturalKey) {
+        this.naturalKey = naturalKey;
+    }
+
     /** 저장이 붙은 자동 항목을 지우는 대신 거둔다. 자연 키를 비워 같은 자리에 새 항목이 들어올 수 있게 한다. */
     public void retire() {
         status = STATUS_RETIRED;

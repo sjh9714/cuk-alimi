@@ -57,6 +57,17 @@ public class NoticeStore {
         return common * 2 >= union;
     }
 
+    /**
+     * 키가 없는 새 항목에 이어받을 옛 항목. 같은 이름 같은 마감이 먼저이고, 없으면 같은 이름이 하나뿐일 때 그것(기간 연장)이다.
+     * 이어받으면 학생의 저장과 체크가 그대로 남는다.
+     */
+    private static DateItem adopt(List<DateItem> unclaimed, DateItem fresh) {
+        String name = NoticeCollector.normalize(fresh.getTitle());
+        List<DateItem> sameName = unclaimed.stream().filter(i -> NoticeCollector.normalize(i.getTitle()).equals(name)).toList();
+        return sameName.stream().filter(i -> i.getEndsOn().equals(fresh.getEndsOn())).findFirst()
+                .orElse(sameName.size() == 1 ? sameName.get(0) : null);
+    }
+
     /** 학생의 저장이나 체크가 붙어 있는가. 붙어 있으면 지우지 않는다. 지우면 저장과 알림이 함께 사라진다. */
     private boolean hasUserRefs(DateItem item) {
         return saved.existsByDateItemId(item.getId()) || done.existsByDateItemId(item.getId());
@@ -135,14 +146,28 @@ public class NoticeStore {
         }
 
         Set<String> seen = new HashSet<>();
+        java.util.Map<String, Integer> occurrences = new java.util.HashMap<>();
+        // 이름 키가 없을 때 이어받을 후보. 자리 키로 만든 옛 항목이나, 학교가 기간을 바꿔 다시 올린 항목이다.
+        List<DateItem> unclaimed = new java.util.ArrayList<>(dateItems.findByNoticeIdOrderByEndsOnAsc(notice.getId()).stream()
+                .filter(i -> DateItem.SOURCE_NOTICE.equals(i.getSourceKind()) && DateItem.STATUS_AUTO.equals(i.getStatus()))
+                .toList());
         for (ExtractedItem item : extracted) {
-            DateItem fresh = DateItem.fromNotice(notice.getId(), item.naturalKey(view.articleNo()), item.title(),
+            String name = NoticeCollector.normalize(item.title());
+            int occurrence = occurrences.merge(name, 1, Integer::sum);
+            DateItem fresh = DateItem.fromNotice(notice.getId(), item.naturalKey(view.articleNo(), occurrence), item.title(),
                     item.range().start(), item.range().end(), item.range().startsAt(), item.range().endsAt(),
                     item.targetGrade());
             seen.add(fresh.getNaturalKey());
             var existing = dateItems.findByNaturalKey(fresh.getNaturalKey());
             if (existing.isEmpty()) {
-                dateItems.save(fresh);
+                DateItem adopted = adopt(unclaimed, fresh);
+                if (adopted != null) {
+                    adopted.rekey(fresh.getNaturalKey());
+                    adopted.refreshFrom(fresh);
+                    unclaimed.remove(adopted);
+                } else {
+                    dateItems.save(fresh);
+                }
             } else if (hasUserRefs(existing.get()) && !NoticeCollector.normalize(existing.get().getTitle()).equals(NoticeCollector.normalize(fresh.getTitle()))
                     && DateItem.STATUS_AUTO.equals(existing.get().getStatus())) {
                 // 자연 키는 표 안의 자리라, 학교가 표에 행을 끼워 넣으면 같은 자리에 다른 일이 온다.
@@ -153,6 +178,7 @@ public class NoticeStore {
                 log.info("notice {} item {} retired (label changed under a saved item)", view.articleNo(), existing.get().getId());
             } else {
                 existing.get().refreshFrom(fresh);
+                unclaimed.remove(existing.get());
             }
         }
         // 다시 처리했더니 사라진 자동 항목은 지운다. 사람이 고친 항목은 남기고, 학생의 저장이나 체크가 붙은 항목은 지우지 않고 거둔다.
