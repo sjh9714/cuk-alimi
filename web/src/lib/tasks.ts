@@ -44,13 +44,23 @@ export function cleanTitle(title: string): string {
     before = t;
     t = t.replace(/^(\[[^\]]*\]|\([^)]*\)|<[^>]*>)\s*/, "");
   }
-  return t
+  t = t
     .replace(/^\d{4}학년도\s*/, "")
     .replace(/^\d{4}년도?\s*/, "")
     .replace(/^\d{4}-/, "")
     .replace(/\s*\([^)]*\)?\s*$/, "")
-    .replace(/\s*안내\s*$/, "")
-    .trim();
+    // 행 제목이 두 줄을 넘지 않게 뜻 없는 부분을 더 덜어낸다. 낫표, 가운데 연도, 숫자 없는 가운데 괄호("(GGGI)", "(공공행정 인턴형)").
+    // "(2차)"처럼 숫자가 든 괄호는 뜻이 있어 남긴다.
+    .replace(/[「」『』]/g, "")
+    .replace(/(^|\s)\d{4}년\s+/g, "$1")
+    .replace(/\s*\([^)\d]{1,20}\)/g, "");
+  // 끝의 "안내", "공고", "알림", "운영", "실시"는 겹쳐 붙기도 한다("모집 공고 안내").
+  let prev = "";
+  while (t !== prev) {
+    prev = t;
+    t = t.replace(/\s*(안내|공고|알림|운영|실시)\s*$/, "").trim();
+  }
+  return t.replace(/\s{2,}/g, " ").trim();
 }
 
 /** "한양대학교 (안산ERICA) · 경인"을 "한양대 ERICA"로 줄인다. 학교 이름이 아니면 null. */

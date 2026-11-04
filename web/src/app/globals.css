@@ -929,7 +929,15 @@ button.link:disabled {
   min-width: 0;
 }
 
+/* 행 제목은 두 줄까지. 넘치면 "…"로 줄이고 전체 제목은 링크의 title에 있다. 형광펜이 왼쪽으로 4px 나오므로 그만큼 안쪽 여백을 둔다. */
 .it .do {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  margin-left: -4px;
+  padding-left: 4px;
   font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.3px;
