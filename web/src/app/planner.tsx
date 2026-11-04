@@ -4,6 +4,7 @@
 
 import { dday, type Line } from "@/lib/api";
 import { iso, type CampusEvent, type Kind, type Task } from "@/lib/tasks";
+import { useState } from "react";
 import { BookmarkIcon, CheckIcon } from "./icons";
 
 /** 학사일정 표와 학사 공지는 출처만 다르다. 학생에게는 둘 다 학사다. */
@@ -17,6 +18,8 @@ export type Board = {
   canSave: boolean;
   onDone: (key: string) => void;
   onSave: (lines: Line[]) => void;
+  /** 그림 날짜 신고. 로그인했을 때만 있다. */
+  onReport?: (lines: Line[]) => void;
 };
 
 export function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; tasks: Task[]; events: CampusEvent[] }) {
@@ -64,8 +67,15 @@ export function Day({ date, tasks, events, todayIso, ...board }: Board & { date:
   );
 }
 
-export function Row({ task, done, canSave, onDone, onSave }: Omit<Board, "todayIso"> & { task: Task }) {
+/**
+ * 행. 그림에서 읽어 사람 확인 없이 공개한 날짜가 섞인 행에만 작은 "확인" 표시가 붙고, 누르면 그 사실과 날짜 신고가 나온다.
+ * 자격 조건이 붙은 형광펜에도 붙여 보았더니 행의 절반에 달려(19행 중 9행) 2026-11-04 오전의 "접기 없이" 결정을 무너뜨려 뺐다.
+ */
+export function Row({ task, done, canSave, onDone, onSave, onReport }: Omit<Board, "todayIso"> & { task: Task }) {
   const finished = done.has(task.key);
+  const [open, setOpen] = useState(false);
+  const [reported, setReported] = useState(false);
+  const check = task.fromImage;
   return (
     <li className={`it ${task.kind} ${finished ? "done" : ""} ${task.mine ? "picked" : ""}`}>
       <button className="box" aria-pressed={finished} aria-label={`${task.title} 끝냈어요`} onClick={() => onDone(task.key)}>
@@ -84,7 +94,31 @@ export function Row({ task, done, canSave, onDone, onSave }: Omit<Board, "todayI
             {task.from && <span>{task.from}</span>}
           </span>
           {task.at && <em>{task.at}</em>}
+          {check && (
+            <button type="button" className="check-tag" aria-expanded={open} onClick={() => setOpen(!open)}>
+              확인
+            </button>
+          )}
         </div>
+        {check && open && (
+          <div className="check-body">
+            {task.mine && task.mineReason && <p>내게 맞는 이유 · {task.mineReason}</p>}
+            {task.fromImage && <p>공지 그림에서 읽은 날짜예요. 원문과 다르면 알려 주세요.</p>}
+            {task.fromImage && onReport && !reported && (
+              <button
+                type="button"
+                className="link"
+                onClick={() => {
+                  onReport(task.lines.filter((l) => l.fromImage));
+                  setReported(true);
+                }}
+              >
+                날짜가 달라요
+              </button>
+            )}
+            {reported && <p>알려 주셔서 고마워요. 그 날짜는 내리고 운영자가 확인해요.</p>}
+          </div>
+        )}
       </div>
       {canSave && (
         <button className="keep" aria-pressed={task.saved} aria-label={task.saved ? "저장 해제" : "저장"} onClick={() => onSave(task.lines)}>

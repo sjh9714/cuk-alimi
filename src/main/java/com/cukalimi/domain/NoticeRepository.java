@@ -17,6 +17,8 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     java.util.List<Notice> findByPostedOnGreaterThanEqualAndRemovedAtIsNull(java.time.LocalDate since);
 
+    long countByFirstSeenAtAfter(java.time.OffsetDateTime since);
+
     java.util.List<Notice> findByStatusAndReviewReasonAndPostedOnGreaterThanEqual(String status, String reviewReason,
             java.time.LocalDate since);
 

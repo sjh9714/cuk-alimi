@@ -40,11 +40,16 @@ public final class Feed {
 
     /** label은 공지 안에서 이 날짜가 무엇인지("트리니티 신청", "서류 합격자 발표"). 공지 제목과 같으면 비운다. */
     public record Line(long id, String label, LocalDate startsOn, LocalDate endsOn, LocalTime startsAt, LocalTime endsAt,
-            String kind, boolean saved, boolean done) {
+            String kind, boolean saved, boolean done, boolean fromImage) {
+
+        public Line(long id, String label, LocalDate startsOn, LocalDate endsOn, LocalTime startsAt, LocalTime endsAt,
+                String kind, boolean saved, boolean done) {
+            this(id, label, startsOn, endsOn, startsAt, endsAt, kind, saved, done, false);
+        }
 
         public Line(long id, String label, LocalDate startsOn, LocalDate endsOn, LocalTime startsAt, LocalTime endsAt,
                 String kind, boolean saved) {
-            this(id, label, startsOn, endsOn, startsAt, endsAt, kind, saved, false);
+            this(id, label, startsOn, endsOn, startsAt, endsAt, kind, saved, false, false);
         }
     }
 
@@ -309,7 +314,8 @@ public final class Feed {
     private static Line line(DateItem i, String noticeTitle, Set<Long> saved, Set<Long> done) {
         String label = noticeTitle == null || sameThing(i.getTitle(), noticeTitle) ? null : tidyLabel(i.getTitle());
         return new Line(i.getId(), label, i.getStartsOn(), i.getEndsOn(), i.getStartsAt(), i.getEndsAt(),
-                ItemKind.of(i.getTitle()), saved.contains(i.getId()), done.contains(i.getId()));
+                ItemKind.of(i.getTitle()), saved.contains(i.getId()), done.contains(i.getId()),
+                DateItem.STATUS_AUTO_IMAGE.equals(i.getStatus()));
     }
 
     /** 표의 칸을 이어 붙인 이름("서강대학교 · 서강대학교 · 서울 · 첨부파일 참조")에서 겹친 칸과 안내 문구를 뺀다. */

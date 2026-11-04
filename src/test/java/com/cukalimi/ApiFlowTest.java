@@ -207,6 +207,16 @@ class ApiFlowTest {
     @Autowired
     com.cukalimi.notice.NoticeCollector noticeCollector;
 
+    @Autowired
+    com.cukalimi.ops.HealthAlert healthAlert;
+
+    @Test
+    void healthAlertNamesAStoppedCollector() {
+        // 이 테스트 서버는 학교 사이트에 요청하지 않으니 "요청 0건"이 문제로 잡힌다. 공지는 방금 들어왔으니 조용하지 않다.
+        assertThat(healthAlert.problems()).anyMatch(p -> p.contains("한 번도 요청하지 않았어요"))
+                .noneMatch(p -> p.contains("새 공지가 하나도"));
+    }
+
     @Test
     void reparseKeepsSavedItemsAndPushTreatsSameDayLinesAsOne() {
         String cookie = login("keep@catholic.ac.kr");

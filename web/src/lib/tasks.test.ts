@@ -6,7 +6,7 @@ const TODAY = "2026-11-02";
 let nextId = 1;
 
 function line(endsOn: string, label: string | null, extra: Partial<Line> = {}): Line {
-  return { id: nextId++, label, startsOn: null, endsOn, startsAt: null, endsAt: null, kind: "ACTION", saved: false, done: false, ...extra };
+  return { id: nextId++, label, startsOn: null, endsOn, startsAt: null, endsAt: null, kind: "ACTION", saved: false, done: false, fromImage: false, ...extra };
 }
 
 function card(title: string, lines: Line[], extra: Partial<Card> = {}): Card {

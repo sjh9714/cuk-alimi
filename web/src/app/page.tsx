@@ -148,7 +148,18 @@ function Planner({ today }: { today: Date }) {
     .filter((s) => s.cards.length > 0);
   const saved = shown.filter((t) => t.saved);
 
-  const board = { todayIso, done: finishedKeys, canSave: !!me, onDone: toggleDone, onSave: toggleSave };
+  /** 그림 날짜 신고. 서버가 받으면 그 날짜를 내린다 (ADR 010). 확인을 따로 묻지 않고, 화면에 고맙다는 말만 남긴다. */
+  const reportDate = async (lines: Line[]) => {
+    setError(null);
+    try {
+      await Promise.all(lines.map((l) => api.reportDate(l.id)));
+      await refresh();
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
+  const board = { todayIso, done: finishedKeys, canSave: !!me, onDone: toggleDone, onSave: toggleSave, onReport: me ? reportDate : undefined };
 
   const undatedMemo = (
     <div className="cell memo">
