@@ -53,7 +53,9 @@ public class NoticeStore {
      */
     private void retireDuplicates(Notice fresh) {
         for (Notice other : notices.findByCategoryAndPostedOn(fresh.getCategory(), fresh.getPostedOn())) {
+            // 학과 게시판은 학과까지 같아야 한다. 다른 학과가 같은 날 같은 제목을 올릴 수 있다.
             if (other.getArticleNo() < fresh.getArticleNo() && !other.isRemoved()
+                    && java.util.Objects.equals(other.getDept(), fresh.getDept())
                     && NoticeCollector.normalize(other.getTitle()).equals(NoticeCollector.normalize(fresh.getTitle()))) {
                 other.markRemoved(Notice.REMOVED_DUPLICATE);
                 log.info("notice {} retired as duplicate of {}", other.getArticleNo(), fresh.getArticleNo());
