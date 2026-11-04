@@ -65,17 +65,23 @@ public class RunOnceRunner implements ApplicationRunner {
             if (mode.equals("reparse")) {
                 // 추출 규칙을 고친 뒤 저장해 둔 원문으로 최근 90일 공지의 날짜 항목을 다시 뽑는다. 학교에 요청하지 않는다.
                 int n = 0;
+                int failed = 0;
                 for (var notice : notices.findByPostedOnGreaterThanEqualAndRemovedAtIsNull(
                         java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul")).minusDays(90))) {
                     var raw = raws.findById(notice.getArticleNo()).orElse(null);
                     if (raw == null) {
                         continue;
                     }
-                    store.save(new com.cukalimi.notice.NoticeSummary(notice.getArticleNo(), notice.getCategory(), notice.getTitle(),
-                            notice.getPostedOn(), notice.getUrl(), notice.getDept()), raw.getHtml());
-                    n++;
+                    try {
+                        store.save(new com.cukalimi.notice.NoticeSummary(notice.getArticleNo(), notice.getCategory(), notice.getTitle(),
+                                notice.getPostedOn(), notice.getUrl(), notice.getDept()), raw.getHtml());
+                        n++;
+                    } catch (RuntimeException e) {
+                        // 읽기 실패로 남은 원문("점검 중")은 본문이 없다. 그 공지는 건너뛴다.
+                        failed++;
+                    }
                 }
-                System.out.println("reparse notices=" + n);
+                System.out.println("reparse notices=" + n + " failed=" + failed);
             }
             if (mode.equals("recheck")) {
                 System.out.println("recheck changed=" + noticesCollector.recheckOpenNotices(java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul"))));
