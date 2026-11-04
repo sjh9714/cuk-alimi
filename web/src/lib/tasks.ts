@@ -168,3 +168,17 @@ export function startsOf(sections: Section[], today: string): CampusEvent[] {
 export function boardCards(sections: Section[]): Card[] {
   return sections.filter((s) => !s.collapsed || s.key === "career").flatMap((s) => s.cards);
 }
+
+export type MonthCell = { date: Date; key: string; inMonth: boolean };
+
+/** 월 달력의 칸. 일요일에 시작하는 7열로 그 달을 덮고, 1일 앞과 말일 뒤는 이웃 달 날짜로 채운다. month는 0부터 센다. */
+export function monthCells(year: number, month: number): MonthCell[] {
+  const first = new Date(year, month, 1);
+  const lead = first.getDay();
+  const length = new Date(year, month + 1, 0).getDate();
+  const count = Math.ceil((lead + length) / 7) * 7;
+  return Array.from({ length: count }, (_, i) => {
+    const date = new Date(year, month, 1 - lead + i);
+    return { date, key: iso(date), inMonth: date.getMonth() === month };
+  });
+}

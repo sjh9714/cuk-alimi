@@ -1727,6 +1727,214 @@ details.fold .note {
 
 /* ───── 화면 너비 ───── */
 
+/* 월 보기. 일요일에 시작하는 7열 달력. 칸에는 제목 한 줄씩 3개까지, 휴대폰에서는 분류 색 점. 고른 날의 할 일은 아래 판에 주간과 같은 행으로 펼친다. */
+.month {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.month-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.month-nav h2 {
+  min-width: 7.5em;
+  text-align: center;
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--pen);
+  font-variant-numeric: tabular-nums;
+}
+
+.month-nav button.icon {
+  width: 38px;
+  height: 38px;
+  justify-content: center;
+  padding: 0;
+  border-radius: 10px;
+  color: var(--pen);
+}
+
+.month-nav button.icon:disabled {
+  color: var(--hair-2);
+  cursor: default;
+  background: var(--paper);
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.month-grid > :nth-child(7n) {
+  border-right: 0;
+}
+
+.mwd {
+  padding: 8px 10px;
+  border-right: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--mute);
+}
+
+.mc {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 5px;
+  min-width: 0;
+  min-height: 116px;
+  margin-bottom: -1px;
+  padding: 8px 10px 10px;
+  border: 0;
+  border-right: 1px solid var(--hair);
+  border-bottom: 1px solid var(--hair);
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.mc:hover {
+  background: var(--paper-2);
+}
+
+.mc.now {
+  background: var(--today);
+}
+
+.mc.sel {
+  box-shadow: inset 0 0 0 2px var(--pen);
+}
+
+.mnum {
+  position: relative;
+  align-self: flex-start;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--pen);
+  font-variant-numeric: tabular-nums;
+}
+
+.mc.weekend .mnum {
+  color: var(--mute);
+}
+
+.mc.now .mnum {
+  margin: 0 6px;
+  color: var(--alarm);
+}
+
+.mnum .ring {
+  width: calc(100% + 18px);
+  min-width: 30px;
+  height: 30px;
+}
+
+.mc.out .mnum,
+.mc.out .mlines,
+.mc.out .dots {
+  opacity: 0.38;
+}
+
+.mc.past:not(.out) .mlines {
+  opacity: 0.55;
+}
+
+.mlines {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.mlines > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 1.35;
+}
+
+.mlines .t {
+  padding-left: 6px;
+  border-left: 3px solid var(--c-hak);
+}
+
+.mlines .t.scholarship {
+  border-left-color: var(--c-jang);
+}
+
+.mlines .t.career {
+  border-left-color: var(--c-chwi);
+}
+
+.mlines .t.dept {
+  border-left-color: var(--c-gwa);
+}
+
+.mlines .t.picked > span {
+  padding: 0 3px;
+  border-radius: 3px 6px 5px 3px;
+  background: var(--hl);
+}
+
+.mlines .t.done {
+  color: var(--mute);
+  text-decoration: line-through;
+}
+
+.mlines .t.done > span {
+  background: none;
+}
+
+.mlines .e {
+  font-weight: 500;
+  color: var(--mute);
+}
+
+.mlines .more {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--mute);
+}
+
+.dots {
+  display: none;
+}
+
+.day-panel {
+  display: grid;
+  gap: 12px;
+  padding: 16px 18px 18px;
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+}
+
+.day-panel .left.hot {
+  color: var(--alarm);
+}
+
+.day-panel.past .items,
+.day-panel.past .events {
+  opacity: 0.55;
+}
+
+.spread.two.memos .cell {
+  box-shadow: none;
+}
+
 @media (max-width: 1023px) {
   .spread {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1844,6 +2052,57 @@ details.fold .note {
     content: "";
     position: absolute;
     inset: -13px;
+  }
+}
+
+@media (max-width: 720px) {
+  .month-nav h2 {
+    font-size: 22px;
+  }
+  .mwd {
+    padding: 6px 0;
+    text-align: center;
+  }
+  .mc {
+    align-items: center;
+    gap: 4px;
+    min-height: 58px;
+    padding: 6px 2px 8px;
+  }
+  .mnum {
+    align-self: center;
+    font-size: 15px;
+  }
+  .mlines {
+    display: none;
+  }
+  .dots {
+    display: flex;
+    gap: 3px;
+  }
+  .dots i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-hak);
+  }
+  .dots i.scholarship {
+    background: var(--c-jang);
+  }
+  .dots i.career {
+    background: var(--c-chwi);
+  }
+  .dots i.dept {
+    background: var(--c-gwa);
+  }
+  .dots i.picked {
+    box-shadow: 0 0 0 2px var(--hl);
+  }
+  .dots i.e {
+    background: var(--hair-2);
+  }
+  .dots i.done {
+    opacity: 0.4;
   }
 }
 

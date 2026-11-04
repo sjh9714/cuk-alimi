@@ -180,6 +180,21 @@ class ApiFlowTest {
         }
     }
 
+    @Test
+    void feedFromIncludesPastDeadlinesOnlyWhenAsked() {
+        // 고정한 오늘(7/10)보다 앞선 마감. 월 보기가 지난달을 그릴 때만 들어온다.
+        long noticeId = notices.findByArticleNo(273306L).orElseThrow().getId();
+        long pastId = dateItems.save(DateItem.manual(noticeId, "지난 신청", null, LocalDate.of(2026, 7, 1), null, null,
+                "ALL", "ALL", null, "test")).getId();
+        String marker = "\"id\":" + pastId + ",";
+        assertThat(rest.getForObject("/api/feed", String.class)).doesNotContain(marker);
+        assertThat(rest.getForObject("/api/feed?from=2026-06-01", String.class)).contains(marker);
+        // 오늘보다 늦은 from은 오늘로, 아주 이른 from은 작년 1월 1일로 자른다.
+        assertThat(rest.getForObject("/api/feed?from=2026-12-01", String.class)).doesNotContain(marker);
+        assertThat(rest.getForObject("/api/feed?from=2000-01-01", String.class)).contains(marker);
+        dateItems.deleteById(pastId);
+    }
+
     /** 푸시 서비스 대신 보낸 내용을 모은다. gone을 켜면 구독이 사라진 것처럼 군다. */
     static class FakePushSender implements com.cukalimi.push.PushService.Sender {
         final List<String> payloads = new java.util.ArrayList<>();

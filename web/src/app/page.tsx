@@ -4,14 +4,13 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { api, dday, type Feed, type Line, type Me } from "@/lib/api";
 import { boardCards, cleanTitle, eventsOf, iso, startsOf, tasksOf, type CampusEvent, type Kind, type Task } from "@/lib/tasks";
-import { BookmarkIcon, CheckIcon, ChevronIcon } from "./icons";
+import { ChevronIcon } from "./icons";
+import { MonthView, monthRange } from "./month";
+import { addDays, Day, KIND_LABEL, shortDate, TAG_CLASS } from "./planner";
 
-/** 학사일정 표와 학사 공지는 출처만 다르다. 학생에게는 둘 다 학사다. */
-const KIND_LABEL: Record<Kind, string> = { schedule: "학사", scholarship: "장학", academic: "학사", career: "취업", dept: "학과" };
 const KINDS: (Kind | "all")[] = ["all", "scholarship", "academic", "career", "dept"];
-const WEEKDAY = ["일", "월", "화", "수", "목", "금", "토"];
-const TAG_CLASS = { 시작: "start", 마감: "end", 행사: "event" };
 const DONE_KEY = "cuk-alimi.done";
+const VIEW_KEY = "cuk-alimi.view";
 const MEMO_MAX = 6;
 
 /** 정적 HTML에는 빌드한 날이 박힌다. 이번 주는 브라우저에서 처음 그릴 때 정한다. */
@@ -34,8 +33,13 @@ function Planner({ today }: { today: Date }) {
   const [error, setError] = useState<string | null>(null);
   const [kind, setKind] = useState<Kind | "all">("all");
   const [done, setDone] = useState<Set<string>>(new Set());
+  const [view, setView] = useState<"week" | "month">("week");
+  /** 월 보기용 피드. 작년 1월 1일부터 끝나는 항목까지 담는다. 월 보기를 처음 열 때 한 번 받는다. */
+  const [monthFeed, setMonthFeed] = useState<Feed | null>(null);
   const todayIso = iso(today);
+  const monthFrom = `${today.getFullYear() - 1}-01-01`;
   const tasksAll = useMemo(() => tasksOf(boardCards(feed?.sections ?? []), todayIso), [feed, todayIso]);
+  const monthTasksAll = useMemo(() => tasksOf(boardCards(monthFeed?.sections ?? []), todayIso), [monthFeed, todayIso]);
 
   const load = () =>
     Promise.all([api.feed(), api.me()])
@@ -49,7 +53,27 @@ function Planner({ today }: { today: Date }) {
   useEffect(() => {
     load();
     setDone(readDone());
+    setView(readView());
   }, []);
+
+  useEffect(() => {
+    if (view !== "month" || monthFeed) return;
+    api
+      .feed(monthFrom)
+      .then(setMonthFeed)
+      .catch((e) => setError(e.message));
+  }, [view, monthFeed, monthFrom]);
+
+  const switchView = (v: "week" | "month") => {
+    setView(v);
+    writeView(v);
+  };
+
+  /** 저장이나 끝냈어요 뒤에 두 피드를 같이 새로 받는다. */
+  const refresh = async () => {
+    setFeed(await api.feed());
+    if (monthFeed) setMonthFeed(await api.feed(monthFrom));
+  };
 
   // 로그인했으면 끝냈어요는 서버 값이다. 이 브라우저에만 있던 체크는 처음 한 번 서버로 옮기고 지운다.
   const serverDone = useMemo(() => (me ? new Set(tasksAll.filter((t) => t.done).map((t) => t.key)) : null), [me, tasksAll]);
@@ -75,20 +99,20 @@ function Planner({ today }: { today: Date }) {
     try {
       if (line.saved) await api.unsave(line.id);
       else await api.save(line.id);
-      setFeed(await api.feed());
+      await refresh();
     } catch (e) {
       setError((e as Error).message);
     }
   };
 
   const toggleDone = async (key: string) => {
-    const task = tasksAll.find((t) => t.key === key);
+    const task = tasksAll.find((t) => t.key === key) ?? monthTasksAll.find((t) => t.key === key);
     if (me && task) {
       setError(null);
       try {
         if (task.done) await api.unmarkDone(task.line.id);
         else await api.markDone(task.line.id);
-        setFeed(await api.feed());
+        await refresh();
       } catch (e) {
         setError((e as Error).message);
       }
@@ -124,11 +148,66 @@ function Planner({ today }: { today: Date }) {
 
   const board = { todayIso, done: finishedKeys, canSave: !!me, onDone: toggleDone, onSave: toggleSave };
 
+  const undatedMemo = (
+    <div className="cell memo">
+      <h2>{undated.length ? `날짜 확인 중 ${undated.length}건` : "날짜 확인 중"}</h2>
+      {undated.length === 0 ? (
+        <p className="hint">지금은 없어요.</p>
+      ) : (
+        <>
+          <p className="hint">날짜가 공지 그림에만 있어요.</p>
+          <ul>
+            {undated.slice(0, MEMO_MAX).map((c) => (
+              <li key={c.key}>
+                <a href={c.url} target="_blank" rel="noreferrer">
+                  {cleanTitle(c.title)}
+                </a>
+              </li>
+            ))}
+          </ul>
+          {undated.length > MEMO_MAX && <p className="hint">외 {undated.length - MEMO_MAX}건</p>}
+        </>
+      )}
+    </div>
+  );
+  const savedMemo = (
+    <div className="cell memo">
+      <h2>{me ? `내 저장 ${saved.length}건` : "내 저장"}</h2>
+      {!me ? (
+        <p className="hint">
+          <Link href="/settings/">로그인</Link>하면 마감을 저장하고 메일로 받을 수 있어요.
+        </p>
+      ) : saved.length === 0 ? (
+        <p className="hint">행 끝의 책갈피를 누르면 여기에 모여요.</p>
+      ) : (
+        <>
+          <ul>
+            {saved.slice(0, MEMO_MAX).map((t) => (
+              <li key={t.key} className={finishedKeys.has(t.key) || t.date < todayIso ? "done" : undefined}>
+                <a href={t.url} target="_blank" rel="noreferrer">
+                  {t.title}
+                </a>
+                <span>{shortDate(t.date)}</span>
+              </li>
+            ))}
+          </ul>
+          {saved.length > MEMO_MAX && <p className="hint">외 {saved.length - MEMO_MAX}건</p>}
+        </>
+      )}
+    </div>
+  );
+
+  const monthSections = monthFeed?.sections ?? [];
+  const monthShown = monthTasksAll.filter((t) => inKind(t.kind));
+  const monthEvents = [...eventsOf(monthSections), ...startsOf(monthSections, monthFrom)].filter((e) => inKind(e.kind));
+  const monthBoard = { ...board, done: me ? new Set(monthTasksAll.filter((t) => t.done).map((t) => t.key)) : done };
+  const range = monthRange([...monthTasksAll.map((t) => t.date), ...monthEvents.map((e) => e.date)], todayIso);
+
   return (
     <main id="main" className="planner">
       <div className="head">
         <div>
-          <h1>{weekTitle(monday)}</h1>
+          <h1>{view === "week" ? weekTitle(monday) : "월간 일정"}</h1>
           {feed && (
             <p className={`say ${todayCount ? "" : "calm"}`} aria-live="polite">
               {todayCount
@@ -141,6 +220,14 @@ function Planner({ today }: { today: Date }) {
         </div>
         {feed && (
           <div className="head-tools">
+            <div className="seg" role="group" aria-label="보기">
+              <button aria-pressed={view === "week"} onClick={() => switchView("week")}>
+                주
+              </button>
+              <button aria-pressed={view === "month"} onClick={() => switchView("month")}>
+                월
+              </button>
+            </div>
             {me && (
               <p className="legend">
                 <span className="swatch" aria-hidden="true" />
@@ -171,32 +258,27 @@ function Planner({ today }: { today: Date }) {
 
       {!feed && !error && <div className="spread loading" aria-label="불러오는 중" />}
 
-      {feed && (
+      {feed && view === "month" && (
+        <>
+          {monthFeed ? (
+            <MonthView tasks={monthShown} events={monthEvents} range={range} board={monthBoard} />
+          ) : (
+            <div className="spread loading" aria-label="불러오는 중" />
+          )}
+          <div className="spread two memos">
+            {undatedMemo}
+            {savedMemo}
+          </div>
+        </>
+      )}
+
+      {feed && view === "week" && (
         <>
           <div className="spread">
             {days(monday).map((d) => (
               <Day key={iso(d)} date={d} tasks={shown} events={events} {...board} />
             ))}
-            <div className="cell memo">
-              <h2>{undated.length ? `날짜 확인 중 ${undated.length}건` : "날짜 확인 중"}</h2>
-              {undated.length === 0 ? (
-                <p className="hint">지금은 없어요.</p>
-              ) : (
-                <>
-                  <p className="hint">날짜가 공지 그림에만 있어요.</p>
-                  <ul>
-                    {undated.slice(0, MEMO_MAX).map((c) => (
-                      <li key={c.key}>
-                        <a href={c.url} target="_blank" rel="noreferrer">
-                          {cleanTitle(c.title)}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                  {undated.length > MEMO_MAX && <p className="hint">외 {undated.length - MEMO_MAX}건</p>}
-                </>
-              )}
-            </div>
+            {undatedMemo}
           </div>
 
           <div className="next">
@@ -210,30 +292,7 @@ function Planner({ today }: { today: Date }) {
             {days(addDays(monday, 7)).map((d) => (
               <Day key={iso(d)} date={d} tasks={shown} events={events} {...board} />
             ))}
-            <div className="cell memo">
-              <h2>{me ? `내 저장 ${saved.length}건` : "내 저장"}</h2>
-              {!me ? (
-                <p className="hint">
-                  <Link href="/settings/">로그인</Link>하면 마감을 저장하고 메일로 받을 수 있어요.
-                </p>
-              ) : saved.length === 0 ? (
-                <p className="hint">행 끝의 책갈피를 누르면 여기에 모여요.</p>
-              ) : (
-                <>
-                  <ul>
-                    {saved.slice(0, MEMO_MAX).map((t) => (
-                      <li key={t.key} className={finishedKeys.has(t.key) || t.date < todayIso ? "done" : undefined}>
-                        <a href={t.url} target="_blank" rel="noreferrer">
-                          {t.title}
-                        </a>
-                        <span>{shortDate(t.date)}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  {saved.length > MEMO_MAX && <p className="hint">외 {saved.length - MEMO_MAX}건</p>}
-                </>
-              )}
-            </div>
+            {savedMemo}
           </div>
 
           <section className="upcoming" aria-labelledby="upcoming-title">
@@ -269,7 +328,11 @@ function Planner({ today }: { today: Date }) {
               </details>
             )}
           </section>
+        </>
+      )}
 
+      {feed && (
+        <>
           <div className="folds">
             {folded.map((s) => (
               <Fold key={s.key} title={s.title} count={s.cards.length} note={s.note}>
@@ -280,90 +343,6 @@ function Planner({ today }: { today: Date }) {
         </>
       )}
     </main>
-  );
-}
-
-type Board = {
-  todayIso: string;
-  done: Set<string>;
-  canSave: boolean;
-  onDone: (key: string) => void;
-  onSave: (line: Line) => void;
-};
-
-function Day({ date, tasks, events, todayIso, ...board }: Board & { date: Date; tasks: Task[]; events: CampusEvent[] }) {
-  const key = iso(date);
-  const own = tasks.filter((t) => t.date === key);
-  const ownEvents = events.filter((e) => e.date === key);
-  const d = dday(key);
-  const past = key < todayIso;
-  const hot = d >= 0 && d <= 2;
-  const cls = ["cell", key === todayIso ? "now" : "", past ? "past" : "", hot ? "hot" : "", (own.length === 0 && ownEvents.length === 0) || past ? "quiet" : ""];
-  return (
-    <section
-      className={cls.filter(Boolean).join(" ")}
-      aria-label={`${date.getMonth() + 1}월 ${date.getDate()}일 ${WEEKDAY[date.getDay()]}요일`}
-    >
-      <div className="dh" aria-hidden>
-        <span className="num">
-          {date.getDate()}
-          {key === todayIso && <Ring />}
-        </span>
-        <span className="wd">{WEEKDAY[date.getDay()]}요일</span>
-        {own.length > 0 && !past && <span className="left">{leftText(d)}</span>}
-      </div>
-      {own.length > 0 && (
-        <ul className="items">
-          {own.map((t) => (
-            <Row key={t.key} task={t} {...board} />
-          ))}
-        </ul>
-      )}
-      {ownEvents.length > 0 && (
-        <ul className="events">
-          {ownEvents.map((e) => (
-            <li key={e.key}>
-              <b className={TAG_CLASS[e.tag]}>{e.tag}</b>
-              <a href={e.url} target="_blank" rel="noreferrer">
-                {e.title}
-              </a>
-              {e.at && <span>{e.at}</span>}
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
-  );
-}
-
-function Row({ task, done, canSave, onDone, onSave }: Omit<Board, "todayIso"> & { task: Task }) {
-  const finished = done.has(task.key);
-  return (
-    <li className={`it ${task.kind} ${finished ? "done" : ""} ${task.mine ? "picked" : ""}`}>
-      <button className="box" aria-pressed={finished} aria-label={`${task.title} 끝냈어요`} onClick={() => onDone(task.key)}>
-        <CheckIcon size={12} />
-      </button>
-      <div className="txt">
-        <p className="do">
-          <a href={task.url} target="_blank" rel="noreferrer" title={task.sourceTitle}>
-            <span>{task.title}</span>
-            <span className="sr-only"> (학교 원문 새 창)</span>
-          </a>
-        </p>
-        <div className="m">
-          <span className="what">
-            <b>{KIND_LABEL[task.kind]}</b>
-            {task.from && <span>{task.from}</span>}
-          </span>
-          {task.at && <em>{task.at}</em>}
-        </div>
-      </div>
-      {canSave && (
-        <button className="keep" aria-pressed={task.saved} aria-label={task.saved ? "저장 해제" : "저장"} onClick={() => onSave(task.line)}>
-          <BookmarkIcon size={15} filled={task.saved} />
-        </button>
-      )}
-    </li>
   );
 }
 
@@ -398,21 +377,6 @@ function FoldList({ tasks, tagged = false }: { tasks: Task[]; tagged?: boolean }
   );
 }
 
-/** 오늘에 치는 빨간 펜 동그라미. */
-function Ring() {
-  return (
-    <svg className="ring" viewBox="0 0 56 60" preserveAspectRatio="none" fill="none" aria-hidden>
-      <path
-        d="M17 8C31 1 49 7 52 26c3 18-11 31-27 30C9 55 2 41 5 26 8 13 19 5 35 6"
-        stroke="currentColor"
-        strokeWidth="2.6"
-        strokeLinecap="round"
-        vectorEffect="non-scaling-stroke"
-      />
-    </svg>
-  );
-}
-
 /** 2주 뒤 일정. 학사일정 표 항목과 행사, 시작일을 날짜순으로 항상 보여 준다. */
 function upcomingRows(tasks: Task[], events: CampusEvent[], after: string) {
   const rows = [
@@ -420,10 +384,6 @@ function upcomingRows(tasks: Task[], events: CampusEvent[], after: string) {
     ...events.filter((e) => e.date >= after).map((e) => ({ key: e.key, date: e.date, title: e.title, url: e.url, tag: e.tag })),
   ];
   return rows.sort((a, b) => a.date.localeCompare(b.date));
-}
-
-function addDays(d: Date, n: number): Date {
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
 }
 
 function mondayOf(d: Date): Date {
@@ -444,13 +404,21 @@ function rangeText(a: Date, b: Date): string {
   return `${a.getMonth() + 1}월 ${a.getDate()}일부터 ${end}까지`;
 }
 
-function leftText(d: number): string {
-  return d === 0 ? "오늘" : d === 1 ? "내일" : `D-${d}`;
+/** 고른 보기(주, 월). 저장소를 못 쓰면 주간으로 연다. */
+function readView(): "week" | "month" {
+  try {
+    return localStorage.getItem(VIEW_KEY) === "month" ? "month" : "week";
+  } catch {
+    return "week";
+  }
 }
 
-function shortDate(isoDate: string): string {
-  const [, m, d] = isoDate.split("-");
-  return `${Number(m)}.${Number(d)}`;
+function writeView(v: "week" | "month") {
+  try {
+    localStorage.setItem(VIEW_KEY, v);
+  } catch {
+    // 저장소를 쓸 수 없으면 이번에만 바꾼다.
+  }
 }
 
 /** 로그인 전의 끝냈어요 표시. 이 브라우저에만 남고, 로그인하면 서버로 옮긴다. */

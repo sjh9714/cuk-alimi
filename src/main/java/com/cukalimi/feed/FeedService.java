@@ -45,6 +45,12 @@ public class FeedService {
 
     @Transactional(readOnly = true)
     public Built build(AppUser user, LocalDate today) {
+        return build(user, today, today);
+    }
+
+    /** from부터 끝나는 날짜 항목을 담는다. 홈의 월 보기가 지난달을 그릴 때만 오늘보다 이른 날을 준다. */
+    @Transactional(readOnly = true)
+    public Built build(AppUser user, LocalDate today, LocalDate from) {
         Feed.Viewer viewer = user == null ? Feed.Viewer.ANONYMOUS
                 : new Feed.Viewer(user.grade(today), user.semester(today), user.getMajor(), user.getSecondMajor(),
                         Regions.parse(user.getHomeRegion()).orElse(null));
@@ -53,7 +59,7 @@ public class FeedService {
         Set<Long> doneIds = user == null ? Set.of()
                 : done.findByUserId(user.getId()).stream().map(DoneItem::getDateItemId).collect(Collectors.toSet());
 
-        List<DateItem> upcoming = dateItems.findByEndsOnGreaterThanEqualAndStatusNot(today, DateItem.STATUS_CANDIDATE);
+        List<DateItem> upcoming = dateItems.findByEndsOnGreaterThanEqualAndStatusNot(from, DateItem.STATUS_CANDIDATE);
         Map<Long, Notice> noticeById = new HashMap<>();
         Map<Long, Audience> audiences = new HashMap<>();
         for (Notice n : notices.findAllById(upcoming.stream().map(DateItem::getNoticeId).filter(Objects::nonNull).toList())) {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Card, Line, Section } from "./api";
-import { boardCards, cleanTitle, eventsOf, schoolName, startsOf, tasksOf } from "./tasks";
+import { boardCards, cleanTitle, eventsOf, monthCells, schoolName, startsOf, tasksOf } from "./tasks";
 
 const TODAY = "2026-11-02";
 let nextId = 1;
@@ -155,5 +155,32 @@ describe("boardCards", () => {
   it("열린 구간과 취업을 올리고 지역, 대상, 날짜 확인 중은 뺀다", () => {
     const sections = [section("must", false), section("open", false), section("undated", true), section("career", true), section("region", true), section("group", true)];
     expect(boardCards(sections).map((c) => c.title)).toEqual(["must", "open", "career"]);
+  });
+});
+
+describe("monthCells", () => {
+  it("2026년 11월은 1일이 일요일이라 앞 빈칸 없이 5주다", () => {
+    const cells = monthCells(2026, 10);
+    expect(cells).toHaveLength(35);
+    expect(cells[0].key).toBe("2026-11-01");
+    expect(cells[0].inMonth).toBe(true);
+    expect(cells[29].key).toBe("2026-11-30");
+    expect(cells[34].key).toBe("2026-12-05");
+    expect(cells[34].inMonth).toBe(false);
+  });
+
+  it("1일 앞은 지난달 날짜로 채우고 요일 열이 맞는다", () => {
+    // 2026년 10월 1일은 목요일이다.
+    const cells = monthCells(2026, 9);
+    expect(cells[0].key).toBe("2026-09-27");
+    expect(cells[4].key).toBe("2026-10-01");
+    expect(cells.filter((c) => c.inMonth)).toHaveLength(31);
+    expect(cells.every((c, i) => c.date.getDay() === i % 7)).toBe(true);
+  });
+
+  it("2027년 2월처럼 6주가 필요하지 않은 달도 7의 배수다", () => {
+    const cells = monthCells(2027, 1);
+    expect(cells.length % 7).toBe(0);
+    expect(cells.filter((c) => c.inMonth)).toHaveLength(28);
   });
 });
