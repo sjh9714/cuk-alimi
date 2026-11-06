@@ -261,6 +261,44 @@ export default function QualityPage() {
             </section>
           )}
 
+          {q.fresh && (
+            <section className="panel">
+              <h2>처음 보는 공지에서</h2>
+              <p>
+                위 수치는 규칙을 고칠 때 본 공지로 잰 것이라 실제보다 좋게 나와요. 그래서 규칙을 고칠 때 한 번도 보지 않은 공지{" "}
+                {q.fresh.notices}건(대부분 학과 게시판)에 정답을 먼저 적고 따로 쟀어요. 이 공지들을 보고 규칙을 고치지는 않아요.
+              </p>
+              <table className="facts">
+                <tbody>
+                  <tr>
+                    <th scope="row">마감 정밀도 / 재현율</th>
+                    <td>
+                      {percent(q.fresh.precision)} / {percent(q.fresh.recall)} (마감 {q.fresh.deadlines}개)
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">마감을 모두 맞게 뽑은 공지</th>
+                    <td>
+                      {q.fresh.exactNotices}/{q.fresh.notices}건
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">행 제목이 기대와 같은 마감</th>
+                    <td>
+                      {q.fresh.labelExact}/{q.fresh.labelTotal}개
+                    </td>
+                  </tr>
+                  <tr>
+                    <th scope="row">주제가 맞은 공지</th>
+                    <td>
+                      {q.fresh.topicExact}/{q.fresh.topicTotal}건
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          )}
+
           {q.topics && (
             <section className="panel">
               <h2>형광펜의 주제 나누기</h2>

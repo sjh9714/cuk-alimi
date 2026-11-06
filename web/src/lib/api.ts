@@ -210,6 +210,18 @@ export type Quality = {
   audienceRead: { enabled: boolean; notices: number; agreed: number; inputTokens: number; outputTokens: number; costUsd: number };
   /** 공지 주제 규칙의 정확도 (ADR 014). */
   topics: { notices: number; exact: number; accuracy: number; humanChecked: number } | null;
+  /** 규칙을 고칠 때 보지 않은 새 공지의 점수. */
+  fresh: {
+    notices: number;
+    deadlines: number;
+    exactNotices: number;
+    precision: number;
+    recall: number;
+    labelExact: number;
+    labelTotal: number;
+    topicExact: number;
+    topicTotal: number;
+  } | null;
 };
 
 export type AudienceScore = {
