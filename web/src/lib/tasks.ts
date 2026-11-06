@@ -28,7 +28,8 @@ export type Task = {
   fromImage: boolean;
 };
 
-const EMPTY_LABEL = /^(마감 기한|마감|기간|신청기간|접수기간|모집기간|조사기간|내용|일정)$/;
+/** "신청기간", "모집기한", "마감 기한"처럼 일의 이름이 아니라 자리 이름인 라벨 조각. 서버의 DateItemExtractor.GENERIC_LABEL과 같은 규칙이다. */
+const EMPTY_LABEL = /^((신청|접수|모집|조사|확인|평가|이벤트|행사|제출|운영|선발|지원)\s*)?(기간|기한|마감(\s*기한)?|일정|내용|일자)$/;
 
 const RECOMMEND_TAG = /^\[대플-추천채용\]\s*/;
 
