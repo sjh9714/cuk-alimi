@@ -23,6 +23,8 @@ public final class Feed {
      * 수요조사·설문 공지는 할 일이 조사 응답뿐이다. 본문에 딸린 "이후 일정" 표(수강신청, 수강변경 등)는 다른 공지가 따로 안내하므로
      * 여기서 할 일로 올리면 제목(수요조사)과 내용(수강신청)이 어긋난 행이 생긴다. 조사 이야기가 아닌 날짜 줄은 할 일로 치지 않는다.
      */
+    /** 다른 학교 학생에게 하는 안내("겨울계절학기 타대학 소속 학점교류생 안내사항"). 우리 학생이 할 일이 아니다. */
+    static final Pattern OTHER_SCHOOL_TITLE = Pattern.compile("타\\s*대학(교)?\\s*(소속|학생)|타교생");
     private static final Pattern SURVEY_TITLE = Pattern.compile("수요\\s*조사|설문|의견\\s*조사|선호도\\s*조사");
     private static final Pattern SURVEY_LINE = Pattern.compile("조사|설문|응답");
 
@@ -166,7 +168,7 @@ public final class Feed {
                 continue;
             }
             Audience audience = audiences.get(notice.getId());
-            if (audience == null || Audience.RESULT.equals(audience.scope())) {
+            if (audience == null || Audience.RESULT.equals(audience.scope()) || OTHER_SCHOOL_TITLE.matcher(notice.getTitle()).find()) {
                 continue;
             }
             String title = Titles.clean(notice.getTitle());

@@ -85,6 +85,18 @@ class FeedTest {
         assertThat(cardOf(v, "학생설계전공").deadline().id()).isEqualTo(task.getId());
     }
 
+    @Test
+    void noticeForOtherUniversitiesStudentsIsNotOurTask() {
+        Notice other = notice("학사", "[학사행정팀] 2026학년도 겨울계절학기 타대학 소속 학점교류생 안내사항", "");
+        item(other, "수강료 납부", 6);
+        Notice ours = notice("학사", "[학사행정팀] 2026학년도 겨울 계절학기 수강신청 안내", "");
+        item(ours, "수강료 납부", 6);
+
+        Feed.View v = build(Feed.Viewer.ANONYMOUS);
+        assertThat(v.sections().stream().flatMap(s -> s.cards().stream()).map(Feed.Card::sourceTitle))
+                .anyMatch(t -> t.contains("수강신청 안내")).noneMatch(t -> t.contains("타대학"));
+    }
+
     static Feed.Card cardOf(Feed.View v, String sourceTitlePart) {
         return v.sections().stream().flatMap(s -> s.cards().stream()).filter(c -> c.sourceTitle().contains(sourceTitlePart)).findFirst()
                 .orElseThrow();
