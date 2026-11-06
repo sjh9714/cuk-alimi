@@ -185,6 +185,22 @@ class NoticeParsersTest {
         assertThat(dashed.get(0).range().end()).isEqualTo(LocalDate.of(2026, 10, 29));
     }
 
+    /** 2026-11-06 점검에서 나온 과목 표. 과목마다 수업 기간이 있지만 할 일은 수강신청 하나다. */
+    @Test
+    void classTimeColumnIsNotADeadline() {
+        List<ExtractedItem> items = extract("<table><tr><td>수강신청</td><td>2026.11.6.(금)9시~12.9.(수)17시</td></tr>"
+                + "<tr><td>수강기간</td><td>2026.12.16.(수)~2027.1.18.(월)</td></tr></table>"
+                + "<table><tr><td>연번</td><td>CU12 영역</td><td>과목명</td><td>수업형태</td><td>수업교시</td></tr>"
+                + "<tr><td>1</td><td>인문학</td><td>OTT로읽는철학</td><td>혼합형</td><td>12/21~1/12 1~3교시</td></tr>"
+                + "<tr><td>2</td><td>인문학</td><td>가깝고도 먼 중국 이야기</td><td>비동시적</td><td>12/28~1/18</td></tr></table>");
+        List<ExtractedItem> actions = items.stream().filter(i -> com.cukalimi.feed.ItemKind.ACTION.equals(com.cukalimi.feed.ItemKind.of(i.title()))).toList();
+        assertThat(actions).singleElement().satisfies(i -> {
+            assertThat(i.title()).isEqualTo("수강신청");
+            assertThat(i.range().end()).isEqualTo(LocalDate.of(2026, 12, 9));
+        });
+        assertThat(items).noneMatch(i -> i.title().contains("철학") || i.title().contains("중국"));
+    }
+
     /** 2026-11-04 점검에서 나온 줄. 날짜가 괄호 안이고 앞에 링크 글자가 붙었다. */
     @Test
     void periodInParenthesesNamesTheThingBeforeIt() {

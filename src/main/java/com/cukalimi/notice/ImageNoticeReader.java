@@ -90,6 +90,32 @@ public class ImageNoticeReader {
         }
     }
 
+    /**
+     * 규칙을 고친 뒤 이미 받아 적은 글로 그림 공지를 다시 뽑는다. 받아 적은 글이 모두 남은 공지만 보므로 API를 부르지 않는다. 다시 뽑은 공지 수.
+     */
+    public int rereadCached(LocalDate today) {
+        int n = 0;
+        for (Notice notice : notices.findAll()) {
+            var raw = raws.findById(notice.getArticleNo());
+            if (notice.isRemoved() || raw.isEmpty() || !FeedService.undatedCategory(notice)) {
+                continue;
+            }
+            NoticeView view;
+            try {
+                view = NoticeViewParser.parse(raw.get().getHtml());
+            } catch (RuntimeException e) {
+                continue;
+            }
+            List<String> urls = imageUrls(view);
+            if (urls.isEmpty() || !urls.stream().allMatch(u -> transcripts.existsById(u) && transcripts.existsById(u + SECOND_READ))) {
+                continue;
+            }
+            read(notice, today);
+            n++;
+        }
+        return n;
+    }
+
     public Result readPending(LocalDate today) {
         if (!transcriber.enabled()) {
             return new Result(0, 0, 0, false);
@@ -176,6 +202,9 @@ public class ImageNoticeReader {
                 agreedDates(first, second, view.postedOn(), view.cleanTitle())), false);
     }
 
+    /** 그림 공지 하나에서 자동 공개할 수 있는 할 일 수의 상한. 정답셋 그림 18건은 많아야 9개였다. */
+    static final int MAX_AUTO_ACTIONS = 10;
+
     /**
      * 공개해도 되는 날짜. 두 번 읽은 할 일 날짜가 모두 같고 게시일부터 1년 안이어야 한다. 하나라도 어긋나면 비어 있다.
      * 할 일이 있는 공지에서는 두 번 모두 나온 안내 날짜도 함께 공개한다. 할 일이 없으면 행사 날짜를 같은 기준으로 본다.
@@ -183,6 +212,10 @@ public class ImageNoticeReader {
      */
     static Set<LocalDate> agreedDates(List<ExtractedItem> first, List<ExtractedItem> second, LocalDate postedOn, String noticeTitle) {
         Set<LocalDate> actions = actionDates(first);
+        // 할 일이 너무 많으면 과목 목록이나 일정표를 통째로 읽었을 가능성이 크다. 두 번 읽기가 같아도 사람 확인으로 넘긴다.
+        if (first.stream().filter(i -> ItemKind.ACTION.equals(ItemKind.of(i.title()))).count() > MAX_AUTO_ACTIONS) {
+            return Set.of();
+        }
         if (actions.isEmpty() && actionDates(second).isEmpty()) {
             Set<LocalDate> events = eventDates(first, noticeTitle);
             return !events.isEmpty() && events.equals(eventDates(second, noticeTitle)) && inWindow(events, postedOn) ? events : Set.of();

@@ -218,14 +218,27 @@ public class NoticeStore {
             }
             if (agreedDates.contains(item.range().end())) {
                 row.publishFromImage();
+            } else if (DateItem.STATUS_AUTO_IMAGE.equals(row.getStatus())) {
+                // 규칙이 바뀌어 다시 읽었더니 더는 공개 기준을 넘지 못한다. 사람 확인으로 돌린다.
+                row.awaitReread();
             }
         }
-        // 다시 읽었더니 사라진 후보는 지운다.
+        // 다시 읽었더니 사라진 항목. 후보는 지우고, 공개했던 것은 학생의 저장이나 체크가 붙어 있으면 거두고 아니면 지운다.
         String prefix = "notice:" + articleNo + ":img.";
-        dateItems.findByNoticeIdOrderByEndsOnAsc(noticeId).stream()
-                .filter(i -> DateItem.STATUS_CANDIDATE.equals(i.getStatus()) && i.getNaturalKey().startsWith(prefix)
-                        && !seen.contains(i.getNaturalKey()))
-                .forEach(dateItems::delete);
+        for (DateItem i : dateItems.findByNoticeIdOrderByEndsOnAsc(noticeId)) {
+            if (!i.getNaturalKey().startsWith(prefix) || seen.contains(i.getNaturalKey())) {
+                continue;
+            }
+            if (DateItem.STATUS_CANDIDATE.equals(i.getStatus()) && !i.isWithdrawn()) {
+                dateItems.delete(i);
+            } else if (DateItem.STATUS_AUTO_IMAGE.equals(i.getStatus())) {
+                if (hasUserRefs(i)) {
+                    i.retire();
+                } else {
+                    dateItems.delete(i);
+                }
+            }
+        }
         log.info("notice {} image -> {} new, {} agreed dates", articleNo, added, agreedDates.size());
         return added;
     }

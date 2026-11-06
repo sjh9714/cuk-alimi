@@ -45,4 +45,13 @@ class ImageAgreementTest {
         var second = List.of(item("신청기간", DAY.plusDays(1)), item("장학증서 수여식", DAY.plusDays(20)));
         assertThat(ImageNoticeReader.agreedDates(first, second, POSTED, "장학생 선발 안내")).isEmpty();
     }
+
+    /** 할 일이 열 개를 넘으면 과목 목록을 통째로 읽었을 가능성이 커서 두 번 읽기가 같아도 공개하지 않는다. */
+    @Test
+    void tooManyActionsWaitForReview() {
+        List<ExtractedItem> many = java.util.stream.IntStream.range(0, 11).mapToObj(k -> item("과목" + k + " 신청", DAY.plusDays(k))).toList();
+        assertThat(ImageNoticeReader.agreedDates(many, many, POSTED, "계절학기 수강신청 안내")).isEmpty();
+        List<ExtractedItem> few = many.subList(0, 10);
+        assertThat(ImageNoticeReader.agreedDates(few, few, POSTED, "계절학기 수강신청 안내")).hasSize(10);
+    }
 }

@@ -35,6 +35,11 @@ public final class DateItemExtractor {
     private static final Pattern LINE_KEYWORD = Pattern.compile("신청|접수|제출|마감|기간|까지|모집|납부|등록");
     /** 무언가를 해야 하는 날이 아니라 기록용 날짜를 담는 열. 강의 변경표의 "적용일자" 같은 것. */
     private static final Pattern RECORD_DATE_COLUMN = Pattern.compile("적용\\s*일|시행\\s*일|개정\\s*일|게시\\s*일|작성\\s*일");
+    /**
+     * 수업이 열리는 때를 담는 열. 과목 목록 표의 "수업교시", "수업기간"은 과목마다 날짜가 달라 마감처럼 읽히지만 할 일이 아니다.
+     * 2026-11-06 가톨릭공유대학 계절학기 공지의 과목 표 43행이 이렇게 할 일로 올라왔다.
+     */
+    private static final Pattern CLASS_TIME_COLUMN = Pattern.compile("교시|(수업|강의|수강|학습|교육|운영)\\s*(기간|일정|일시|시간)");
     /** 표가 있어도 문단에서 읽는 줄. 학생이 할 일의 기간이 분명한 이름만 둔다. */
     private static final Pattern PERIOD_LINE = Pattern.compile("(신청|접수|모집|조사|제출)\\s*기간");
     private static final Pattern EVENT_DAY_LINE = Pattern.compile("((행사|특강|강연)\\s*)?일\\s*시");
@@ -186,7 +191,7 @@ public final class DateItemExtractor {
                 }
                 List<String> titleParts = new ArrayList<>();
                 String columnName = header != null && c < header.size() ? header.get(c) : "";
-                if (RECORD_DATE_COLUMN.matcher(columnName).find()) {
+                if (RECORD_DATE_COLUMN.matcher(columnName).find() || CLASS_TIME_COLUMN.matcher(columnName).find()) {
                     continue;
                 }
                 // 날짜 열이 하나뿐이고 그 열이 첫 열이면 머리글이 곧 제목이다. 날짜 열이 여럿이면 열 이름으로 구분한다.
