@@ -55,7 +55,8 @@ export function cleanTitle(title: string): string {
     // "(2차)"처럼 숫자가 든 괄호는 뜻이 있어 남긴다.
     .replace(/[「」『』]/g, "")
     .replace(/(^|\s)\d{4}년\s+/g, "$1")
-    .replace(/\s*\([^)\d]{1,20}\)/g, "");
+    // 가운데 괄호를 뗄 때 앞뒤 낱말이 붙지 않게 공백을 남긴다("하반기 (재)논산시장학회"가 "하반기논산시장학회"가 되던 문제).
+    .replace(/\s*\([^)\d]{1,20}\)\s*/g, " ");
   // 끝의 "안내", "공고", "알림", "운영", "실시"는 겹쳐 붙기도 한다("모집 공고 안내").
   let prev = "";
   while (t !== prev) {
@@ -74,15 +75,25 @@ export function schoolName(text: string): string | null {
   return campus ? `${name} ${campus}` : name;
 }
 
+/** 추천채용 공지 제목의 회사 이름. "㈜삼원페이퍼-영업 사원 모집"은 "삼원페이퍼", "JB주식회사(구 중부도시가스) – …"는 "JB"다. */
 function companyOf(title: string): string {
   return title
     .replace(RECOMMEND_TAG, "")
-    .split(/\s[-–]\s/)[0]
-    .replace(/\(주\)|주식회사/g, "")
+    .split(/\s[-–]\s|[-–](?=[가-힣])/)[0]
+    .replace(/㈜|\(주\)|주식회사/g, "")
+    .replace(/\([^)]*\)/g, "")
+    .replace(/\s{2,}/g, " ")
     .trim();
 }
 
-type Named = { title: string; from: string; school: string | null };
+/** 추천채용 줄의 단계. 같은 공지에 자소서와 추천서 마감이 따로 있으면 행만 보고도 구별되게 한다. */
+function recommendStep(label: string): string {
+  if (/자소서|자기소개서/.test(label)) return "자소서 제출";
+  if (/추천서/.test(label)) return "추천서 제출";
+  return "추천 신청";
+}
+
+type Named = { title: string; from: string; school: string | null; company?: string };
 
 /** 날짜 줄 하나의 할 일 이름. 라벨이 뜻이 없으면 공문 제목을 줄여 쓴다. */
 function nameOf(card: Card, line: Line): Named {
@@ -91,10 +102,12 @@ function nameOf(card: Card, line: Line): Named {
   const exchange = clean.includes("학점교류");
 
   if (RECOMMEND_TAG.test(card.title) || /추천(자|마감)/.test(label)) {
+    const company = companyOf(card.title);
     return {
-      title: `${companyOf(card.title)} 추천 신청`,
+      title: `${company} ${recommendStep(label)}`,
       from: RECOMMEND_TAG.test(card.title) ? "대플 추천채용" : "추천채용",
       school: null,
+      company,
     };
   }
   const school = exchange && label.includes("대학교") ? schoolName(label) : null;
@@ -130,7 +143,10 @@ export function tasksOf(cards: Card[], today: string): Task[] {
     for (const [date, group] of byDate) {
       const named = group.map((l) => ({ line: l, name: nameOf(card, l) }));
       const schools = named.flatMap((n) => (n.name.school ? [n.name.school] : []));
-      const titles = [...new Set(named.filter((n) => !n.name.school).map((n) => n.name.title))];
+      const company = named.find((n) => n.name.company)?.name.company;
+      // 추천채용은 같은 날 줄이 여럿이면("입사지원서 제출", "추천마감") 한 일이라 "회사 추천 신청" 하나로 쓴다.
+      const distinct = [...new Set(named.filter((n) => !n.name.school).map((n) => n.name.title))];
+      const titles = company && distinct.length > 1 ? [`${company} 추천 신청`] : distinct;
       if (schools.length > 0) titles.unshift(`${schools.join(", ")} 학점교류 신청`);
       const line = group[0];
       const at = group.find((l) => l.endsAt)?.endsAt;
