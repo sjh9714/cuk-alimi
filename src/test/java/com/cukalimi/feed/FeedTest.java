@@ -97,6 +97,20 @@ class FeedTest {
                 .anyMatch(t -> t.contains("수강신청 안내")).noneMatch(t -> t.contains("타대학"));
     }
 
+    @Test
+    void conditionalLinesAreNotTasksOnTheBoard() {
+        Notice n = notice("학사", "[학사행정팀] 2026학년도 겨울 계절학기 수강신청 안내", "");
+        DateItem register = item(n, "겨울 계절학기 수강신청", 4);
+        item(n, "겨울 계절학기 2차 폐강과목 등록자 수강변경 및 환불신청 (1차)", 40);
+        item(n, "겨울 계절학기 환불신청 (2차)", 46);
+        item(n, "겨울 계절학기 성적확인 및 오류정정", 67);
+
+        Feed.Card card = cardOf(build(Feed.Viewer.ANONYMOUS), "겨울 계절학기 수강신청");
+        assertThat(card.deadline().id()).isEqualTo(register.getId());
+        assertThat(card.next()).filteredOn(l -> "ACTION".equals(l.kind())).isEmpty();
+        assertThat(Feed.CONDITIONAL_LINE.matcher("2026학년도 필수교육 재학생 폭력예방교육 안내(2학기 성적 확인 필수요건)").find()).isFalse();
+    }
+
     static Feed.Card cardOf(Feed.View v, String sourceTitlePart) {
         return v.sections().stream().flatMap(s -> s.cards().stream()).filter(c -> c.sourceTitle().contains(sourceTitlePart)).findFirst()
                 .orElseThrow();

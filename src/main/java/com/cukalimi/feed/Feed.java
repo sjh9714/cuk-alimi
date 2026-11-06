@@ -27,6 +27,12 @@ public final class Feed {
     static final Pattern OTHER_SCHOOL_TITLE = Pattern.compile("타\\s*대학(교)?\\s*(소속|학생)|타교생");
     private static final Pattern SURVEY_TITLE = Pattern.compile("수요\\s*조사|설문|의견\\s*조사|선호도\\s*조사");
     private static final Pattern SURVEY_LINE = Pattern.compile("조사|설문|응답");
+    /**
+     * 해당하는 학생만 하는 조건부 일정("2차 폐강과목 등록자 수강변경 및 환불신청", "환불신청 (2차)", "성적확인 및 오류정정").
+     * 주간 판은 모두가 챙길 마감이라 할 일 행에서 뺀다. 필요한 학생은 원문에서 본다. 학사일정 표의 성적확인은 여기에 해당하지 않는다.
+     * "성적 확인 필수요건"(폭력예방교육)처럼 성적확인이 조건으로만 나오는 제목은 걸리지 않게 이름 꼴만 본다.
+     */
+    static final Pattern CONDITIONAL_LINE = Pattern.compile("환불|폐강\\s*과목\\s*등록자|성적\\s*확인\\s*(및\\s*오류\\s*정정|기간)|성적\\s*확인$");
 
     /** 모든 재학생이 놓치면 손해인 공지. 학사일정 표의 항목과 같은 무게로 맨 위에 둔다. */
     private static final Pattern MUST_TITLE = Pattern.compile("국가장학금|국가근로|등록금|수강신청|수강과목\\s*취소|휴학|복학");
@@ -175,6 +181,7 @@ public final class Feed {
             boolean survey = SURVEY_TITLE.matcher(notice.getTitle()).find();
             List<DateItem> shown = items.stream()
                     .filter(i -> !survey || !ItemKind.ACTION.equals(ItemKind.of(i.getTitle())) || SURVEY_LINE.matcher(i.getTitle()).find())
+                    .filter(i -> !ItemKind.ACTION.equals(ItemKind.of(i.getTitle())) || !CONDITIONAL_LINE.matcher(i.getTitle()).find())
                     .toList();
             List<DateItem> actions = shown.stream().filter(i -> ItemKind.ACTION.equals(ItemKind.of(i.getTitle()))).toList();
             // 모두가 알아 둘 행사는 할 일이 있든 없든 날짜를 따로 올린다. 취업 공지의 "일시"는 특강이 많아 올리지 않는다.
