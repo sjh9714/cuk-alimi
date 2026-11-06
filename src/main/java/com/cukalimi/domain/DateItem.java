@@ -113,6 +113,13 @@ public class DateItem {
 
     /** 다시 읽은 그림의 값으로 후보를 고친다. */
     public void refreshCandidate(String title, LocalDate startsOn, LocalDate endsOn, LocalTime startsAt, LocalTime endsAt) {
+        // 자동 공개한 그림 날짜는 사람이 고친 것이 아니라 규칙이 붙인 이름이다. 날짜가 같으면 바뀐 규칙의 이름을 따른다.
+        if (STATUS_AUTO_IMAGE.equals(status) && java.util.Objects.equals(this.startsOn, startsOn) && this.endsOn.equals(endsOn)
+                && !this.title.equals(title)) {
+            this.title = title;
+            updatedAt = OffsetDateTime.now();
+            return;
+        }
         if (STATUS_CANDIDATE.equals(status)) {
             this.title = title;
             this.startsOn = startsOn;
