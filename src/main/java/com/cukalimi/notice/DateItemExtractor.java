@@ -327,7 +327,29 @@ public final class DateItemExtractor {
     private static String leadOf(String text, DateRange merged) {
         int cut = text.indexOf(merged.matchedText().replaceFirst("^~", ""));
         String lead = cleanLabel(cut > 0 ? text.substring(0, cut) : "");
-        return lead.replaceAll("[\\s:：\\-–—·~∼〜～(\\[\\d.]+$", "").replaceAll("\\s*(안내는|안내|입니다|합니다)$", "").trim();
+        lead = lead.replaceAll("[\\s:：\\-–—·~∼〜～(\\[\\d.]+$", "").replaceAll("\\s*(안내는|안내|입니다|합니다)$", "").trim();
+        return tidyLead(lead);
+    }
+
+    /**
+     * "1기: 1기 신청 바로가기 (신청기간"처럼 날짜가 괄호 안에 있으면 괄호 앞이 일의 이름이다. 링크 글자("바로가기", "클릭")는 뗀다.
+     * "1기: 1기 신청"처럼 쌍점 앞뒤가 겹치면 뒤만 남긴다. 2026-11-04 점검(`RUN_ONCE=audit`)에서 나온 꼴이다.
+     */
+    static String tidyLead(String lead) {
+        int open = lead.lastIndexOf('(');
+        if (open > 0 && lead.indexOf(')', open) < 0) {
+            lead = lead.substring(0, open).trim();
+        }
+        lead = lead.replaceAll("\\s*(바로\\s*가기|클릭|링크|☞|>>)\\s*", " ").replaceAll("\\s+", " ").trim();
+        int colon = lead.indexOf(':');
+        if (colon > 0) {
+            String before = lead.substring(0, colon).trim();
+            String after = lead.substring(colon + 1).trim();
+            if (!before.isEmpty() && after.startsWith(before)) {
+                lead = after;
+            }
+        }
+        return lead.replaceAll("[\\s:：\\-–—·]+$", "").trim();
     }
 
     /** 한 칸 안에 날짜가 여럿이면(변경기간 2차처럼 날마다 한 줄) 처음부터 끝까지 한 기간으로 합친다. 칸을 넘어 합치지는 않는다. */

@@ -185,6 +185,15 @@ class NoticeParsersTest {
         assertThat(dashed.get(0).range().end()).isEqualTo(LocalDate.of(2026, 10, 29));
     }
 
+    /** 2026-11-04 점검에서 나온 줄. 날짜가 괄호 안이고 앞에 링크 글자가 붙었다. */
+    @Test
+    void periodInParenthesesNamesTheThingBeforeIt() {
+        List<ExtractedItem> items = extract("<p>6. 신청 방법</p><p>- 1기:&nbsp; 1기 신청 바로가기 &nbsp;(신청기간: 11.03.화~11.11.수)</p>"
+                + "<p>- 2기:&nbsp; 2기 신청 바로가기 &nbsp;(신청기간:&nbsp; 11.03.화~11.18. 수)</p>");
+        assertThat(items).extracting(ExtractedItem::title).containsExactly("1기 신청", "2기 신청");
+        assertThat(items).extracting(i -> i.range().end()).containsExactly(LocalDate.of(2026, 11, 11), LocalDate.of(2026, 11, 18));
+    }
+
     @Test
     void labelInsideTheDateCellNamesTheItem() {
         List<ExtractedItem> items = extract("<p>인간학 가을 특강</p><table><tr><td>일시 : 2026.11.4.(수), 16:00 ~ 18:00</td></tr>"
