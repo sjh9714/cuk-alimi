@@ -22,11 +22,17 @@
 
 아직 배포 전이고 사용자는 0명입니다. 주소가 생기면 여기에 적습니다. 배포를 막는 것은 학교 robots.txt 문의(초안 `docs/robots-inquiry.md`)와 실제 기기에서의 푸시 수신 확인이고, 둘이 정해지기 전에는 AI 키와 푸시 키 없이 올립니다.
 
-![이번 주 마감을 8칸으로 펼친 홈](docs/images/home.jpg)
+![주간·월간 보기를 오가며 날짜를 고르고 체크하는 데모](docs/images/demo.gif)
 
-| 휴대폰 | 공개 정확도 페이지 |
+| 주간 플래너 | 월 보기 |
 |---|---|
-| <img src="docs/images/mobile.jpg" alt="휴대폰 홈" width="280"> | <img src="docs/images/quality.jpg" alt="마감 정확도 페이지" width="520"> |
+| <img src="docs/images/home.jpg" alt="이번 주와 다음 주를 8칸으로 펼친 홈" width="440"> | <img src="docs/images/month.jpg" alt="일요일에 시작하는 월 달력" width="440"> |
+
+| 휴대폰 | 관심 주제 | 공개 정확도 페이지 |
+|---|---|---|
+| <img src="docs/images/mobile.jpg" alt="휴대폰 홈" width="220"> | <img src="docs/images/settings-topics.jpg" alt="설정의 관심 있는 일 고르기" width="300"> | <img src="docs/images/quality.jpg" alt="마감 정확도 페이지" width="300"> |
+
+화면은 시험 계정(경영학과 2학년 2학기, 경기도 수원시, 기본 관심 주제)으로 찍었습니다.
 
 ## 핵심 결정
 

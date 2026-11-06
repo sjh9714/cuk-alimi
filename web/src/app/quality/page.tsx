@@ -70,6 +70,11 @@ export default function QualityPage() {
               <span>마감을 모두 맞게 뽑은 공지</span>
             </div>
           </div>
+          <p className="muted">
+            위 숫자는 규칙을 고칠 때 본 공지 {q.backtest.notices}건의 점수예요.
+            {q.fresh &&
+              ` 처음 보는 공지 ${q.fresh.notices}건에서는 정밀도 ${percent(q.fresh.precision)}, 재현율 ${percent(q.fresh.recall)}예요(아래 "처음 보는 공지에서").`}
+          </p>
 
           <section className="panel">
             <h2>정답셋으로 잰 정확도</h2>
