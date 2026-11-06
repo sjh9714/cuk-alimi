@@ -55,17 +55,14 @@ public final class DateItemExtractor {
     /** 설명 문장의 앞머리. 날짜 앞에 "명단 발송 및 제출 확인을 위해"처럼 이유가 적힌 줄이다. */
     private static final Pattern DESCRIPTION_LEAD = Pattern.compile("(위해|위하여|바랍니다|주세요|합니다)\\s*$");
     /**
-     * 무엇을 하는지만 있고 무엇의 일인지가 없는 라벨의 낱말. "트리니티 신청", "원본서류 제출"은 이 낱말만으로 되어 있어서
-     * 행 제목만 훑으면 어느 장학·프로그램인지 알 수 없다. 이런 라벨은 공지 제목에서 대상 이름을 앞에 붙인다.
+     * 라벨에 무엇의 일인지가 없으면("트리니티 신청", "원서 접수", "1기 신청") 공지 제목에서 대상 이름을 찾아 앞에 붙인다.
+     * 행 제목만 훑어도 어느 장학·인턴·과정의 일인지 알아야 한다. 대상 이름은 아래 낱말로 끝나는 제목의 낱말이다.
      */
-    private static final Set<String> BARE_WORDS = Set.of("트리니티", "온라인", "오프라인", "방문", "이메일", "우편", "원본", "원본서류",
-            "서류", "제출서류", "구비서류", "신청서", "지원서", "참가신청서", "신청", "접수", "제출", "등록", "및", "신청서류", "최종", "1차",
-            "2차", "추가", "온라인신청");
     private static final Pattern SUBJECT_WORD = Pattern.compile(
-            "(장학생|장학금|장학|인턴|프로그램|교류|대회|캠프|공모전|해커톤|아카데미|전형|과정|멘토단?|봉사단|서포터즈|챌린지)$");
+            "(장학생|장학금|장학|인턴|프로그램|교류|대회|캠프|공모전|해커톤|아카데미|전형|과정|멘토단?|봉사단|서포터즈|챌린지|계절학기|대학원|일경험)$");
     /** 낱말 하나로는 어느 것인지 모르는 대상 이름. 앞의 이름을 함께 쓴다("두산연강재단 장학생"). */
-    private static final Pattern VAGUE_SUBJECT = Pattern.compile("^(장학생|장학금|장학|인턴|프로그램|아카데미|과정|전형|캠프|대회)$");
-    private static final Pattern NOT_A_NAME = Pattern.compile("^(대학|대학생|신규|우수|\\d+학기|하반기|상반기|\\d+기|\\d{4}학년도|\\d{4}년도?)$");
+    private static final Pattern VAGUE_SUBJECT = Pattern.compile("^(장학생|장학금|장학|인턴|프로그램|아카데미|과정|전형|캠프|대회|계절학기|일경험)$");
+    private static final Pattern NOT_A_NAME = Pattern.compile("^(대학|대학생|신규|우수|\\d+학기|\\d{4}-\\d학기|하반기|상반기|제?\\d+기|\\d+차|\\d{2,4}년도?|\\d{4}학년도|전기|후기)$");
     /** 같은 행에 날짜 열이 여럿이고 기간이 같을 때 어느 열 이름을 쓸지. 할 일을 뜻하는 이름이 먼저다. */
     private static final Pattern ACTION_COLUMN = Pattern.compile("신청|접수|제출|납부|등록|모집|변경");
     private static final int LABEL_LINE_LIMIT = 20;
@@ -122,13 +119,18 @@ public final class DateItemExtractor {
         List<ExtractedItem> named = new ArrayList<>();
         for (ExtractedItem i : items) {
             boolean generic = GENERIC_LABEL.matcher(i.title()).find() || DESCRIPTION_LEAD.matcher(i.title()).find();
-            // 학점교류는 웹이 학교 이름과 "학점교류"를 붙이므로 여기서 붙이지 않는다.
-            String subject = !generic && !cleanTitle.contains("학점교류") && bareLabel(i.title()) ? subjectOf(cleanTitle) : null;
+            // 학점교류는 웹이 학교 이름과 "학점교류"를 붙이므로 여기서 붙이지 않는다. 할 일 줄만 이름을 고친다.
+            Subject subject = generic || cleanTitle.contains("학점교류") || i.title().equals(cleanTitle)
+                    || !com.cukalimi.feed.ItemKind.ACTION.equals(com.cukalimi.feed.ItemKind.of(i.title())) ? null : subjectOf(cleanTitle);
+            // "신청기간 · 1차 신청"처럼 자리 이름 칸이 앞에 있으면 떼고 붙인다. 웹도 자리 이름 칸은 행 이름에서 뺀다.
+            String body = java.util.Arrays.stream(i.title().split("\\s*·\\s*")).filter(p -> !GENERIC_LABEL.matcher(p).find())
+                    .collect(java.util.stream.Collectors.joining(" · "));
+            String prefixed = subject == null || body.isEmpty() || subject.namedIn(body) ? null : subject.name() + " " + body;
             if (generic && titleIsAction) {
                 named.add(new ExtractedItem(cleanTitle, i.range(), i.targetGrade(), i.where()));
-            } else if (subject != null) {
+            } else if (prefixed != null && prefixed.length() <= LABEL_LIMIT) {
                 // "트리니티 신청"처럼 무엇의 일인지 빠진 라벨이면 대상 이름을 앞에 붙인다("하나장학생 트리니티 신청").
-                named.add(new ExtractedItem(subject + " " + i.title(), i.range(), i.targetGrade(), i.where()));
+                named.add(new ExtractedItem(prefixed, i.range(), i.targetGrade(), i.where()));
             } else {
                 named.add(i);
             }
@@ -300,24 +302,22 @@ public final class DateItemExtractor {
     }
 
     /** 라벨로 쓸 수 있는 칸인가. 짧고, 숫자만은 아니고, 자리 이름이 아니고, 설명 문장이 아니어야 한다. */
-    static boolean bareLabel(String label) {
-        boolean any = false;
-        for (String w : label.split("[\\s·,/]+")) {
-            if (w.isEmpty()) {
-                continue;
-            }
-            if (!BARE_WORDS.contains(w)) {
-                return false;
-            }
-            any = true;
+    /** 행 제목의 길이 상한. 웹(tasks.ts)과 점검 명령(FeedAudit)도 36자를 쓴다. */
+    private static final int LABEL_LIMIT = 36;
+
+    /** 대상 이름. core는 이름을 끝맺는 낱말("장학생"), name은 붙일 이름 전체("두산연강재단 장학생"). */
+    record Subject(String name, String core) {
+        /** 라벨이 이미 대상을 말하는가. 이름 끝 낱말이나 첫 낱말이 들어 있으면 그렇다고 본다. */
+        boolean namedIn(String label) {
+            String l = label.replaceAll("\\s", "");
+            return l.contains(core) || l.contains(name.split(" ")[0]);
         }
-        return any;
     }
 
-    /** 공지 제목에서 대상 이름. "하나금융나눔재단 하나장학생 선발"이면 "하나장학생"이다. 장학·인턴·대회 같은 낱말이 없으면 null. */
-    static String subjectOf(String cleanTitle) {
+    /** 공지 제목에서 대상 이름. "하나금융나눔재단 하나장학생 선발"이면 "하나장학생"이다. 장학·인턴·과정 같은 낱말이 없으면 null. */
+    static Subject subjectOf(String cleanTitle) {
         List<String> words = new ArrayList<>();
-        for (String w : cleanTitle.replaceAll("\\([^)]*\\)", " ").split("\\s+")) {
+        for (String w : cleanTitle.replaceAll("\\([^)]*\\)", " ").replaceAll("[「」『』<>\"“”]", " ").split("\\s+")) {
             if (!w.isEmpty()) {
                 words.add(w);
             }
@@ -327,14 +327,17 @@ public final class DateItemExtractor {
             if (!SUBJECT_WORD.matcher(w).find()) {
                 continue;
             }
+            // 바로 뒤의 차수는 이름의 일부다("직무인턴 2차").
+            String round = i + 1 < words.size() && words.get(i + 1).matches("\\d+차") ? " " + words.get(i + 1) : "";
             if (VAGUE_SUBJECT.matcher(w).matches()) {
-                for (int j = i - 1; j >= 0; j--) {
+                // 낱말 하나로는 어느 것인지 모르면 제목 앞쪽의 고유한 이름을 붙인다("두산연강재단 장학생", "바이오헬스 아카데미").
+                for (int j = 0; j < i; j++) {
                     if (!NOT_A_NAME.matcher(words.get(j)).matches()) {
-                        return words.get(j) + " " + w;
+                        return new Subject(words.get(j) + " " + w + round, w);
                     }
                 }
             }
-            return w;
+            return new Subject(w + round, w);
         }
         // 대상 이름이 없으면 붙이지 않는다. 앞 낱말을 아무거나 붙이면 "테스트 서류 제출"처럼 더 이상해진다.
         return null;

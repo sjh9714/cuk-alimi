@@ -82,7 +82,9 @@ class NoticeParsersTest {
         NoticeView v = NoticeViewParser.parse(Fixtures.read("notice-277372.html"));
         List<ExtractedItem> items = DateItemExtractor.extract(v);
         List<String> titles = items.stream().map(ExtractedItem::title).toList();
-        assertThat(titles).contains("수강신청", "폐강과목 공고 (1차)", "수강신청 변경/취소 및 추가신청", "고지서 출력 및 수강료 납부 (등록)");
+        // 할 일 줄은 공지의 대상 이름("겨울 계절학기")을 앞에 붙여 정규 수강신청과 헷갈리지 않게 한다.
+        assertThat(titles).contains("겨울 계절학기 수강신청", "폐강과목 공고 (1차)", "겨울 계절학기 수강신청 변경/취소 및 추가신청",
+                "겨울 계절학기 고지서 출력 및 수강료 납부 (등록)");
         // 설명 칸("▶ 수강신청 인원이 15명 미만인 경우…")은 제목에 붙지 않고, 자리 이름("구분", "일정")도 제목이 되지 않는다.
         assertThat(titles).allSatisfy(t -> assertThat(t).doesNotContain("▶").doesNotContain("구분 ·").doesNotContain("일정 ·"));
         assertThat(titles).allSatisfy(t -> assertThat(t.length()).isLessThanOrEqualTo(40));
@@ -91,7 +93,7 @@ class NoticeParsersTest {
         // "폐강과목 공고(1차)"는 끝의 괄호를 떼면 공고라 안내다.
         assertThat(com.cukalimi.feed.ItemKind.of("폐강과목 공고 (1차)")).isEqualTo(com.cukalimi.feed.ItemKind.INFO);
         // 열 이름과 라벨이 같으면("성적확인 및 오류정정") 한 번만 적는다.
-        assertThat(titles).doesNotContain("성적확인 및 오류정정 · 성적확인 및 오류정정").contains("성적확인 및 오류정정");
+        assertThat(titles).doesNotContain("겨울 계절학기 성적확인 및 오류정정 · 성적확인 및 오류정정").contains("겨울 계절학기 성적확인 및 오류정정");
         assertThat(com.cukalimi.feed.ItemKind.of("성적확인 및 오류정정")).isEqualTo(com.cukalimi.feed.ItemKind.ACTION);
     }
 
@@ -140,9 +142,10 @@ class NoticeParsersTest {
                 org.jsoup.Jsoup.parseBodyFragment(body).body(), body, false, List.of());
         List<ExtractedItem> items = DateItemExtractor.extract(v);
         assertThat(items).hasSize(2);
-        assertThat(items.get(0).title()).isEqualTo("신청기간 · 1차 신청");
+        // 할 일 줄은 자리 이름 칸("신청기간")을 떼고 공지의 대상 이름을 붙인다.
+        assertThat(items.get(0).title()).isEqualTo("테스트 장학 1차 신청");
         assertThat(items.get(0).range().end()).isEqualTo(LocalDate.of(2026, 10, 30));
-        assertThat(items.get(1).title()).isEqualTo("결과발표 · 1차 신청");
+        assertThat(items.get(1).title()).isEqualTo("테스트 장학 결과발표 · 1차 신청");
         assertThat(items.get(1).range().end()).isEqualTo(LocalDate.of(2026, 11, 20));
     }
 
@@ -296,10 +299,15 @@ class NoticeParsersTest {
         List<String> titles = DateItemExtractor.extract(view).stream().map(ExtractedItem::title).toList();
 
         assertThat(titles).contains("하나장학생 트리니티 신청", "하나장학생 원본서류 제출").doesNotContain("트리니티 신청");
-        assertThat(DateItemExtractor.bareLabel("트리니티 신청 및 근로지 자기소개서 제출")).isFalse();
-        assertThat(DateItemExtractor.subjectOf("2학기 푸른등대 기부장학금(2차) 신청")).isEqualTo("기부장학금");
-        assertThat(DateItemExtractor.subjectOf("2027년도 두산연강재단 대학 장학생 선발")).isEqualTo("두산연강재단 장학생");
-        assertThat(DateItemExtractor.subjectOf("바이오헬스 일자리 아카데미 참여자 모집")).isEqualTo("일자리 아카데미");
+        assertThat(DateItemExtractor.subjectOf("2학기 푸른등대 기부장학금(2차) 신청").name()).isEqualTo("기부장학금");
+        assertThat(DateItemExtractor.subjectOf("2027년도 두산연강재단 대학 장학생 선발").name()).isEqualTo("두산연강재단 장학생");
+        assertThat(DateItemExtractor.subjectOf("「바이오헬스 일자리 아카데미」 참여자 모집 안내").name()).isEqualTo("바이오헬스 아카데미");
+        assertThat(DateItemExtractor.subjectOf("2026학년도 2학기 직무인턴 2차 신청 안내").name()).isEqualTo("직무인턴 2차");
+        assertThat(DateItemExtractor.subjectOf("2026학년도 겨울 계절학기 수강신청 안내").name()).isEqualTo("겨울 계절학기");
+        assertThat(DateItemExtractor.subjectOf("27년 전기 1차 대학원 신입생 모집 안내").name()).isEqualTo("대학원");
         assertThat(DateItemExtractor.subjectOf("2학기 학생설계전공 신규·변경·포기 신청")).isNull();
+        // 라벨이 이미 대상을 말하면 붙이지 않는다.
+        assertThat(DateItemExtractor.subjectOf("2026학년도 겨울 계절학기 수강신청 안내").namedIn("계절학기 수강변경")).isTrue();
+        assertThat(DateItemExtractor.subjectOf("2026학년도 2학기 교육지원인턴 신청 안내").namedIn("트리니티 신청 및 근로지 자기소개서 제출")).isFalse();
     }
 }

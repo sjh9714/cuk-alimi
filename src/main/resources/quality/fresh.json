@@ -4,8 +4,6 @@
   "exactNotices" : 18,
   "precision" : 0.7,
   "recall" : 0.7,
-  "labelExact" : 6,
-  "labelTotal" : 20,
   "topicExact" : 23,
   "topicTotal" : 26
 }

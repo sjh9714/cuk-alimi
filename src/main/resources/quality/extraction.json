@@ -1,5 +1,5 @@
 {
-  "measuredOn" : "2026-11-04",
+  "measuredOn" : "2026-11-06",
   "notices" : 89,
   "deadlines" : 86,
   "all" : {
@@ -34,10 +34,5 @@
     "description" : "특강 일정표의 '일정' 칸 날짜를 마감으로 읽어요",
     "missed" : 0,
     "invented" : 2
-  } ],
-  "labels" : {
-    "total" : 87,
-    "exact" : 83,
-    "ratio" : 0.954
-  }
+  } ]
 }

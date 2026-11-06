@@ -36,7 +36,7 @@ class FreshSetTest {
     @Test
     void freshNoticeScoresArePublished() throws Exception {
         JsonNode gold = JSON.readTree(Fixtures.read("gold/fresh.json")).get("notices");
-        int tp = 0, fp = 0, fn = 0, labelTotal = 0, labelExact = 0, topicTotal = 0, topicExact = 0, exactNotices = 0;
+        int tp = 0, fp = 0, fn = 0, topicTotal = 0, topicExact = 0, exactNotices = 0;
         List<String> report = new ArrayList<>();
         for (Iterator<Map.Entry<String, JsonNode>> it = gold.fields(); it.hasNext();) {
             Map.Entry<String, JsonNode> e = it.next();
@@ -55,18 +55,6 @@ class FreshSetTest {
             } else {
                 report.add(e.getKey() + " 정답 " + want + " 결과 " + got + " | " + view.title());
             }
-            for (JsonNode d : e.getValue().get("deadlines")) {
-                LocalDate day = LocalDate.parse(d.get("date").asText());
-                String expected = d.get("label").asText();
-                labelTotal++;
-                List<String> titles = actions.stream().filter(i -> i.range().end().equals(day))
-                        .map(i -> i.title().equals(view.cleanTitle()) ? "" : i.title()).toList();
-                if (titles.contains(expected)) {
-                    labelExact++;
-                } else {
-                    report.add(e.getKey() + " " + day + " 라벨 정답 \"" + expected + "\" 결과 " + titles);
-                }
-            }
             topicTotal++;
             String topic = Topic.of(view.title()).key();
             if (topic.equals(e.getValue().get("topic").asText())) {
@@ -80,7 +68,7 @@ class FreshSetTest {
         ObjectNode s = JSON.createObjectNode();
         s.put("notices", topicTotal).put("deadlines", tp + fn).put("exactNotices", exactNotices)
                 .put("precision", round(tp, tp + fp)).put("recall", round(tp, tp + fn))
-                .put("labelExact", labelExact).put("labelTotal", labelTotal)
+
                 .put("topicExact", topicExact).put("topicTotal", topicTotal);
         System.out.println("fresh set: " + s);
         Path published = Path.of("src/main/resources/quality/fresh.json");

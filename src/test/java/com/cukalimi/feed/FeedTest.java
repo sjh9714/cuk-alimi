@@ -74,6 +74,17 @@ class FeedTest {
         assertThat(card.next()).extracting(Feed.Line::kind).doesNotContain("ACTION");
     }
 
+    @Test
+    void titleTaskStaysWhenTheOnlyOtherLineThatDayIsInfo() {
+        // 학생설계전공 공지(276928). 제목 줄과 "일시" 안내 줄이 같은 날이다. 제목 줄을 빼면 할 일이 사라져 카드가 없어졌다.
+        Notice n = notice("학사", "[융합전공학부] 2026-2학기 학생설계전공 신규·변경·포기 신청 안내", "");
+        DateItem task = item(n, "2026-2학기 학생설계전공 신규·변경·포기 신청 안내", 9);
+        item(n, "일시", 9);
+
+        Feed.View v = build(Feed.Viewer.ANONYMOUS);
+        assertThat(cardOf(v, "학생설계전공").deadline().id()).isEqualTo(task.getId());
+    }
+
     static Feed.Card cardOf(Feed.View v, String sourceTitlePart) {
         return v.sections().stream().flatMap(s -> s.cards().stream()).filter(c -> c.sourceTitle().contains(sourceTitlePart)).findFirst()
                 .orElseThrow();

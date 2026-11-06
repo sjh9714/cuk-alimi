@@ -51,7 +51,7 @@
       "mineReason" : null,
       "deadline" : {
         "id" : 27346001,
-        "label" : "원서 접수기간",
+        "label" : "연계과정 원서 접수기간",
         "startsOn" : "2026-07-06",
         "endsOn" : "2026-07-10",
         "startsAt" : null,
@@ -84,7 +84,7 @@
       "mineReason" : null,
       "deadline" : {
         "id" : 27350102,
-        "label" : "입력 기간",
+        "label" : "ELP+ 프로그램 입력 기간",
         "startsOn" : "2026-07-07",
         "endsOn" : "2026-07-07",
         "startsAt" : null,
@@ -96,7 +96,7 @@
       },
       "next" : [ {
         "id" : 27350103,
-        "label" : "승인 기간",
+        "label" : "ELP+ 프로그램 승인 기간",
         "startsOn" : "2026-07-08",
         "endsOn" : "2026-07-15",
         "startsAt" : null,
@@ -107,7 +107,7 @@
         "fromImage" : false
       }, {
         "id" : 27350104,
-        "label" : "점수 확인 및 이의신청 기간",
+        "label" : "ELP+ 프로그램 점수 확인 및 이의신청 기간",
         "startsOn" : "2026-07-16",
         "endsOn" : "2026-07-20",
         "startsAt" : null,
@@ -586,7 +586,7 @@
       "mineReason" : null,
       "deadline" : {
         "id" : 27572001,
-        "label" : "ㆍ 참가신청",
+        "label" : "가톨릭대학교 대회 ㆍ 참가신청",
         "startsOn" : "2026-09-17",
         "endsOn" : "2026-09-17",
         "startsAt" : null,
@@ -652,7 +652,7 @@
       "mineReason" : null,
       "deadline" : {
         "id" : 27588801,
-        "label" : "원서 접수",
+        "label" : "대학원 원서 접수",
         "startsOn" : "2026-10-01",
         "endsOn" : "2026-10-16",
         "startsAt" : null,
@@ -664,7 +664,7 @@
       },
       "next" : [ {
         "id" : 27588802,
-        "label" : "서류 제출",
+        "label" : "대학원 서류 제출",
         "startsOn" : "2026-10-20",
         "endsOn" : "2026-10-20",
         "startsAt" : null,
@@ -696,7 +696,7 @@
       "mineReason" : null,
       "deadline" : {
         "id" : 27592902,
-        "label" : "신청기간 · 트리니티 신청 및 근로지 자기소개서 제출",
+        "label" : "교육지원인턴 트리니티 신청 및 근로지 자기소개서 제출",
         "startsOn" : "2026-09-17",
         "endsOn" : "2026-09-27",
         "startsAt" : null,
@@ -740,7 +740,7 @@
       "mineReason" : null,
       "deadline" : {
         "id" : 27594702,
-        "label" : "신청기간 · 트리니티 신청 및 근로지 자기소개서 제출",
+        "label" : "직무인턴 2차 트리니티 신청 및 근로지 자기소개서 제출",
         "startsOn" : "2026-09-17",
         "endsOn" : "2026-09-27",
         "startsAt" : null,
@@ -1049,7 +1049,7 @@
       "mineReason" : null,
       "deadline" : {
         "id" : 27615001,
-        "label" : "온라인 지원",
+        "label" : "미래에셋 장학생 온라인 지원",
         "startsOn" : "2026-09-30",
         "endsOn" : "2026-10-06",
         "startsAt" : "10:00:00",
@@ -1512,7 +1512,7 @@
       "mineReason" : null,
       "deadline" : {
         "id" : 27634502,
-        "label" : "신청기간 · 트리니티 신청 및 근로지 자기소개서 제출",
+        "label" : "직무인턴 3차 트리니티 신청 및 근로지 자기소개서 제출",
         "startsOn" : "2026-10-01",
         "endsOn" : "2026-10-07",
         "startsAt" : null,
@@ -2372,7 +2372,7 @@
       },
       "next" : [ {
         "id" : 27668603,
-        "label" : "재단 희망근로지 신청",
+        "label" : "국가근로장학금 재단 희망근로지 신청",
         "startsOn" : "2026-10-30",
         "endsOn" : "2026-11-12",
         "startsAt" : null,
@@ -2471,7 +2471,7 @@
       "mineReason" : null,
       "deadline" : {
         "id" : 27675101,
-        "label" : "서류 제출 마감",
+        "label" : "넥스트플레이어 인턴 서류 제출 마감",
         "startsOn" : "2026-10-19",
         "endsOn" : "2026-10-19",
         "startsAt" : null,
@@ -2883,7 +2883,50 @@
     "collapsed" : true,
     "section" : "career"
   } ],
-  "276928" : [ ],
+  "276928" : [ {
+    "card" : {
+      "key" : "notice:276928",
+      "kind" : "academic",
+      "title" : "2026-2학기 학생설계전공 신규·변경·포기 신청 안내",
+      "sourceTitle" : "[융합전공학부] 2026-2학기 학생설계전공 신규·변경·포기 신청 안내",
+      "url" : "https://example.test/276928",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27692801,
+        "label" : null,
+        "startsOn" : "2026-10-26",
+        "endsOn" : "2026-11-13",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27692802,
+        "label" : "일시",
+        "startsOn" : "2026-10-26",
+        "endsOn" : "2026-11-13",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "course"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
   "276941" : [ {
     "card" : {
       "key" : "notice:276941",
@@ -3321,7 +3364,7 @@
       "mineReason" : null,
       "deadline" : {
         "id" : 27711902,
-        "label" : "추천마감",
+        "label" : "모두투어 인턴 추천마감",
         "startsOn" : "2026-11-06",
         "endsOn" : "2026-11-06",
         "startsAt" : null,
@@ -3333,7 +3376,7 @@
       },
       "next" : [ {
         "id" : 27711901,
-        "label" : "추천자 마감일",
+        "label" : "모두투어 인턴 추천자 마감일",
         "startsOn" : "2026-11-06",
         "endsOn" : "2026-11-06",
         "startsAt" : null,
@@ -3344,7 +3387,7 @@
         "fromImage" : false
       }, {
         "id" : 27711903,
-        "label" : "취업추천서 제출",
+        "label" : "모두투어 인턴 취업추천서 제출",
         "startsOn" : "2026-11-06",
         "endsOn" : "2026-11-06",
         "startsAt" : null,
@@ -3442,7 +3485,7 @@
       "mineReason" : null,
       "deadline" : {
         "id" : 27722702,
-        "label" : "신청기간 · 트리니티 신청 및 근로지 자기소개서 제출",
+        "label" : "연구인턴 트리니티 신청 및 근로지 자기소개서 제출",
         "startsOn" : "2026-11-02",
         "endsOn" : "2026-11-08",
         "startsAt" : null,
@@ -3728,7 +3771,7 @@
       "mineReason" : null,
       "deadline" : {
         "id" : 27737201,
-        "label" : "수강신청",
+        "label" : "겨울 계절학기 수강신청",
         "startsOn" : "2026-11-05",
         "endsOn" : "2026-11-10",
         "startsAt" : null,
@@ -3751,7 +3794,7 @@
         "fromImage" : false
       }, {
         "id" : 27737203,
-        "label" : "수강신청 변경/취소 및 추가신청",
+        "label" : "겨울 계절학기 수강신청 변경/취소 및 추가신청",
         "startsOn" : "2026-11-19",
         "endsOn" : "2026-11-26",
         "startsAt" : null,
@@ -3762,7 +3805,7 @@
         "fromImage" : false
       }, {
         "id" : 27737204,
-        "label" : "고지서 출력 및 수강료 납부 (등록)",
+        "label" : "겨울 계절학기 고지서 출력 및 수강료 납부 (등록)",
         "startsOn" : "2026-11-30",
         "endsOn" : "2026-12-04",
         "startsAt" : null,
@@ -3784,7 +3827,7 @@
         "fromImage" : false
       }, {
         "id" : 27737206,
-        "label" : "2차 폐강과목 등록자 수강변경 및 환불신청 (1차)",
+        "label" : "겨울 계절학기 2차 폐강과목 등록자 수강변경 및 환불신청 (1차)",
         "startsOn" : "2026-12-14",
         "endsOn" : "2026-12-18",
         "startsAt" : null,
@@ -3795,7 +3838,7 @@
         "fromImage" : false
       }, {
         "id" : 27737209,
-        "label" : "2/3 환불",
+        "label" : "겨울 계절학기 2/3 환불",
         "startsOn" : "2026-12-21",
         "endsOn" : "2026-12-24",
         "startsAt" : null,
@@ -3806,7 +3849,7 @@
         "fromImage" : false
       }, {
         "id" : 27737211,
-        "label" : "환불 신청일 · 2/3 환불",
+        "label" : "겨울 계절학기 환불 신청일 · 2/3 환불",
         "startsOn" : "2026-12-21",
         "endsOn" : "2026-12-24",
         "startsAt" : null,
@@ -3817,7 +3860,7 @@
         "fromImage" : false
       }, {
         "id" : 27737208,
-        "label" : "환불신청 (2차)",
+        "label" : "겨울 계절학기 환불신청 (2차)",
         "startsOn" : "2026-12-21",
         "endsOn" : "2026-12-24",
         "startsAt" : null,
@@ -3839,7 +3882,7 @@
         "fromImage" : false
       }, {
         "id" : 27737210,
-        "label" : "성적확인 및 오류정정",
+        "label" : "겨울 계절학기 성적확인 및 오류정정",
         "startsOn" : "2027-01-14",
         "endsOn" : "2027-01-14",
         "startsAt" : null,
@@ -3992,7 +4035,7 @@
       "mineReason" : null,
       "deadline" : {
         "id" : 27744701,
-        "label" : "1기 신청",
+        "label" : "바이오헬스 아카데미 1기 신청",
         "startsOn" : null,
         "endsOn" : "2026-11-11",
         "startsAt" : null,
@@ -4004,7 +4047,7 @@
       },
       "next" : [ {
         "id" : 27744702,
-        "label" : "2기 신청",
+        "label" : "바이오헬스 아카데미 2기 신청",
         "startsOn" : null,
         "endsOn" : "2026-11-18",
         "startsAt" : null,

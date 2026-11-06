@@ -256,8 +256,11 @@ public final class Feed {
             return items;
         }
         String title = Titles.clean(notices.get(items.get(0).getNoticeId()).getTitle());
+        // 제목 말고 다른 할 일이 없으면 가장 이른 제목 줄은 그 공지의 유일한 할 일이라 남긴다("일시" 안내 줄만 같은 날에 있는 경우).
+        boolean otherTask = items.stream().anyMatch(o -> !sameThing(o.getTitle(), title) && ItemKind.ACTION.equals(ItemKind.of(o.getTitle())));
+        DateItem firstTask = items.stream().filter(o -> ItemKind.ACTION.equals(ItemKind.of(o.getTitle()))).findFirst().orElse(null);
         return items.stream()
-                .filter(i -> !sameThing(i.getTitle(), title) || items.stream()
+                .filter(i -> !sameThing(i.getTitle(), title) || (!otherTask && i == firstTask) || items.stream()
                         .noneMatch(o -> o != i && o.getEndsOn().equals(i.getEndsOn()) && !sameThing(o.getTitle(), title)))
                 .toList();
     }
