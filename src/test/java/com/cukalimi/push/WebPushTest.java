@@ -32,13 +32,13 @@ class WebPushTest {
     @Test
     void vapid_jwt는_공개_키로_검증된다() throws Exception {
         String[] keys = WebPush.generateKeys();
-        WebPush push = new WebPush(keys[0], keys[1], "mailto:test@example");
+        WebPush push = new WebPush(keys[0], keys[1], "mailto:test@example.com");
         String jwt = push.vapidJwt("https://push.example", Instant.ofEpochSecond(1_800_000_000L));
         String[] parts = jwt.split("\\.");
         assertThat(parts).hasSize(3);
         assertThat(new String(B64D.decode(parts[0]), StandardCharsets.UTF_8)).isEqualTo("{\"typ\":\"JWT\",\"alg\":\"ES256\"}");
         assertThat(new String(B64D.decode(parts[1]), StandardCharsets.UTF_8))
-                .isEqualTo("{\"aud\":\"https://push.example\",\"exp\":1800043200,\"sub\":\"mailto:test@example\"}");
+                .isEqualTo("{\"aud\":\"https://push.example\",\"exp\":1800043200,\"sub\":\"mailto:test@example.com\"}");
         Signature verifier = Signature.getInstance("SHA256withECDSAinP1363Format");
         verifier.initVerify(WebPush.publicKey(B64D.decode(keys[0])));
         verifier.update((parts[0] + "." + parts[1]).getBytes(StandardCharsets.US_ASCII));
@@ -57,6 +57,14 @@ class WebPushTest {
         assertThat(WebPush.allowedEndpoint("https://127.0.0.1/x")).isFalse();
         assertThat(WebPush.allowedEndpoint("https://fcm.googleapis.com:8443/x")).isFalse();
         assertThat(WebPush.allowedEndpoint("not a url")).isFalse();
+    }
+
+    @Test
+    void 쓸_수_없는_연락처는_받지_않는다() {
+        assertThat(WebPush.validSubject("https://github.com/sjh9714/cuk-alimi")).isTrue();
+        assertThat(WebPush.validSubject("mailto:admin@example.com")).isTrue();
+        assertThat(WebPush.validSubject("mailto:cuk-alimi@localhost")).isFalse();
+        assertThat(WebPush.validSubject("mailto:")).isFalse();
     }
 
     @Test

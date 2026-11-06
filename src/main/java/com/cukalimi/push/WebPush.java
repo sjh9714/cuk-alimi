@@ -36,6 +36,8 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public final class WebPush {
 
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(WebPush.class);
+
     private static final Base64.Encoder B64 = Base64.getUrlEncoder().withoutPadding();
     private static final Base64.Decoder B64D = Base64.getUrlDecoder();
     private static final SecureRandom RANDOM = new SecureRandom();
@@ -79,8 +81,16 @@ public final class WebPush {
             throw new IllegalArgumentException("VAPID 키가 올바르지 않습니다", e);
         }
         this.vapidPublicRaw = publicKeyB64;
+        if (!validSubject(subject)) {
+            throw new IllegalArgumentException("VAPID subject는 https 주소나 실제 도메인의 mailto여야 합니다: " + subject);
+        }
         this.subject = subject;
         this.http = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(10)).build();
+    }
+
+    /** Apple 푸시는 쓸 수 없는 연락처("mailto:…@localhost")를 담은 JWT를 BadJwtToken으로 거절한다 (2026-11-06 Safari에서 확인). */
+    static boolean validSubject(String subject) {
+        return subject != null && (subject.matches("https://[^\\s/]+\\.[^\\s/]+.*") || subject.matches("mailto:[^@\\s]+@[^@\\s]+\\.[A-Za-z]{2,}"));
     }
 
     public String publicKey() {
@@ -102,14 +112,23 @@ public final class WebPush {
                     .header("Urgency", "normal")
                     .POST(HttpRequest.BodyPublishers.ofByteArray(body))
                     .build();
-            // 응답 본문은 쓰지 않으니 받지 않는다. 푸시 서비스가 큰 본문을 돌려줘도 메모리를 쓰지 않는다.
-            HttpResponse<Void> response = http.send(request, HttpResponse.BodyHandlers.discarding());
+            // 응답 본문은 실패했을 때 까닭을 남길 만큼(300바이트)만 읽는다. 푸시 서비스가 큰 본문을 돌려줘도 메모리를 쓰지 않는다.
+            HttpResponse<java.io.InputStream> response = http.send(request, HttpResponse.BodyHandlers.ofInputStream());
             int status = response.statusCode();
+            String reason;
+            try (java.io.InputStream in = response.body()) {
+                reason = new String(in.readNBytes(300), StandardCharsets.UTF_8);
+            }
             if (status == 404 || status == 410) {
                 return Outcome.GONE;
             }
-            return status >= 200 && status < 300 ? Outcome.SENT : Outcome.FAILED;
+            if (status >= 200 && status < 300) {
+                return Outcome.SENT;
+            }
+            LOG.warn("push to {} failed: {} {}", endpoint.getHost(), status, reason.replaceAll("\\s+", " "));
+            return Outcome.FAILED;
         } catch (GeneralSecurityException | IllegalArgumentException | IOException e) {
+            LOG.warn("push failed before a response: {}", e.toString());
             return Outcome.FAILED;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

@@ -87,5 +87,6 @@ app:
   push:
     public-key: ${VAPID_PUBLIC_KEY:}
     private-key: ${VAPID_PRIVATE_KEY:}
-    subject: mailto:${ADMIN_EMAIL:cuk-alimi@localhost}
+    # 푸시 서비스가 문제 있을 때 연락할 곳. Apple은 "mailto:…@localhost"처럼 쓸 수 없는 주소면 BadJwtToken(403)으로 거절한다.
+    subject: ${PUSH_SUBJECT:https://github.com/sjh9714/cuk-alimi}
     cron: "0 0 8 * * *"
