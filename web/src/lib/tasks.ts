@@ -30,36 +30,6 @@ export type Task = {
 
 const EMPTY_LABEL = /^(마감 기한|마감|기간|신청기간|접수기간|모집기간|조사기간|내용|일정)$/;
 
-/**
- * 무엇을 하는지만 있고 무엇의 일인지가 없는 라벨의 낱말. "트리니티 신청", "원본서류 제출", "신청서 접수"는 이 낱말만으로 되어 있어서
- * 행 제목만 훑으면 어느 장학·프로그램인지 알 수 없다. 이런 라벨은 공지에서 대상 이름을 앞에 붙인다.
- */
-const BARE_WORDS = new Set([
-  "트리니티", "온라인", "오프라인", "방문", "이메일", "우편", "원본", "원본서류", "서류", "제출서류", "구비서류", "신청서", "지원서", "참가신청서",
-  "신청", "접수", "제출", "등록", "및", "신청서류", "최종", "1차", "2차", "추가", "온라인신청",
-]);
-
-/** 공지 제목에서 대상 이름. "하나금융나눔재단 하나장학생 선발"이면 "하나장학생"이다. 못 찾으면 null. */
-export function subjectOf(cleanedTitle: string): string | null {
-  const words = cleanedTitle.replace(/\([^)]*\)/g, " ").split(/\s+/).filter(Boolean);
-  const at = words.map((w, i) => ({ w, i })).reverse()
-    .find(({ w }) => /(장학생|장학금|장학|인턴|프로그램|교류|대회|캠프|공모전|해커톤|아카데미|전형|과정|멘토단?|봉사단|서포터즈|챌린지)$/.test(w));
-  if (at) {
-    // "장학생", "아카데미"처럼 낱말 하나로는 어느 것인지 모르면 앞의 이름을 붙인다("두산연강재단 장학생").
-    if (/^(장학생|장학금|장학|인턴|프로그램|아카데미|과정|전형|캠프|대회)$/.test(at.w)) {
-      const before = words.slice(0, at.i).reverse().find((w) => !/^(대학|대학생|신규|우수|\d+학기|하반기|상반기|\d{4}년도?)$/.test(w));
-      if (before) return `${before} ${at.w}`;
-    }
-    return at.w;
-  }
-  const rest = words.filter((w) => !/^(\d+학기|하반기|상반기|\d+기|\d{4}학년도|\d{4}년)$/.test(w) && !/^(선발|모집|신청|접수|안내|공고)$/.test(w));
-  return rest.length > 0 ? rest.slice(0, 2).join(" ") : null;
-}
-
-function bareLabel(pieces: string[]): boolean {
-  const words = pieces.join(" ").split(/[\s·,/]+/).filter(Boolean);
-  return words.length > 0 && words.every((w) => BARE_WORDS.has(w));
-}
 const RECOMMEND_TAG = /^\[대플-추천채용\]\s*/;
 
 export function iso(d: Date): string {
@@ -139,9 +109,6 @@ function nameOf(card: Card, line: Line): Named {
   }
   const named = schoolName(clean);
   if (exchange && named) return { title: `${named} 학점교류 ${pieces.join(" ")}`, from: "", school: null };
-  // "트리니티 신청"처럼 무엇의 일인지 빠진 라벨이면 대상 이름을 앞에 붙인다("하나장학생 트리니티 신청").
-  const subject = bareLabel(pieces) ? subjectOf(clean) : null;
-  if (subject) return { title: `${subject} ${pieces.join(" ")}`, from: clean, school: null };
   return { title: pieces.join(" "), from: clean, school: null };
 }
 

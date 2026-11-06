@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Card, Line, Section } from "./api";
-import { boardCards, cleanTitle, eventsOf, monthCells, schoolName, startsOf, subjectOf, tasksOf } from "./tasks";
+import { boardCards, cleanTitle, eventsOf, monthCells, schoolName, startsOf, tasksOf } from "./tasks";
 
 const TODAY = "2026-11-02";
 let nextId = 1;
@@ -196,28 +196,6 @@ describe("monthCells", () => {
     const cells = monthCells(2027, 1);
     expect(cells.length % 7).toBe(0);
     expect(cells.filter((c) => c.inMonth)).toHaveLength(28);
-  });
-});
-
-describe("무엇의 일인지 빠진 라벨", () => {
-  it("공지의 대상 이름을 앞에 붙인다", () => {
-    const c = card("[학생지원팀] 2026학년도 2학기 하나금융나눔재단 하나장학생 선발 안내", [
-      line("2026-10-02", "트리니티 신청"),
-      line("2026-10-06", "원본서류 제출"),
-    ]);
-    expect(tasksOf([c], TODAY).map((t) => t.title)).toEqual(["하나장학생 트리니티 신청", "하나장학생 원본서류 제출"]);
-  });
-
-  it("무엇의 일인지 있는 라벨은 그대로 둔다", () => {
-    const c = card("[학생지원팀] 2026학년도 2학기 연구인턴 신청 안내", [line("2026-11-08", "트리니티 신청 및 근로지 자기소개서 제출")]);
-    expect(tasksOf([c], TODAY)[0].title).toBe("트리니티 신청 및 근로지 자기소개서 제출");
-  });
-
-  it("대상 이름을 고른다", () => {
-    expect(subjectOf("2학기 푸른등대 기부장학금(2차) 신청")).toBe("기부장학금");
-    expect(subjectOf("2027년도 두산연강재단 대학 장학생 선발")).toBe("두산연강재단 장학생");
-    expect(subjectOf("바이오헬스 일자리 아카데미 참여자 모집")).toBe("일자리 아카데미");
-    expect(subjectOf("2학기 학생설계전공 신규·변경·포기 신청")).toBe("학생설계전공 신규·변경·포기");
   });
 });
 

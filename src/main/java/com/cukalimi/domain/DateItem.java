@@ -143,6 +143,14 @@ public class DateItem {
         this.naturalKey = naturalKey;
     }
 
+    /** 사람이 승인한 이름을 그대로 품고 앞뒤에 말만 붙은 새 이름이면 바꾼다("트리니티 신청"이 "인송장학생 트리니티 신청"으로). */
+    public void extendTitle(String longer) {
+        if (longer.replaceAll("\\s", "").contains(title.replaceAll("\\s", "")) && !longer.equals(title)) {
+            title = longer;
+            updatedAt = OffsetDateTime.now();
+        }
+    }
+
     /** 저장이 붙은 자동 항목을 지우는 대신 거둔다. 자연 키를 비워 같은 자리에 새 항목이 들어올 수 있게 한다. */
     public void retire() {
         status = STATUS_RETIRED;

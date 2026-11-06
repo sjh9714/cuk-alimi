@@ -288,4 +288,18 @@ class NoticeParsersTest {
         org.assertj.core.api.Assertions.assertThat(ceremony).anyMatch(i -> com.cukalimi.feed.ItemKind.isEvent(
                 i.title(), "후기 학위수여식 및 포토 스팟", i.range().start() == null || i.range().start().equals(i.range().end())));
     }
+
+    @Test
+    void bareLabelGetsTheNoticeSubject() {
+        NoticeView view = NoticeViewParser.parse(Fixtures.read("gold/notices/276264.html"));
+
+        List<String> titles = DateItemExtractor.extract(view).stream().map(ExtractedItem::title).toList();
+
+        assertThat(titles).contains("하나장학생 트리니티 신청", "하나장학생 원본서류 제출").doesNotContain("트리니티 신청");
+        assertThat(DateItemExtractor.bareLabel("트리니티 신청 및 근로지 자기소개서 제출")).isFalse();
+        assertThat(DateItemExtractor.subjectOf("2학기 푸른등대 기부장학금(2차) 신청")).isEqualTo("기부장학금");
+        assertThat(DateItemExtractor.subjectOf("2027년도 두산연강재단 대학 장학생 선발")).isEqualTo("두산연강재단 장학생");
+        assertThat(DateItemExtractor.subjectOf("바이오헬스 일자리 아카데미 참여자 모집")).isEqualTo("일자리 아카데미");
+        assertThat(DateItemExtractor.subjectOf("2학기 학생설계전공 신규·변경·포기 신청")).isNull();
+    }
 }

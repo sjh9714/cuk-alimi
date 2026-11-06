@@ -244,6 +244,32 @@ class ApiFlowTest {
     }
 
     @Test
+    void renamedLabelReusesTheApprovedItemInsteadOfAddingASecondLine() {
+        String html = Fixtures.read("notice-273306.html").replace("273306", "999601").replace("수강신청 일정 안내", "수강신청 승인 시험");
+        store.save(new NoticeSummary(999601L, "학사", "", LocalDate.of(2026, 6, 29)), html);
+        Notice n = notices.findByArticleNo(999601L).orElseThrow();
+        try {
+            DateItem approved = dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId()).stream()
+                    .filter(i -> i.getTitle().contains("수강바구니")).findFirst().orElseThrow();
+            approved.markReviewed("admin");
+            dateItems.saveAndFlush(approved);
+            long before = dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId()).size();
+
+            // 규칙이 바뀌어 라벨 앞에 대상 이름이 붙는다. 같은 마감에 줄이 하나 더 생기면 안 된다.
+            store.save(new NoticeSummary(999601L, "학사", "", LocalDate.of(2026, 6, 29)), html.replace("수강바구니", "학부 수강바구니"));
+            List<DateItem> after = dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId());
+            assertThat(after).hasSize((int) before);
+            DateItem kept = dateItems.findById(approved.getId()).orElseThrow();
+            assertThat(kept.getStatus()).isEqualTo(DateItem.STATUS_REVIEWED);
+            assertThat(kept.getNaturalKey()).contains("학부수강바구니");
+            assertThat(kept.getTitle()).isEqualTo(approved.getTitle().replace("수강바구니", "학부 수강바구니"));
+        } finally {
+            dateItems.deleteAll(dateItems.findByNoticeIdOrderByEndsOnAsc(n.getId()));
+            notices.delete(n);
+        }
+    }
+
+    @Test
     void reparseKeepsSavedItemsAndPushTreatsSameDayLinesAsOne() {
         String cookie = login("keep@catholic.ac.kr");
         AppUser user = users.findByEmail("keep@catholic.ac.kr").orElseThrow();

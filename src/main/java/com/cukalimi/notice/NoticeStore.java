@@ -68,6 +68,19 @@ public class NoticeStore {
                 .orElse(sameName.size() == 1 ? sameName.get(0) : null);
     }
 
+    /**
+     * 규칙이 바뀌어 이름만 늘거나 준 옛 항목("트리니티 신청"이 "인송장학생 트리니티 신청"으로). 마감이 같고 한 이름이 다른 이름을 품으면 같은 일이다.
+     * 사람이 승인한 항목도 여기서는 이어받는다. 이어받지 않으면 옛 키의 승인 항목과 새 자동 항목이 같은 날 두 줄로 나온다.
+     */
+    private static DateItem renamed(List<DateItem> candidates, DateItem fresh) {
+        String name = NoticeCollector.normalize(fresh.getTitle());
+        return candidates.stream().filter(i -> i.getEndsOn().equals(fresh.getEndsOn())).filter(i -> {
+            String old = NoticeCollector.normalize(i.getTitle());
+            // "신청"처럼 짧은 이름은 아무 이름에나 들어가므로 네 글자 이상일 때만 본다.
+            return Math.min(old.length(), name.length()) >= 4 && (name.contains(old) || old.contains(name));
+        }).findFirst().orElse(null);
+    }
+
     /** 학생의 저장이나 체크가 붙어 있는가. 붙어 있으면 지우지 않는다. 지우면 저장과 알림이 함께 사라진다. */
     private boolean hasUserRefs(DateItem item) {
         return saved.existsByDateItemId(item.getId()) || done.existsByDateItemId(item.getId());
@@ -151,6 +164,9 @@ public class NoticeStore {
         List<DateItem> unclaimed = new java.util.ArrayList<>(dateItems.findByNoticeIdOrderByEndsOnAsc(notice.getId()).stream()
                 .filter(i -> DateItem.SOURCE_NOTICE.equals(i.getSourceKind()) && DateItem.STATUS_AUTO.equals(i.getStatus()))
                 .toList());
+        List<DateItem> reviewed = new java.util.ArrayList<>(dateItems.findByNoticeIdOrderByEndsOnAsc(notice.getId()).stream()
+                .filter(i -> DateItem.SOURCE_NOTICE.equals(i.getSourceKind()) && DateItem.STATUS_REVIEWED.equals(i.getStatus()))
+                .toList());
         for (ExtractedItem item : extracted) {
             String name = NoticeCollector.normalize(item.title());
             int occurrence = occurrences.merge(name, 1, Integer::sum);
@@ -161,10 +177,19 @@ public class NoticeStore {
             var existing = dateItems.findByNaturalKey(fresh.getNaturalKey());
             if (existing.isEmpty()) {
                 DateItem adopted = adopt(unclaimed, fresh);
+                if (adopted == null) {
+                    List<DateItem> both = new java.util.ArrayList<>(unclaimed);
+                    both.addAll(reviewed);
+                    adopted = renamed(both, fresh);
+                }
                 if (adopted != null) {
+                    // 승인한 항목은 키를 옮기고, 날짜는 그대로 두며 이름은 승인한 글자를 품은 새 이름일 때만 바꾼다.
                     adopted.rekey(fresh.getNaturalKey());
-                    adopted.refreshFrom(fresh);
+                    if (!adopted.refreshFrom(fresh)) {
+                        adopted.extendTitle(fresh.getTitle());
+                    }
                     unclaimed.remove(adopted);
+                    reviewed.remove(adopted);
                 } else {
                     dateItems.save(fresh);
                 }
