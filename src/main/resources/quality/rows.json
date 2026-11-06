@@ -1,8 +1,8 @@
 {
   "dev": {
     "total": 96,
-    "ok": 86,
-    "ratio": 0.896,
+    "ok": 88,
+    "ratio": 0.917,
     "exact": 26,
     "exactRatio": 0.271,
     "extra": 2

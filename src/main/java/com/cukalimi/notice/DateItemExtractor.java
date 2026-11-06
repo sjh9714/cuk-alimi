@@ -62,7 +62,8 @@ public final class DateItemExtractor {
             "(장학생|장학금|장학|인턴|프로그램|교류|대회|캠프|공모전|해커톤|아카데미|전형|과정|멘토단?|봉사단|서포터즈|챌린지|계절학기|대학원|일경험)$");
     /** 낱말 하나로는 어느 것인지 모르는 대상 이름. 앞의 이름을 함께 쓴다("두산연강재단 장학생"). */
     private static final Pattern VAGUE_SUBJECT = Pattern.compile("^(장학생|장학금|장학|인턴|프로그램|아카데미|과정|전형|캠프|대회|계절학기|일경험)$");
-    private static final Pattern NOT_A_NAME = Pattern.compile("^(대학|대학생|신규|우수|\\d+학기|\\d{4}-\\d학기|하반기|상반기|제?\\d+기|\\d+차|\\d{2,4}년도?|\\d{4}학년도|전기|후기)$");
+    /** 대상 이름이 될 수 없는 낱말. 우리 학교 이름은 모든 공지에 붙을 수 있어 무엇의 일인지 알려 주지 않는다. */
+    private static final Pattern NOT_A_NAME = Pattern.compile("^(대학|대학생|신규|우수|\\d+학기|\\d{4}-\\d학기|하반기|상반기|제?\\d+기|\\d+차|\\d{2,4}년도?|\\d{4}학년도|전기|후기|가톨릭대(학교)?)$");
     /** 같은 행에 날짜 열이 여럿이고 기간이 같을 때 어느 열 이름을 쓸지. 할 일을 뜻하는 이름이 먼저다. */
     private static final Pattern ACTION_COLUMN = Pattern.compile("신청|접수|제출|납부|등록|모집|변경");
     private static final int LABEL_LINE_LIMIT = 20;

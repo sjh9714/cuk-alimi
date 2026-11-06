@@ -306,6 +306,7 @@ class NoticeParsersTest {
         assertThat(DateItemExtractor.subjectOf("2026학년도 겨울 계절학기 수강신청 안내").name()).isEqualTo("겨울 계절학기");
         assertThat(DateItemExtractor.subjectOf("27년 전기 1차 대학원 신입생 모집 안내").name()).isEqualTo("대학원");
         assertThat(DateItemExtractor.subjectOf("2학기 학생설계전공 신규·변경·포기 신청")).isNull();
+        assertThat(DateItemExtractor.subjectOf("26년 가톨릭대학교 Programming 대회 안내").name()).isEqualTo("Programming 대회");
         // 라벨이 이미 대상을 말하면 붙이지 않는다.
         assertThat(DateItemExtractor.subjectOf("2026학년도 겨울 계절학기 수강신청 안내").namedIn("계절학기 수강변경")).isTrue();
         assertThat(DateItemExtractor.subjectOf("2026학년도 2학기 교육지원인턴 신청 안내").namedIn("트리니티 신청 및 근로지 자기소개서 제출")).isFalse();
