@@ -72,6 +72,21 @@ public class PushController {
         return ResponseEntity.noContent().build();
     }
 
+    /** 내 기기들로 시험 알림 한 통. 설정 화면에서 켠 뒤 실제로 오는지 본다. 보낸 기기 수를 돌려준다. */
+    @PostMapping("/me/push/test")
+    public Map<String, Integer> test(HttpServletRequest request) {
+        AppUser user = auth.requireUser(request);
+        int sent = 0;
+        for (PushSubscription s : subscriptions.findByUserId(user.getId())) {
+            var outcome = sender.send(new com.cukalimi.push.WebPush.Subscription(s.getEndpoint(), s.getP256dh(), s.getAuth()),
+                    "{\"title\":\"CUK 알리미 시험 알림\",\"body\":\"이 기기로 마감 푸시가 와요.\",\"url\":\"/settings/\",\"tag\":\"test\"}");
+            if (outcome == com.cukalimi.push.WebPush.Outcome.SENT) {
+                sent++;
+            }
+        }
+        return Map.of("sent", sent);
+    }
+
     /** 이 기기의 구독만 지운다. 다른 기기는 그대로다. */
     @DeleteMapping("/me/push")
     @Transactional

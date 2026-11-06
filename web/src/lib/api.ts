@@ -303,6 +303,7 @@ export const api = {
   pushState: () => call<PushState>("GET", "/api/push"),
   subscribePush: (sub: PushSubscriptionJSON) => call<void>("POST", "/api/me/push", sub),
   unsubscribePush: (endpoint: string) => call<void>("DELETE", "/api/me/push", { endpoint }),
+  testPush: () => call<{ sent: number }>("POST", "/api/me/push/test"),
   deleteAccount: () => call<void>("DELETE", "/api/me"),
   leaveFeedback: (message: string) => call<void>("POST", "/api/feedback", { message }),
   feedback: () => call<FeedbackEntry[]>("GET", "/api/admin/feedback"),

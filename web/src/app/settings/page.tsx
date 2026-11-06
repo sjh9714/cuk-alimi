@@ -451,9 +451,25 @@ export default function Settings() {
                   {push.devices > 0 && ` · 등록된 기기 ${push.devices}대`}
                 </span>
                 {thisDevice ? (
-                  <button type="button" disabled={busy} onClick={disablePush}>
-                    이 기기에서 끄기
-                  </button>
+                  <span className="row">
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={async () => {
+                        try {
+                          const r = await api.testPush();
+                          setPushNote(r.sent > 0 ? "시험 알림을 보냈어요. 몇 초 안에 이 기기에 떠야 해요." : "보내지 못했어요. 끄고 다시 켜 보세요.");
+                        } catch (err) {
+                          setError((err as Error).message);
+                        }
+                      }}
+                    >
+                      시험 알림
+                    </button>
+                    <button type="button" disabled={busy} onClick={disablePush}>
+                      이 기기에서 끄기
+                    </button>
+                  </span>
                 ) : (
                   <button type="button" disabled={busy || thisDevice === undefined} onClick={enablePush}>
                     이 기기에서 켜기

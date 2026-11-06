@@ -1,8 +1,8 @@
 # CUK-Alimi
 
-> A deadline tracker for Catholic University of Korea students. It collects school notices every hour, extracts the deadlines students must act on, and sends one morning email. Deadlines that only exist inside images are transcribed twice by Claude Haiku, parsed by the same rules, and published when both reads agree. Image-read dates carry a small "check" tag where students can report a wrong date. Extraction accuracy is measured on an 89-notice gold set in CI (precision 0.977, recall 1.000 on the set the rules were tuned on) and published on a public page.
+> A deadline planner for Catholic University of Korea students. It reads school notices and the academic calendar, extracts what students must apply for or submit, and lays the deadlines out on a weekly and monthly planner.
 
-가톨릭대 학생이 놓치기 쉬운 장학·학사 공지의 마감을 뽑아, 출처가 붙은 것만 홈과 아침 메일로 알려 주는 개인 서비스입니다.
+가톨릭대 공지와 학사일정에서 신청·제출 마감을 뽑아 주간·월간 플래너로 보여 주는 개인 프로젝트입니다. 관심 주제 가운데 자격이 되는 일에는 형광펜을 칠하고, 아침 메일, 캘린더 구독, 푸시로 알려 줍니다.
 
 **한눈에**
 

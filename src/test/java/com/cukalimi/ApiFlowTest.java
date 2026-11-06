@@ -403,6 +403,13 @@ class ApiFlowTest {
         rest.exchange("/api/me/done/" + itemId, HttpMethod.DELETE, withCookie(cookie, null), Void.class);
         assertThat(pushService.remindersFor(user, LocalDate.of(2026, 7, 12))).hasSize(1);
 
+        // 시험 알림은 내 기기로만 간다.
+        int before = pushSender.payloads.size();
+        ResponseEntity<Map> test = rest.exchange("/api/me/push/test", HttpMethod.POST, withCookie(cookie, null), Map.class);
+        assertThat(test.getBody().get("sent")).isEqualTo(1);
+        assertThat(pushSender.payloads.subList(before, pushSender.payloads.size())).singleElement()
+                .satisfies(p -> assertThat(p).contains("시험 알림"));
+
         // 이 기기만 끈다. 탈퇴하면 구독도 같이 지워진다.
         assertThat(rest.exchange("/api/me/push", HttpMethod.DELETE, withCookie(cookie, Map.of("endpoint", "https://fcm.googleapis.com/fcm/send/dev-1")),
                 Void.class).getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
