@@ -1,0 +1,4099 @@
+{
+  "141681" : [ ],
+  "270948" : [ ],
+  "273318" : [ {
+    "card" : {
+      "key" : "notice:273318",
+      "kind" : "academic",
+      "title" : "[기간연장] 2026학년도 학술연구장학생 신청 안내",
+      "sourceTitle" : "[기간연장] 2026학년도 학술연구장학생 신청 안내(~8/21)",
+      "url" : "https://example.test/273318",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27331801,
+        "label" : null,
+        "startsOn" : null,
+        "endsOn" : "2026-08-21",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "273460" : [ {
+    "card" : {
+      "key" : "notice:273460",
+      "kind" : "academic",
+      "title" : "[일반대학원] 2026학년도 후기 학석사 연계과정 모집 안내",
+      "sourceTitle" : "[일반대학원] 2026학년도 후기 학석사 연계과정 모집 안내",
+      "url" : "https://example.test/273460",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27346001,
+        "label" : "원서 접수기간",
+        "startsOn" : "2026-07-06",
+        "endsOn" : "2026-07-10",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "grad"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "273501" : [ {
+    "card" : {
+      "key" : "notice:273501",
+      "kind" : "academic",
+      "title" : "2026-1학기 ELP+ 비교과 프로그램 점수 입력 안내",
+      "sourceTitle" : "2026-1학기 ELP+ 비교과 프로그램 점수 입력 안내(~07.07)",
+      "url" : "https://example.test/273501",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27350102,
+        "label" : "입력 기간",
+        "startsOn" : "2026-07-07",
+        "endsOn" : "2026-07-07",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27350103,
+        "label" : "승인 기간",
+        "startsOn" : "2026-07-08",
+        "endsOn" : "2026-07-15",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27350104,
+        "label" : "점수 확인 및 이의신청 기간",
+        "startsOn" : "2026-07-16",
+        "endsOn" : "2026-07-20",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "extracurricular"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "273547" : [ ],
+  "273680" : [ ],
+  "274038" : [ ],
+  "274136" : [ ],
+  "274362" : [ ],
+  "274402" : [ ],
+  "274494" : [ ],
+  "274706" : [ {
+    "card" : {
+      "key" : "notice:274706",
+      "kind" : "academic",
+      "title" : "2026년 8월 졸업대상자 융복합트랙 이수여부 확인 기간 알림",
+      "sourceTitle" : "2026년 8월 졸업대상자 융복합트랙 이수여부 확인 기간 알림",
+      "url" : "https://example.test/274706",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27470601,
+        "label" : null,
+        "startsOn" : "2026-08-12",
+        "endsOn" : "2026-08-18",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "graduation"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "274804" : [ {
+    "card" : {
+      "key" : "notice:274804",
+      "kind" : "academic",
+      "title" : "2026년 8월 학위수여식 관련 안내",
+      "sourceTitle" : "2026년 8월 학위수여식 관련 안내",
+      "url" : "https://example.test/274804",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27480401,
+        "label" : "설치 기간",
+        "startsOn" : "2026-08-19",
+        "endsOn" : "2026-08-21",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "graduation"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "274824" : [ {
+    "card" : {
+      "key" : "event:27482401",
+      "kind" : "academic",
+      "title" : "2025학년도 후기 학위수여식 및 포토 스팟 안내",
+      "sourceTitle" : "[학사행정팀] 2025학년도 후기 학위수여식 및 포토 스팟 안내",
+      "url" : "https://example.test/274824",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27482401,
+        "label" : "일시",
+        "startsOn" : "2026-08-20",
+        "endsOn" : "2026-08-20",
+        "startsAt" : null,
+        "endsAt" : "14:00:00",
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : null
+    },
+    "collapsed" : true,
+    "section" : "events"
+  } ],
+  "274836" : [ {
+    "card" : {
+      "key" : "notice:274836",
+      "kind" : "academic",
+      "title" : "2026학년도 2학기 학기 중 취업학생 출결 사항 안내",
+      "sourceTitle" : "[학사행정팀] 2026학년도 2학기 학기 중 취업학생 출결 사항 안내",
+      "url" : "https://example.test/274836",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27483601,
+        "label" : "학기말 서류 제출",
+        "startsOn" : "2026-12-14",
+        "endsOn" : "2026-12-24",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      },
+      "next" : [ ],
+      "topic" : "course"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "274894" : [ {
+    "card" : {
+      "key" : "notice:274894",
+      "kind" : "academic",
+      "title" : "2026학년도 2학기 공결 신청 안내(학생용 공결 안내 및 가이드 탑재 / 공결 신청 시 필독)",
+      "sourceTitle" : "[학사행정팀] 2026학년도 2학기 공결 신청 안내(학생용 공결 안내 및 가이드 탑재 / 공결 신청 시 필독)",
+      "url" : "https://example.test/274894",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27489401,
+        "label" : null,
+        "startsOn" : "2026-11-25",
+        "endsOn" : "2026-11-25",
+        "startsAt" : null,
+        "endsAt" : "17:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "course"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "274963" : [ ],
+  "275014" : [ {
+    "card" : {
+      "key" : "notice:275014",
+      "kind" : "academic",
+      "title" : "[필독] 26-2 공결 신청 안내",
+      "sourceTitle" : "[필독] 26-2 공결 신청 안내",
+      "url" : "https://example.test/275014",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27501401,
+        "label" : "여학생 생리",
+        "startsOn" : "2027-02-07",
+        "endsOn" : "2027-02-07",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "course"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "275023" : [ ],
+  "275026" : [ {
+    "card" : {
+      "key" : "notice:275026",
+      "kind" : "academic",
+      "title" : "2027년 봄(2026학년도 전기) 조기졸업 신청 안내",
+      "sourceTitle" : "[학사행정팀] 2027년 봄(2026학년도 전기) 조기졸업 신청 안내",
+      "url" : "https://example.test/275026",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27502601,
+        "label" : null,
+        "startsOn" : "2026-08-31",
+        "endsOn" : "2026-09-07",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      },
+      "next" : [ ],
+      "topic" : "graduation"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "275055" : [ {
+    "card" : {
+      "key" : "notice:275055",
+      "kind" : "academic",
+      "title" : "(2~4학년) 2026학년도 2학기 부전공(2차) 신청/변경 안내",
+      "sourceTitle" : "[학사행정팀] (2~4학년) 2026학년도 2학기 부전공(2차) 신청/변경 안내",
+      "url" : "https://example.test/275055",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27505501,
+        "label" : null,
+        "startsOn" : "2026-09-01",
+        "endsOn" : "2026-09-07",
+        "startsAt" : "09:00:00",
+        "endsAt" : "17:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      },
+      "next" : [ ],
+      "topic" : "course"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "275080" : [ ],
+  "275089" : [ {
+    "card" : {
+      "key" : "notice:275089",
+      "kind" : "academic",
+      "title" : "2027년 봄(2026학년도 전기) 졸업대상자 예비 졸업사정 안내",
+      "sourceTitle" : "2027년 봄(2026학년도 전기) 졸업대상자 예비 졸업사정 안내",
+      "url" : "https://example.test/275089",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27508901,
+        "label" : null,
+        "startsOn" : "2026-08-31",
+        "endsOn" : "2026-09-04",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      },
+      "next" : [ ],
+      "topic" : "graduation"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "275110" : [ ],
+  "275179" : [ {
+    "card" : {
+      "key" : "notice:275179",
+      "kind" : "academic",
+      "title" : "2026-2학기 수강과목 취소 기간 안내",
+      "sourceTitle" : "[학사행정팀] 2026-2학기 수강과목 취소 기간 안내",
+      "url" : "https://example.test/275179",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27517901,
+        "label" : "수강취소 신청기간",
+        "startsOn" : "2026-09-21",
+        "endsOn" : "2026-09-22",
+        "startsAt" : "09:00:00",
+        "endsAt" : "17:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "course"
+    },
+    "collapsed" : false,
+    "section" : "must"
+  } ],
+  "275188" : [ {
+    "card" : {
+      "key" : "notice:275188",
+      "kind" : "academic",
+      "title" : "[중요] 2027년 2월 졸업대상자 예비 졸업사정 안내 (학생 본인 필수 점검)",
+      "sourceTitle" : "[중요] 2027년 2월 졸업대상자 예비 졸업사정 안내 (학생 본인 필수 점검)",
+      "url" : "https://example.test/275188",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27518801,
+        "label" : null,
+        "startsOn" : "2026-08-31",
+        "endsOn" : "2026-09-04",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "graduation"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "275227" : [ ],
+  "275275" : [ ],
+  "275332" : [ ],
+  "275428" : [ ],
+  "275433" : [ ],
+  "275515" : [ ],
+  "275590" : [ ],
+  "275600" : [ {
+    "card" : {
+      "key" : "notice:275600",
+      "kind" : "scholarship",
+      "title" : "(재)대전청년내일재단 2026년 2학기 인재육성(성취) 장학생 선발 안내(기간 연장)",
+      "sourceTitle" : "[학생지원팀] (재)대전청년내일재단 2026년 2학기 인재육성(성취) 장학생 선발 안내(기간 연장)",
+      "url" : "https://example.test/275600",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27560001,
+        "label" : null,
+        "startsOn" : "2026-09-01",
+        "endsOn" : "2026-10-08",
+        "startsAt" : null,
+        "endsAt" : "17:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "275649" : [ {
+    "card" : {
+      "key" : "event:27564901",
+      "kind" : "academic",
+      "title" : "「모두의 창업 프로젝트」 설명회 개최 안내",
+      "sourceTitle" : "「모두의 창업 프로젝트」 설명회 개최 안내 (사전신청 : ~9.9)",
+      "url" : "https://example.test/275649",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27564901,
+        "label" : null,
+        "startsOn" : null,
+        "endsOn" : "2026-09-09",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : null
+    },
+    "collapsed" : true,
+    "section" : "events"
+  } ],
+  "275720" : [ {
+    "card" : {
+      "key" : "notice:275720",
+      "kind" : "academic",
+      "title" : "26년 가톨릭대학교 Programming 대회 안내",
+      "sourceTitle" : "26년 가톨릭대학교 Programming 대회 안내",
+      "url" : "https://example.test/275720",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27572001,
+        "label" : "ㆍ 참가신청",
+        "startsOn" : "2026-09-17",
+        "endsOn" : "2026-09-17",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "extracurricular"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "275870" : [ {
+    "card" : {
+      "key" : "notice:275870",
+      "kind" : "academic",
+      "title" : "[★필독] 2026학년도 필수교육 재학생 폭력예방교육 안내(2학기 성적 확인 필수요건)",
+      "sourceTitle" : "[★필독] 2026학년도 필수교육 재학생 폭력예방교육 안내(2학기 성적 확인 필수요건)(~12.13까지)",
+      "url" : "https://example.test/275870",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27587001,
+        "label" : "2026학년도 필수교육 재학생 폭력예방교육 안내(2학기 성적 확인 필수요건)",
+        "startsOn" : null,
+        "endsOn" : "2026-12-13",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "course"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "275888" : [ {
+    "card" : {
+      "key" : "notice:275888",
+      "kind" : "academic",
+      "title" : "27년 전기 1차 대학원 신입생 모집 안내",
+      "sourceTitle" : "27년 전기 1차 대학원 신입생 모집 안내 (10.1~10.16)",
+      "url" : "https://example.test/275888",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27588801,
+        "label" : "원서 접수",
+        "startsOn" : "2026-10-01",
+        "endsOn" : "2026-10-16",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27588802,
+        "label" : "서류 제출",
+        "startsOn" : "2026-10-20",
+        "endsOn" : "2026-10-20",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "grad"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "275929" : [ {
+    "card" : {
+      "key" : "notice:275929",
+      "kind" : "scholarship",
+      "title" : "2026학년도 2학기 교육지원인턴 신청 안내",
+      "sourceTitle" : "[학생지원팀] 2026학년도 2학기 교육지원인턴 신청 안내(9/17~9/27)",
+      "url" : "https://example.test/275929",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27592902,
+        "label" : "신청기간 · 트리니티 신청 및 근로지 자기소개서 제출",
+        "startsOn" : "2026-09-17",
+        "endsOn" : "2026-09-27",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27592903,
+        "label" : "선발기간 · 근로지별 서류/면접 평가 실시",
+        "startsOn" : "2026-09-28",
+        "endsOn" : "2026-10-08",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "workstudy"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "275947" : [ {
+    "card" : {
+      "key" : "notice:275947",
+      "kind" : "scholarship",
+      "title" : "2026학년도 2학기 직무인턴 2차 신청 안내",
+      "sourceTitle" : "[학생지원팀] 2026학년도 2학기 직무인턴 2차 신청 안내(9/17~9/27)",
+      "url" : "https://example.test/275947",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27594702,
+        "label" : "신청기간 · 트리니티 신청 및 근로지 자기소개서 제출",
+        "startsOn" : "2026-09-17",
+        "endsOn" : "2026-09-27",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27594703,
+        "label" : "선발기간 · 근로지별 서류/면접 평가 실시",
+        "startsOn" : "2026-09-28",
+        "endsOn" : "2026-10-08",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "workstudy"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "275953" : [ ],
+  "275978" : [ {
+    "card" : {
+      "key" : "notice:275978",
+      "kind" : "scholarship",
+      "title" : "(한국장학재단)2026년도 2학기 고졸 후학습자 장학사업(희망사다리Ⅱ유형) 신규장학생 신청기간 연장 안내",
+      "sourceTitle" : "[학생지원팀](한국장학재단)2026년도 2학기 고졸 후학습자 장학사업(희망사다리Ⅱ유형) 신규장학생 신청기간 연장 안내",
+      "url" : "https://example.test/275978",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27597801,
+        "label" : null,
+        "startsOn" : "2026-09-01",
+        "endsOn" : "2026-09-30",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "275988" : [ {
+    "card" : {
+      "key" : "notice:275988",
+      "kind" : "career",
+      "title" : "「포항시-글로벌녹색성장기구(GGGI) 청년 단기 행정인턴」 참가자 모집 공고",
+      "sourceTitle" : "[인재개발처] 「포항시-글로벌녹색성장기구(GGGI) 청년 단기 행정인턴」 참가자 모집 공고",
+      "url" : "https://example.test/275988",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27598801,
+        "label" : "신청기간",
+        "startsOn" : "2026-09-16",
+        "endsOn" : "2026-09-30",
+        "startsAt" : null,
+        "endsAt" : "18:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27598802,
+        "label" : "근무기간",
+        "startsOn" : "2026-10-12",
+        "endsOn" : "2026-11-06",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "276061" : [ {
+    "card" : {
+      "key" : "notice:276061",
+      "kind" : "scholarship",
+      "title" : "(재)춘천인재육성장학재단 2026년 하반기 봄내장학생 선발 안내",
+      "sourceTitle" : "[학생지원팀] (재)춘천인재육성장학재단 2026년 하반기 봄내장학생 선발 안내",
+      "url" : "https://example.test/276061",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27606101,
+        "label" : null,
+        "startsOn" : "2026-09-28",
+        "endsOn" : "2026-10-07",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276097" : [ {
+    "card" : {
+      "key" : "notice:276097",
+      "kind" : "career",
+      "title" : "[대플-추천채용] ㈜삼원페이퍼-영업 사원 모집",
+      "sourceTitle" : "[대플-추천채용] ㈜삼원페이퍼-영업 사원 모집",
+      "url" : "https://example.test/276097",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27609702,
+        "label" : "자소서 제출",
+        "startsOn" : "2026-10-03",
+        "endsOn" : "2026-10-03",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27609701,
+        "label" : "추천 의뢰 기간",
+        "startsOn" : "2026-09-16",
+        "endsOn" : "2026-10-04",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "276098" : [ {
+    "card" : {
+      "key" : "notice:276098",
+      "kind" : "career",
+      "title" : "[대플-추천채용] JB주식회사(구 중부도시가스) – 도시가스 안전관리, 세무/회계, AI 분야 모집",
+      "sourceTitle" : "[대플-추천채용] JB주식회사(구 중부도시가스) – 도시가스 안전관리, 세무/회계, AI 분야 모집",
+      "url" : "https://example.test/276098",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27609802,
+        "label" : "자소서 제출",
+        "startsOn" : "2026-09-30",
+        "endsOn" : "2026-09-30",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "276099" : [ {
+    "card" : {
+      "key" : "notice:276099",
+      "kind" : "career",
+      "title" : "[대플-추천채용] 키엔스코리아 – 컨설팅 세일즈 모집",
+      "sourceTitle" : "[대플-추천채용] 키엔스코리아 – 컨설팅 세일즈 모집",
+      "url" : "https://example.test/276099",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27609901,
+        "label" : "자소서 제출",
+        "startsOn" : "2026-10-12",
+        "endsOn" : "2026-10-12",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "276114" : [ {
+    "card" : {
+      "key" : "notice:276114",
+      "kind" : "career",
+      "title" : "[대플-추천채용] ㈜포스뱅크 – 신입사원 공개채용",
+      "sourceTitle" : "[대플-추천채용] ㈜포스뱅크 – 신입사원 공개채용",
+      "url" : "https://example.test/276114",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27611402,
+        "label" : "자소서 제출",
+        "startsOn" : "2026-09-29",
+        "endsOn" : "2026-09-29",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27611401,
+        "label" : "추천서 이메일 접수",
+        "startsOn" : "2026-09-30",
+        "endsOn" : "2026-09-30",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "276150" : [ {
+    "card" : {
+      "key" : "notice:276150",
+      "kind" : "scholarship",
+      "title" : "제36기 미래에셋 해외교환 장학생 선발 요강 안내",
+      "sourceTitle" : "[학생지원팀] 제36기 미래에셋 해외교환 장학생 선발 요강 안내",
+      "url" : "https://example.test/276150",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27615001,
+        "label" : "온라인 지원",
+        "startsOn" : "2026-09-30",
+        "endsOn" : "2026-10-06",
+        "startsAt" : "10:00:00",
+        "endsAt" : "15:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27615002,
+        "label" : "서류 합격자 발표",
+        "startsOn" : "2026-11-05",
+        "endsOn" : "2026-11-05",
+        "startsAt" : null,
+        "endsAt" : "15:00:00",
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27615003,
+        "label" : "온라인 영상 면접",
+        "startsOn" : "2026-11-10",
+        "endsOn" : "2026-11-10",
+        "startsAt" : "10:00:00",
+        "endsAt" : "19:00:00",
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27615004,
+        "label" : "최종 합격자 발표",
+        "startsOn" : "2026-12-03",
+        "endsOn" : "2026-12-03",
+        "startsAt" : null,
+        "endsAt" : "15:00:00",
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27615005,
+        "label" : "장학증서 수여식",
+        "startsOn" : "2026-12-23",
+        "endsOn" : "2026-12-23",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  }, {
+    "card" : {
+      "key" : "event:27615005",
+      "kind" : "scholarship",
+      "title" : "장학증서 수여식",
+      "sourceTitle" : "[학생지원팀] 제36기 미래에셋 해외교환 장학생 선발 요강 안내",
+      "url" : "https://example.test/276150",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27615005,
+        "label" : "장학증서 수여식",
+        "startsOn" : "2026-12-23",
+        "endsOn" : "2026-12-23",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : null
+    },
+    "collapsed" : true,
+    "section" : "events"
+  } ],
+  "276187" : [ {
+    "card" : {
+      "key" : "notice:276187",
+      "kind" : "scholarship",
+      "title" : "2026년도 하반기 (재)논산시장학회 학업장려 장학생 선발 안내",
+      "sourceTitle" : "[학생지원팀] 2026년도 하반기 (재)논산시장학회 학업장려 장학생 선발 안내",
+      "url" : "https://example.test/276187",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27618701,
+        "label" : null,
+        "startsOn" : "2026-09-28",
+        "endsOn" : "2026-10-30",
+        "startsAt" : "09:00:00",
+        "endsAt" : "18:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276212" : [ {
+    "card" : {
+      "key" : "notice:276212",
+      "kind" : "academic",
+      "title" : "AI전자정보융합대학 FESTIVAL 「AI:VERSE」 부스 모집",
+      "sourceTitle" : "AI전자정보융합대학 FESTIVAL 「AI:VERSE」 부스 모집(~10/7)",
+      "url" : "https://example.test/276212",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27621201,
+        "label" : null,
+        "startsOn" : null,
+        "endsOn" : "2026-10-07",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "other"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276220" : [ ],
+  "276247" : [ {
+    "card" : {
+      "key" : "notice:276247",
+      "kind" : "career",
+      "title" : "경기도 강소기업 발굴 공모전 참여학생 모집",
+      "sourceTitle" : "[현장실습지원센터] 경기도 강소기업 발굴 공모전 참여학생 모집",
+      "url" : "https://example.test/276247",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27624708,
+        "label" : null,
+        "startsOn" : "2026-09-30",
+        "endsOn" : "2026-10-16",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27624702,
+        "label" : "OT (1시간) · 전문강사 진행",
+        "startsOn" : "2026-10-26",
+        "endsOn" : "2026-10-26",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27624703,
+        "label" : "우수 강소기업 찾기 특강 (2시간) · 전문강사 진행",
+        "startsOn" : "2026-10-26",
+        "endsOn" : "2026-10-26",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27624704,
+        "label" : "기업분석 특강 (2시간) · 전문강사 진행",
+        "startsOn" : "2026-11-02",
+        "endsOn" : "2026-11-02",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27624706,
+        "label" : "기업분석 보고서 작성 특강 (조별 2시간)",
+        "startsOn" : "2026-11-09",
+        "endsOn" : "2026-11-18",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27624707,
+        "label" : "차별화된 기업분석 노하우 심화특강 (조별 2시간)",
+        "startsOn" : "2026-11-16",
+        "endsOn" : "2026-11-25",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "extracurricular"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  }, {
+    "card" : {
+      "key" : "event:27624702",
+      "kind" : "career",
+      "title" : "OT (1시간) · 전문강사 진행",
+      "sourceTitle" : "[현장실습지원센터] 경기도 강소기업 발굴 공모전 참여학생 모집",
+      "url" : "https://example.test/276247",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27624702,
+        "label" : "OT (1시간) · 전문강사 진행",
+        "startsOn" : "2026-10-26",
+        "endsOn" : "2026-10-26",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : null
+    },
+    "collapsed" : true,
+    "section" : "events"
+  } ],
+  "276263" : [ ],
+  "276264" : [ {
+    "card" : {
+      "key" : "notice:276264",
+      "kind" : "scholarship",
+      "title" : "2026학년도 2학기 하나금융나눔재단 하나장학생 선발 안내",
+      "sourceTitle" : "[학생지원팀] 2026학년도 2학기 하나금융나눔재단 하나장학생 선발 안내",
+      "url" : "https://example.test/276264",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27626401,
+        "label" : "하나장학생 트리니티 신청",
+        "startsOn" : "2026-10-02",
+        "endsOn" : "2026-10-02",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27626402,
+        "label" : "하나장학생 원본서류 제출",
+        "startsOn" : "2026-10-06",
+        "endsOn" : "2026-10-06",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276286" : [ {
+    "card" : {
+      "key" : "notice:276286",
+      "kind" : "career",
+      "title" : "진천상공회의소 2026년 미래내일 일경험 참여자 모집 안내",
+      "sourceTitle" : "[대학일자리플러스센터] 진천상공회의소 2026년 미래내일 일경험 참여자 모집 안내",
+      "url" : "https://example.test/276286",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27628601,
+        "label" : null,
+        "startsOn" : "2026-09-28",
+        "endsOn" : "2026-10-12",
+        "startsAt" : null,
+        "endsAt" : "18:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27628602,
+        "label" : null,
+        "startsOn" : "2026-10-12",
+        "endsOn" : "2026-10-12",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "276300" : [ ],
+  "276332" : [ {
+    "card" : {
+      "key" : "notice:276332",
+      "kind" : "scholarship",
+      "title" : "2026년 우양재단 동행 장학생 모집",
+      "sourceTitle" : "[학생지원팀] 2026년 우양재단 동행 장학생 모집",
+      "url" : "https://example.test/276332",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27633201,
+        "label" : null,
+        "startsOn" : null,
+        "endsOn" : "2026-10-18",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      },
+      "next" : [ {
+        "id" : 27633202,
+        "label" : "합격자 발표",
+        "startsOn" : "2026-10-30",
+        "endsOn" : "2026-10-30",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      } ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276341" : [ {
+    "card" : {
+      "key" : "notice:276341",
+      "kind" : "scholarship",
+      "title" : "2027년도 대산농촌재단 장학생 선발 안내",
+      "sourceTitle" : "[학생지원팀] 2027년도 대산농촌재단 장학생 선발 안내",
+      "url" : "https://example.test/276341",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27634101,
+        "label" : null,
+        "startsOn" : "2026-11-11",
+        "endsOn" : "2026-11-11",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276345" : [ {
+    "card" : {
+      "key" : "notice:276345",
+      "kind" : "scholarship",
+      "title" : "2026학년도 2학기 직무인턴 3차 신청 안내",
+      "sourceTitle" : "[학생지원팀] 2026학년도 2학기 직무인턴 3차 신청 안내(10/1~10/7)",
+      "url" : "https://example.test/276345",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27634502,
+        "label" : "신청기간 · 트리니티 신청 및 근로지 자기소개서 제출",
+        "startsOn" : "2026-10-01",
+        "endsOn" : "2026-10-07",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27634503,
+        "label" : "선발기간 · 근로지별 서류/면접 평가 실시",
+        "startsOn" : "2026-10-08",
+        "endsOn" : "2026-10-15",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "workstudy"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276423" : [ ],
+  "276440" : [ {
+    "card" : {
+      "key" : "notice:276440",
+      "kind" : "scholarship",
+      "title" : "2026년도 하반기 마포인재육성장학재단 마포장학생 선발계획 공고",
+      "sourceTitle" : "[학생지원팀] 2026년도 하반기 마포인재육성장학재단 마포장학생 선발계획 공고",
+      "url" : "https://example.test/276440",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27644001,
+        "label" : "접수기간",
+        "startsOn" : "2026-09-30",
+        "endsOn" : "2026-10-07",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276473" : [ {
+    "card" : {
+      "key" : "event:27647301",
+      "kind" : "academic",
+      "title" : "[특강] 인공지능과 강화학습 : 10/8(목)",
+      "sourceTitle" : "[특강] 인공지능과 강화학습 : 10/8(목)",
+      "url" : "https://example.test/276473",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27647301,
+        "label" : "일시",
+        "startsOn" : "2026-10-08",
+        "endsOn" : "2026-10-08",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : null
+    },
+    "collapsed" : true,
+    "section" : "events"
+  } ],
+  "276474" : [ {
+    "card" : {
+      "key" : "notice:276474",
+      "kind" : "scholarship",
+      "title" : "<아산사회복지재단> 2027년 의생명과학분야 대학 장학생 선발 안내",
+      "sourceTitle" : "[학생지원팀] <아산사회복지재단> 2027년 의생명과학분야 대학 장학생 선발 안내",
+      "url" : "https://example.test/276474",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27647401,
+        "label" : null,
+        "startsOn" : "2026-10-06",
+        "endsOn" : "2026-10-26",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276477" : [ {
+    "card" : {
+      "key" : "notice:276477",
+      "kind" : "scholarship",
+      "title" : "2026년 2학기 문주장학재단 AI·ICT 분야 인재 장학생 선발 안",
+      "sourceTitle" : "[학생지원팀] ﻿2026년 2학기 문주장학재단 AI·ICT 분야 인재 장학생 선발 안(2026. 9. 21.(월) ~ 10. 8.(목))",
+      "url" : "https://example.test/276477",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27647701,
+        "label" : null,
+        "startsOn" : "2026-09-21",
+        "endsOn" : "2026-10-08",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276482" : [ {
+    "card" : {
+      "key" : "notice:276482",
+      "kind" : "scholarship",
+      "title" : "2026년도 2학기 진도군인재육성장학회 장학생 선발 안내",
+      "sourceTitle" : "[학생지원팀] 2026년도 2학기 진도군인재육성장학회 장학생 선발 안내(2026. 9. 21.(월) ~ 10. 8.(목))",
+      "url" : "https://example.test/276482",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27648201,
+        "label" : null,
+        "startsOn" : "2026-09-21",
+        "endsOn" : "2026-10-08",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276487" : [ {
+    "card" : {
+      "key" : "notice:276487",
+      "kind" : "scholarship",
+      "title" : "2026년 하반기 영주시 대학생 학자금대출 이자 지원 신청 안내",
+      "sourceTitle" : "[학생지원팀] 2026년 하반기 영주시 대학생 학자금대출 이자 지원 신청 안내( ~ 10. 8.(목) 18:00)",
+      "url" : "https://example.test/276487",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27648701,
+        "label" : null,
+        "startsOn" : null,
+        "endsOn" : "2026-10-08",
+        "startsAt" : null,
+        "endsAt" : "18:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276506" : [ {
+    "card" : {
+      "key" : "notice:276506",
+      "kind" : "scholarship",
+      "title" : "<아산사회복지재단> 2027년도 북한이탈청소년 장학생 선발 안내",
+      "sourceTitle" : "[학생지원팀] <아산사회복지재단> 2027년도 북한이탈청소년 장학생 선발 안내(~10.26)",
+      "url" : "https://example.test/276506",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27650601,
+        "label" : null,
+        "startsOn" : null,
+        "endsOn" : "2026-10-26",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276532" : [ {
+    "card" : {
+      "key" : "notice:276532",
+      "kind" : "academic",
+      "title" : "2026학년도 겨울 계절학기 개설 희망과목 수요조사",
+      "sourceTitle" : "[학부대학운영팀] 2026학년도 겨울 계절학기 개설 희망과목 수요조사",
+      "url" : "https://example.test/276532",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27653205,
+        "label" : null,
+        "startsOn" : "2026-10-08",
+        "endsOn" : "2026-10-19",
+        "startsAt" : "09:00:00",
+        "endsAt" : "17:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27653201,
+        "label" : "개설대상과목 공고",
+        "startsOn" : "2026-11-02",
+        "endsOn" : "2026-11-02",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27653204,
+        "label" : "계절학기 수업기간",
+        "startsOn" : "2026-12-21",
+        "endsOn" : "2027-01-12",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "seasonal"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276540" : [ {
+    "card" : {
+      "key" : "notice:276540",
+      "kind" : "career",
+      "title" : "반도체 기업탐방 프로그램 모집 안내 (모집완료)",
+      "sourceTitle" : "[취업지원팀] 반도체 기업탐방 프로그램 모집 안내 (모집완료)",
+      "url" : "https://example.test/276540",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27654002,
+        "label" : null,
+        "startsOn" : "2026-10-07",
+        "endsOn" : "2026-10-18",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27654001,
+        "label" : "일시",
+        "startsOn" : "2026-11-06",
+        "endsOn" : "2026-11-06",
+        "startsAt" : "10:00:00",
+        "endsAt" : "17:00:00",
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "276579" : [ {
+    "card" : {
+      "key" : "notice:276579",
+      "kind" : "academic",
+      "title" : "[중요] 2026-2학기 졸업시험 신청 및 대체요건 제출 안내",
+      "sourceTitle" : "[중요] 2026-2학기 졸업시험 신청 및 대체요건 제출 안내",
+      "url" : "https://example.test/276579",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27657906,
+        "label" : "수상 · 심의 필요>** IT관련 전국 및 교내외 대회 입상자",
+        "startsOn" : "2026-10-08",
+        "endsOn" : "2026-10-16",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27657902,
+        "label" : "졸업시험과목면제신청 – ●어학성적제출●",
+        "startsOn" : null,
+        "endsOn" : "2026-10-20",
+        "startsAt" : null,
+        "endsAt" : "23:59:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27657901,
+        "label" : "졸업시험신청",
+        "startsOn" : null,
+        "endsOn" : "2026-10-20",
+        "startsAt" : null,
+        "endsAt" : "23:59:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27657903,
+        "label" : "졸업시험",
+        "startsOn" : "2026-11-02",
+        "endsOn" : "2026-11-02",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27657907,
+        "label" : "수상 · 심의 불필요> ACM-ICPC",
+        "startsOn" : "2026-11-16",
+        "endsOn" : "2026-11-27",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27657905,
+        "label" : "자격증",
+        "startsOn" : "2026-11-16",
+        "endsOn" : "2026-11-27",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27657904,
+        "label" : "졸업논문",
+        "startsOn" : "2026-11-16",
+        "endsOn" : "2026-11-27",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "graduation"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276582" : [ {
+    "card" : {
+      "key" : "notice:276582",
+      "kind" : "career",
+      "title" : "수요 커리어 런치 챗(수커런) 프로그램 참여자 모집",
+      "sourceTitle" : "[대학일자리플러스센터] 수요 커리어 런치 챗(수커런) 프로그램 참여자 모집(10월)",
+      "url" : "https://example.test/276582",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27658202,
+        "label" : null,
+        "startsOn" : null,
+        "endsOn" : "2026-10-19",
+        "startsAt" : null,
+        "endsAt" : "17:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27658201,
+        "label" : "일시",
+        "startsOn" : "2026-10-21",
+        "endsOn" : "2026-10-21",
+        "startsAt" : "12:00:00",
+        "endsAt" : "14:00:00",
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "276593" : [ {
+    "card" : {
+      "key" : "notice:276593",
+      "kind" : "career",
+      "title" : "2026년 하반기 셀트리온과 함께하는 멘토링 DAY 참가자 모집",
+      "sourceTitle" : "[대학일자리플러스센터] 2026년 하반기 셀트리온과 함께하는 멘토링 DAY 참가자 모집",
+      "url" : "https://example.test/276593",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27659301,
+        "label" : null,
+        "startsOn" : "2026-10-13",
+        "endsOn" : "2026-10-13",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "276597" : [ {
+    "card" : {
+      "key" : "notice:276597",
+      "kind" : "scholarship",
+      "title" : "(재)인천광역시 계양구 인재양성장학교육재단 2026년 2학기 장학생 선발 안내",
+      "sourceTitle" : "[학생지원팀] (재)인천광역시 계양구 인재양성장학교육재단 2026년 2학기 장학생 선발 안내(10. 1.(목) ~ 10. 12.(월))",
+      "url" : "https://example.test/276597",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27659701,
+        "label" : null,
+        "startsOn" : "2026-10-01",
+        "endsOn" : "2026-10-12",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276603" : [ {
+    "card" : {
+      "key" : "notice:276603",
+      "kind" : "scholarship",
+      "title" : "2026년 2학기 한국선원복지고용센터 선원가족장학생 선발 안내 (기간 연장)",
+      "sourceTitle" : "[학생지원팀] 2026년 2학기 한국선원복지고용센터 선원가족장학생 선발 안내(~10.30 접수기간 연장)",
+      "url" : "https://example.test/276603",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27660301,
+        "label" : null,
+        "startsOn" : null,
+        "endsOn" : "2026-10-30",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276604" : [ {
+    "card" : {
+      "key" : "notice:276604",
+      "kind" : "scholarship",
+      "title" : "2026년 2학기 전남인재육성 장학생 선발 안내",
+      "sourceTitle" : "[학생지원팀] 2026년 2학기 전남인재육성 장학생 선발 안내(9. 21.(월) ~ 10. 23.(금) 18:00)",
+      "url" : "https://example.test/276604",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27660401,
+        "label" : null,
+        "startsOn" : "2026-09-21",
+        "endsOn" : "2026-10-23",
+        "startsAt" : null,
+        "endsAt" : "18:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276606" : [ {
+    "card" : {
+      "key" : "notice:276606",
+      "kind" : "scholarship",
+      "title" : "2026년 (재)순천시인재육성장학회 장학생 선발 모집 안내",
+      "sourceTitle" : "[학생지원팀] 2026년 (재)순천시인재육성장학회 장학생 선발 모집 안내(9.28.(월)~10.23.(금))",
+      "url" : "https://example.test/276606",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27660601,
+        "label" : null,
+        "startsOn" : "2026-09-28",
+        "endsOn" : "2026-10-23",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276607" : [ {
+    "card" : {
+      "key" : "notice:276607",
+      "kind" : "scholarship",
+      "title" : "2026년 양산시 대학생 학자금 대출 이자지원 접수 안내",
+      "sourceTitle" : "[학생지원팀] 2026년 양산시 대학생 학자금 대출 이자지원 접수 안내(9. 14.(월) ~ 10. 23.(금))",
+      "url" : "https://example.test/276607",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27660701,
+        "label" : null,
+        "startsOn" : "2026-09-14",
+        "endsOn" : "2026-10-23",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276635" : [ {
+    "card" : {
+      "key" : "notice:276635",
+      "kind" : "scholarship",
+      "title" : "2026년 하반기 은평구민장학재단 장학생 선발 안내",
+      "sourceTitle" : "[학생지원팀] 2026년 하반기 은평구민장학재단 장학생 선발 안내(10. 12.(월) ~ 10. 28.(수))",
+      "url" : "https://example.test/276635",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27663501,
+        "label" : null,
+        "startsOn" : "2026-10-12",
+        "endsOn" : "2026-10-28",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276658" : [ {
+    "card" : {
+      "key" : "notice:276658",
+      "kind" : "academic",
+      "title" : "2026-2학기 중간 수업평가 실시 안내",
+      "sourceTitle" : "[학사행정팀] 2026-2학기 중간 수업평가 실시 안내",
+      "url" : "https://example.test/276658",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27665801,
+        "label" : null,
+        "startsOn" : "2026-10-26",
+        "endsOn" : "2026-10-30",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "course"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276661" : [ {
+    "card" : {
+      "key" : "notice:276661",
+      "kind" : "academic",
+      "title" : "한국고용정보원 2026년 대학일자리플러스센터 만족도 조사 참여 안내",
+      "sourceTitle" : "[대학일자리플러스센터] 한국고용정보원 2026년 대학일자리플러스센터 만족도 조사 참여 안내",
+      "url" : "https://example.test/276661",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27666101,
+        "label" : null,
+        "startsOn" : "2026-10-13",
+        "endsOn" : "2026-10-30",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "career"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276682" : [ {
+    "card" : {
+      "key" : "notice:276682",
+      "kind" : "career",
+      "title" : "[대플-추천채용] 원테크스탑 한국지점 – IT 엔지니어 부문 신입사원 채용",
+      "sourceTitle" : "[대플-추천채용] 원테크스탑 한국지점 – IT 엔지니어 부문 신입사원 채용",
+      "url" : "https://example.test/276682",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27668201,
+        "label" : "자소서 제출",
+        "startsOn" : "2026-10-15",
+        "endsOn" : "2026-10-15",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "276686" : [ {
+    "card" : {
+      "key" : "notice:276686",
+      "kind" : "scholarship",
+      "title" : "(한국장학재단) 2026-2학기 국가근로장학금 추가신청기간 안내",
+      "sourceTitle" : "[학생지원팀] (한국장학재단) 2026-2학기 국가근로장학금 추가신청기간 안내(10/21~10/29)",
+      "url" : "https://example.test/276686",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27668601,
+        "label" : null,
+        "startsOn" : "2026-10-21",
+        "endsOn" : "2026-10-29",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27668603,
+        "label" : "재단 희망근로지 신청",
+        "startsOn" : "2026-10-30",
+        "endsOn" : "2026-11-12",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27668604,
+        "label" : "대학 선발",
+        "startsOn" : "2026-11-23",
+        "endsOn" : "2026-12-11",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27668605,
+        "label" : "최종 선발 결과 공개",
+        "startsOn" : "2026-12-14",
+        "endsOn" : "2026-12-14",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27668602,
+        "label" : "근로기간",
+        "startsOn" : "2027-01-01",
+        "endsOn" : "2027-02-28",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "workstudy"
+    },
+    "collapsed" : false,
+    "section" : "must"
+  } ],
+  "276713" : [ {
+    "card" : {
+      "key" : "notice:276713",
+      "kind" : "academic",
+      "title" : "2026학년도 2학기 9주차 <Career Master Class> 안내 [Career DESIGN 수강생 대상]",
+      "sourceTitle" : "[학부대학운영팀] 2026학년도 2학기 9주차 <Career Master Class> 안내 [Career DESIGN 수강생 대상]",
+      "url" : "https://example.test/276713",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27671301,
+        "label" : "수강신청 기간",
+        "startsOn" : "2026-10-13",
+        "endsOn" : "2026-10-25",
+        "startsAt" : "09:00:00",
+        "endsAt" : "23:59:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "course"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276715" : [ ],
+  "276751" : [ {
+    "card" : {
+      "key" : "notice:276751",
+      "kind" : "career",
+      "title" : "넥스트플레이어 – 컨텐츠/마케팅 공채 인턴 1기 모집",
+      "sourceTitle" : "[대학일자리플러스센터] 넥스트플레이어 – 컨텐츠/마케팅 공채 인턴 1기 모집",
+      "url" : "https://example.test/276751",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27675101,
+        "label" : "서류 제출 마감",
+        "startsOn" : "2026-10-19",
+        "endsOn" : "2026-10-19",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "276772" : [ {
+    "card" : {
+      "key" : "notice:276772",
+      "kind" : "scholarship",
+      "title" : "2027년도 두산연강재단 대학 장학생 선발 안내",
+      "sourceTitle" : "[학생지원팀] 2027년도 두산연강재단 대학 장학생 선발 안내(10. 14.(수) ~ 11. 13.(금) 18:00까지)",
+      "url" : "https://example.test/276772",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27677201,
+        "label" : null,
+        "startsOn" : "2026-10-14",
+        "endsOn" : "2026-11-13",
+        "startsAt" : null,
+        "endsAt" : "18:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276791" : [ {
+    "card" : {
+      "key" : "notice:276791",
+      "kind" : "academic",
+      "title" : "2026학년도 겨울계절학기 서울 및 경인지역 대학교 학점교류 안내",
+      "sourceTitle" : "[학사행정팀] 2026학년도 겨울계절학기 서울 및 경인지역 대학교 학점교류 안내",
+      "url" : "https://example.test/276791",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27679103,
+        "label" : "동국대학교 · 서울",
+        "startsOn" : null,
+        "endsOn" : "2026-10-28",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27679109,
+        "label" : "한국항공대학교 · 경인",
+        "startsOn" : null,
+        "endsOn" : "2026-10-30",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27679110,
+        "label" : "한성대학교 · 서울",
+        "startsOn" : null,
+        "endsOn" : "2026-11-02",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27679111,
+        "label" : "한신대학교 · 경인",
+        "startsOn" : null,
+        "endsOn" : "2026-11-02",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27679104,
+        "label" : "동덕여자대학교 · 서울",
+        "startsOn" : null,
+        "endsOn" : "2026-11-03",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27679112,
+        "label" : "한양대학교 (안산ERICA) · 경인",
+        "startsOn" : null,
+        "endsOn" : "2026-11-04",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27679106,
+        "label" : "서울시립대학교 · 서울",
+        "startsOn" : null,
+        "endsOn" : "2026-11-09",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27679105,
+        "label" : "상명대학교 · 서울",
+        "startsOn" : null,
+        "endsOn" : "2026-11-10",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27679107,
+        "label" : "성신여자대학교 · 서울",
+        "startsOn" : null,
+        "endsOn" : "2026-11-10",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27679101,
+        "label" : "경희대학교 (수원 국제) · 경인",
+        "startsOn" : null,
+        "endsOn" : "2026-11-13",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27679102,
+        "label" : "국민대학교 · 서울",
+        "startsOn" : null,
+        "endsOn" : "2026-11-16",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27679108,
+        "label" : "세종대학교 · 서울",
+        "startsOn" : null,
+        "endsOn" : "2026-11-16",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "exchange"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276842" : [ {
+    "card" : {
+      "key" : "notice:276842",
+      "kind" : "scholarship",
+      "title" : "<한국고등교육재단> 2027년 인재림 제7기 장학생 선발 안내",
+      "sourceTitle" : "[학생지원팀] <한국고등교육재단> 2027년 인재림 제7기 장학생 선발 안내",
+      "url" : "https://example.test/276842",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27684201,
+        "label" : null,
+        "startsOn" : "2026-10-08",
+        "endsOn" : "2026-10-29",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276847" : [ {
+    "card" : {
+      "key" : "notice:276847",
+      "kind" : "career",
+      "title" : "[대플-추천채용] 한샘 – 2026년 하반기 영업직 신입(TR) 공개채용",
+      "sourceTitle" : "[대플-추천채용] 한샘 – 2026년 하반기 영업직 신입(TR) 공개채용",
+      "url" : "https://example.test/276847",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27684701,
+        "label" : "추천마감",
+        "startsOn" : "2026-10-21",
+        "endsOn" : "2026-10-21",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "276848" : [ {
+    "card" : {
+      "key" : "notice:276848",
+      "kind" : "scholarship",
+      "title" : "2026년 2학기 거창군 지역출신 대학생 등록금 지원사업 안내",
+      "sourceTitle" : "[학생지원팀] 2026년 2학기 거창군 지역출신 대학생 등록금 지원사업 안내",
+      "url" : "https://example.test/276848",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27684801,
+        "label" : null,
+        "startsOn" : "2026-10-16",
+        "endsOn" : "2026-11-16",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "must"
+  } ],
+  "276868" : [ {
+    "card" : {
+      "key" : "notice:276868",
+      "kind" : "academic",
+      "title" : "「2026 CUK AI Startup Challenge – AI 융합 해커톤」 참가자 모집",
+      "sourceTitle" : "「2026 CUK AI Startup Challenge – AI 융합 해커톤」 참가자 모집",
+      "url" : "https://example.test/276868",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27686801,
+        "label" : null,
+        "startsOn" : "2026-10-19",
+        "endsOn" : "2026-10-23",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27686802,
+        "label" : null,
+        "startsOn" : "2026-10-26",
+        "endsOn" : "2026-11-20",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "extracurricular"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276873" : [ {
+    "card" : {
+      "key" : "event:27687301",
+      "kind" : "academic",
+      "title" : "26-2 찾아가는 학과 취업특강 안내",
+      "sourceTitle" : "26-2 찾아가는 학과 취업특강 안내 (11/4(수), 오후 4시-5시)",
+      "url" : "https://example.test/276873",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27687301,
+        "label" : "일시",
+        "startsOn" : "2026-11-04",
+        "endsOn" : "2026-11-04",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : null
+    },
+    "collapsed" : true,
+    "section" : "events"
+  } ],
+  "276875" : [ {
+    "card" : {
+      "key" : "notice:276875",
+      "kind" : "career",
+      "title" : "청년고용정책 참여 인증 이벤트 안내",
+      "sourceTitle" : "[대학일자리플러스센터] 청년고용정책 참여 인증 이벤트 안내",
+      "url" : "https://example.test/276875",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27687501,
+        "label" : null,
+        "startsOn" : null,
+        "endsOn" : "2026-11-27",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "extracurricular"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "276928" : [ ],
+  "276941" : [ {
+    "card" : {
+      "key" : "notice:276941",
+      "kind" : "scholarship",
+      "title" : "2026학년도 인송문화재단 인송장학생 선발 안내",
+      "sourceTitle" : "[학생지원팀] 2026학년도 인송문화재단 인송장학생 선발 안내",
+      "url" : "https://example.test/276941",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27694101,
+        "label" : "인송장학생 트리니티 신청",
+        "startsOn" : "2026-10-27",
+        "endsOn" : "2026-10-27",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27694102,
+        "label" : "인송장학생 원본서류 제출",
+        "startsOn" : "2026-10-28",
+        "endsOn" : "2026-10-28",
+        "startsAt" : null,
+        "endsAt" : "17:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276984" : [ {
+    "card" : {
+      "key" : "notice:276984",
+      "kind" : "academic",
+      "title" : "2026-겨울계절학기 숙명여자대학교 학점교류 안내",
+      "sourceTitle" : "[학사행정팀] 2026-겨울계절학기 숙명여자대학교 학점교류 안내",
+      "url" : "https://example.test/276984",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27698402,
+        "label" : "신청서 접수",
+        "startsOn" : "2026-10-30",
+        "endsOn" : "2026-10-30",
+        "startsAt" : null,
+        "endsAt" : "15:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27698401,
+        "label" : "수업기간",
+        "startsOn" : "2026-12-22",
+        "endsOn" : "2027-01-13",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "exchange"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "276994" : [ ],
+  "276997" : [ {
+    "card" : {
+      "key" : "notice:276997",
+      "kind" : "academic",
+      "title" : "2026-2학기 일반휴학 신청 마감 안내",
+      "sourceTitle" : "[학사행정팀] 2026-2학기 일반휴학 신청 마감 안내",
+      "url" : "https://example.test/276997",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27699701,
+        "label" : "일반휴학원 제출 마감일",
+        "startsOn" : "2026-10-23",
+        "endsOn" : "2026-10-23",
+        "startsAt" : null,
+        "endsAt" : "17:30:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "course"
+    },
+    "collapsed" : false,
+    "section" : "must"
+  } ],
+  "277004" : [ {
+    "card" : {
+      "key" : "notice:277004",
+      "kind" : "scholarship",
+      "title" : "[한국장학재단]2026년 2학기 푸른등대 기부장학금(2차) 신청 안내",
+      "sourceTitle" : "[학생지원팀][한국장학재단]2026년 2학기 푸른등대 기부장학금(2차) 신청 안내",
+      "url" : "https://example.test/277004",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27700401,
+        "label" : null,
+        "startsOn" : "2026-10-22",
+        "endsOn" : "2026-11-12",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "277011" : [ {
+    "card" : {
+      "key" : "notice:277011",
+      "kind" : "career",
+      "title" : "이노진 – 품질관리 및 제형업무 채용",
+      "sourceTitle" : "[대학일자리플러스센터] 이노진 – 품질관리 및 제형업무 채용",
+      "url" : "https://example.test/277011",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27701103,
+        "label" : "입사지원서 제출",
+        "startsOn" : "2026-11-12",
+        "endsOn" : "2026-11-12",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27701102,
+        "label" : "추천마감",
+        "startsOn" : "2026-11-12",
+        "endsOn" : "2026-11-12",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27701101,
+        "label" : "추천자 마감일",
+        "startsOn" : "2026-11-12",
+        "endsOn" : "2026-11-12",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "277031" : [ {
+    "card" : {
+      "key" : "notice:277031",
+      "kind" : "academic",
+      "title" : "2026-겨울학기 가톨릭계 대학 학점교류 안내(서강대, 가톨릭관동대, 대구가톨릭대, 부산가톨릭대)",
+      "sourceTitle" : "2026-겨울학기 가톨릭계 대학 학점교류 안내(서강대, 가톨릭관동대, 대구가톨릭대, 부산가톨릭대)",
+      "url" : "https://example.test/277031",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27703101,
+        "label" : "서강대학교 · 서울",
+        "startsOn" : null,
+        "endsOn" : "2026-11-04",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "exchange"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "277037" : [ ],
+  "277039" : [ {
+    "card" : {
+      "key" : "notice:277039",
+      "kind" : "career",
+      "title" : "대학일자리플러스센터 홈페이지 오픈 기념 이벤트 운영 안내",
+      "sourceTitle" : "[대학일자리플러스센터] 대학일자리플러스센터 홈페이지 오픈 기념 이벤트 운영 안내",
+      "url" : "https://example.test/277039",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27703901,
+        "label" : null,
+        "startsOn" : "2026-10-26",
+        "endsOn" : "2026-10-30",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "277077" : [ {
+    "card" : {
+      "key" : "notice:277077",
+      "kind" : "academic",
+      "title" : "홈페이지 오픈 안내",
+      "sourceTitle" : "[대학일자리플러스센터] 홈페이지 오픈 안내",
+      "url" : "https://example.test/277077",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27707701,
+        "label" : null,
+        "startsOn" : "2026-10-26",
+        "endsOn" : "2026-10-30",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "career"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "277097" : [ {
+    "card" : {
+      "key" : "notice:277097",
+      "kind" : "career",
+      "title" : "[대플-추천채용] 키엔스코리아(주) - 컨설팅 세일즈 신입 채용",
+      "sourceTitle" : "[대플-추천채용] 키엔스코리아(주) - 컨설팅 세일즈 신입 채용",
+      "url" : "https://example.test/277097",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27709702,
+        "label" : "추천마감",
+        "startsOn" : "2026-11-04",
+        "endsOn" : "2026-11-04",
+        "startsAt" : null,
+        "endsAt" : "11:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27709703,
+        "label" : "입사지원서 제출",
+        "startsOn" : "2026-11-04",
+        "endsOn" : "2026-11-04",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27709701,
+        "label" : "추천자 마감일",
+        "startsOn" : "2026-11-04",
+        "endsOn" : "2026-11-04",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "277117" : [ {
+    "card" : {
+      "key" : "notice:277117",
+      "kind" : "career",
+      "title" : "[대플-추천채용] 이카운트 - 서비스본부 신입 채용",
+      "sourceTitle" : "[대플-추천채용] 이카운트 - 서비스본부 신입 채용",
+      "url" : "https://example.test/277117",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27711702,
+        "label" : "추천마감",
+        "startsOn" : "2026-11-05",
+        "endsOn" : "2026-11-05",
+        "startsAt" : null,
+        "endsAt" : "11:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27711703,
+        "label" : "입사지원서 제출",
+        "startsOn" : "2026-11-05",
+        "endsOn" : "2026-11-05",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27711701,
+        "label" : "추천자 마감일",
+        "startsOn" : "2026-11-05",
+        "endsOn" : "2026-11-05",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "277119" : [ {
+    "card" : {
+      "key" : "notice:277119",
+      "kind" : "career",
+      "title" : "[대플-추천채용] 모두투어 - 채용 연계형 인턴 모집",
+      "sourceTitle" : "[대플-추천채용] 모두투어 - 채용 연계형 인턴 모집",
+      "url" : "https://example.test/277119",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27711902,
+        "label" : "추천마감",
+        "startsOn" : "2026-11-06",
+        "endsOn" : "2026-11-06",
+        "startsAt" : null,
+        "endsAt" : "11:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27711901,
+        "label" : "추천자 마감일",
+        "startsOn" : "2026-11-06",
+        "endsOn" : "2026-11-06",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27711903,
+        "label" : "취업추천서 제출",
+        "startsOn" : "2026-11-06",
+        "endsOn" : "2026-11-06",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "277125" : [ {
+    "card" : {
+      "key" : "notice:277125",
+      "kind" : "scholarship",
+      "title" : "2026년도 하반기 강화군 대학생 등록금 지원사업 안내",
+      "sourceTitle" : "[학생지원팀] 2026년도 하반기 강화군 대학생 등록금 지원사업 안내(10. 26.(월) ~ 11. 9.(월) 18:00)",
+      "url" : "https://example.test/277125",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27712501,
+        "label" : null,
+        "startsOn" : "2026-10-26",
+        "endsOn" : "2026-11-09",
+        "startsAt" : null,
+        "endsAt" : "18:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "must"
+  } ],
+  "277211" : [ {
+    "card" : {
+      "key" : "event:27721101",
+      "kind" : "academic",
+      "title" : "2026학년도 인간학 가을 특강 안내",
+      "sourceTitle" : "2026학년도 인간학 가을 특강 안내",
+      "url" : "https://example.test/277211",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27721101,
+        "label" : "일시",
+        "startsOn" : "2026-11-04",
+        "endsOn" : "2026-11-04",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : true
+      },
+      "next" : [ ],
+      "topic" : null
+    },
+    "collapsed" : true,
+    "section" : "events"
+  } ],
+  "277227" : [ {
+    "card" : {
+      "key" : "notice:277227",
+      "kind" : "scholarship",
+      "title" : "2026학년도 2학기 연구인턴 신청 안내",
+      "sourceTitle" : "[학생지원팀] 2026학년도 2학기 연구인턴 신청 안내(11/2~11/8)",
+      "url" : "https://example.test/277227",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27722702,
+        "label" : "신청기간 · 트리니티 신청 및 근로지 자기소개서 제출",
+        "startsOn" : "2026-11-02",
+        "endsOn" : "2026-11-08",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27722703,
+        "label" : "선발기간 · 근로지별 서류/면접 평가 실시",
+        "startsOn" : "2026-11-09",
+        "endsOn" : "2026-11-16",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "workstudy"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "277244" : [ {
+    "card" : {
+      "key" : "notice:277244",
+      "kind" : "academic",
+      "title" : "2026-겨울계절학기 고려대학교 학점교류 안내",
+      "sourceTitle" : "[학사행정팀] 2026-겨울계절학기 고려대학교 학점교류 안내",
+      "url" : "https://example.test/277244",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27724402,
+        "label" : "신청서 접수",
+        "startsOn" : "2026-11-09",
+        "endsOn" : "2026-11-09",
+        "startsAt" : null,
+        "endsAt" : "17:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27724403,
+        "label" : "온라인 학적 등록",
+        "startsOn" : "2026-11-09",
+        "endsOn" : "2026-11-12",
+        "startsAt" : "09:00:00",
+        "endsAt" : "11:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27724401,
+        "label" : "수업기간",
+        "startsOn" : "2026-12-21",
+        "endsOn" : "2027-01-15",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "exchange"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "277272" : [ {
+    "card" : {
+      "key" : "notice:277272",
+      "kind" : "scholarship",
+      "title" : "2026년도 통영시 저소득 대학생 장학금 지원대상자 선발 안내",
+      "sourceTitle" : "[학생지원팀] 2026년도 통영시 저소득 대학생 장학금 지원대상자 선발 안내(11. 2.(월) ~ 11. 23.(월))",
+      "url" : "https://example.test/277272",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27727201,
+        "label" : null,
+        "startsOn" : "2026-11-02",
+        "endsOn" : "2026-11-23",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "scholarship"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "277274" : [ {
+    "card" : {
+      "key" : "notice:277274",
+      "kind" : "academic",
+      "title" : "2026-겨울계절학기 영남대학교 학점교류 안내",
+      "sourceTitle" : "2026-겨울계절학기 영남대학교 학점교류 안내",
+      "url" : "https://example.test/277274",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27727402,
+        "label" : "신청서 접수",
+        "startsOn" : null,
+        "endsOn" : "2026-11-10",
+        "startsAt" : null,
+        "endsAt" : "16:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27727403,
+        "label" : "신청서 접수",
+        "startsOn" : null,
+        "endsOn" : "2026-12-21",
+        "startsAt" : null,
+        "endsAt" : "16:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27727404,
+        "label" : "학점인정 신청",
+        "startsOn" : null,
+        "endsOn" : "2026-12-21",
+        "startsAt" : null,
+        "endsAt" : "16:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27727401,
+        "label" : "수업기간",
+        "startsOn" : "2026-12-21",
+        "endsOn" : "2027-01-13",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "exchange"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "277297" : [ {
+    "card" : {
+      "key" : "event:27729701",
+      "kind" : "academic",
+      "title" : "졸업생 간담회(특강) 안내",
+      "sourceTitle" : "졸업생 간담회(특강) 안내 (11/5, 목요일 4시)",
+      "url" : "https://example.test/277297",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27729701,
+        "label" : "일시",
+        "startsOn" : "2026-11-05",
+        "endsOn" : "2026-11-05",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : null
+    },
+    "collapsed" : true,
+    "section" : "events"
+  } ],
+  "277316" : [ {
+    "card" : {
+      "key" : "notice:277316",
+      "kind" : "career",
+      "title" : "[대플-추천채용] 스탠다드인터내셔널 주식회사 - 구매/재무/NPD/Tech/마케팅 채용",
+      "sourceTitle" : "[대플-추천채용] 스탠다드인터내셔널 주식회사 - 구매/재무/NPD/Tech/마케팅 채용",
+      "url" : "https://example.test/277316",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27731602,
+        "label" : "추천마감",
+        "startsOn" : "2026-11-12",
+        "endsOn" : "2026-11-12",
+        "startsAt" : null,
+        "endsAt" : "11:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27731603,
+        "label" : "입사지원서 제출",
+        "startsOn" : "2026-11-12",
+        "endsOn" : "2026-11-12",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27731601,
+        "label" : "추천자 마감일",
+        "startsOn" : "2026-11-12",
+        "endsOn" : "2026-11-12",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "277372" : [ {
+    "card" : {
+      "key" : "notice:277372",
+      "kind" : "academic",
+      "title" : "2026학년도 겨울 계절학기 수강신청 안내",
+      "sourceTitle" : "2026학년도 겨울 계절학기 수강신청 안내",
+      "url" : "https://example.test/277372",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27737201,
+        "label" : "수강신청",
+        "startsOn" : "2026-11-05",
+        "endsOn" : "2026-11-10",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27737202,
+        "label" : "폐강과목 공고 (1차)",
+        "startsOn" : "2026-11-16",
+        "endsOn" : "2026-11-16",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27737203,
+        "label" : "수강신청 변경/취소 및 추가신청",
+        "startsOn" : "2026-11-19",
+        "endsOn" : "2026-11-26",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27737204,
+        "label" : "고지서 출력 및 수강료 납부 (등록)",
+        "startsOn" : "2026-11-30",
+        "endsOn" : "2026-12-04",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27737205,
+        "label" : "폐강과목 공고 (2차)",
+        "startsOn" : "2026-12-10",
+        "endsOn" : "2026-12-10",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27737206,
+        "label" : "2차 폐강과목 등록자 수강변경 및 환불신청 (1차)",
+        "startsOn" : "2026-12-14",
+        "endsOn" : "2026-12-18",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27737209,
+        "label" : "2/3 환불",
+        "startsOn" : "2026-12-21",
+        "endsOn" : "2026-12-24",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27737211,
+        "label" : "환불 신청일 · 2/3 환불",
+        "startsOn" : "2026-12-21",
+        "endsOn" : "2026-12-24",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27737208,
+        "label" : "환불신청 (2차)",
+        "startsOn" : "2026-12-21",
+        "endsOn" : "2026-12-24",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27737207,
+        "label" : "수업기간",
+        "startsOn" : "2026-12-21",
+        "endsOn" : "2027-01-12",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27737210,
+        "label" : "성적확인 및 오류정정",
+        "startsOn" : "2027-01-14",
+        "endsOn" : "2027-01-14",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "seasonal"
+    },
+    "collapsed" : false,
+    "section" : "must"
+  } ],
+  "277389" : [ {
+    "card" : {
+      "key" : "notice:277389",
+      "kind" : "academic",
+      "title" : "2026학년도 겨울계절학기 타대학 소속 학점교류생 안내사항",
+      "sourceTitle" : "[학사행정팀] 2026학년도 겨울계절학기 타대학 소속 학점교류생 안내사항",
+      "url" : "https://example.test/277389",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27738905,
+        "label" : "학번부여",
+        "startsOn" : "2026-11-16",
+        "endsOn" : "2026-11-17",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27738901,
+        "label" : "수강료 납부",
+        "startsOn" : "2026-11-30",
+        "endsOn" : "2026-12-04",
+        "startsAt" : "09:00:00",
+        "endsAt" : "16:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27738903,
+        "label" : "수강신청 관련",
+        "startsOn" : "2026-11-19",
+        "endsOn" : "2026-12-18",
+        "startsAt" : "09:00:00",
+        "endsAt" : "17:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27738902,
+        "label" : "수업기간",
+        "startsOn" : "2026-12-21",
+        "endsOn" : "2027-01-12",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      }, {
+        "id" : 27738904,
+        "label" : "성적확인",
+        "startsOn" : "2027-01-14",
+        "endsOn" : "2027-01-14",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "exchange"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ],
+  "277422" : [ {
+    "card" : {
+      "key" : "notice:277422",
+      "kind" : "career",
+      "title" : "인천글로벌캠퍼스운영재단 미래내일 일경험(공공행정 인턴형) 지원자 모집 안내",
+      "sourceTitle" : "[대학일자리플러스센터] 인천글로벌캠퍼스운영재단 미래내일 일경험(공공행정 인턴형) 지원자 모집 안내",
+      "url" : "https://example.test/277422",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27742202,
+        "label" : null,
+        "startsOn" : null,
+        "endsOn" : "2026-11-08",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27742201,
+        "label" : null,
+        "startsOn" : "2026-11-16",
+        "endsOn" : "2027-01-08",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "277447" : [ {
+    "card" : {
+      "key" : "notice:277447",
+      "kind" : "career",
+      "title" : "「바이오헬스 일자리 아카데미」 참여자 모집 안내",
+      "sourceTitle" : "[대학일자리플러스센터] 「바이오헬스 일자리 아카데미」 참여자 모집 안내",
+      "url" : "https://example.test/277447",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27744701,
+        "label" : "1기 신청",
+        "startsOn" : null,
+        "endsOn" : "2026-11-11",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27744702,
+        "label" : "2기 신청",
+        "startsOn" : null,
+        "endsOn" : "2026-11-18",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "career"
+    },
+    "collapsed" : true,
+    "section" : "career"
+  } ],
+  "277453" : [ {
+    "card" : {
+      "key" : "notice:277453",
+      "kind" : "academic",
+      "title" : "2027-1학기 예비 수강신청 안내 (교과목 선호도 조사)",
+      "sourceTitle" : "[학사행정팀] 2027-1학기 예비 수강신청 안내 (교과목 선호도 조사)",
+      "url" : "https://example.test/277453",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27745301,
+        "label" : null,
+        "startsOn" : "2026-11-09",
+        "endsOn" : "2026-11-19",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ ],
+      "topic" : "course"
+    },
+    "collapsed" : false,
+    "section" : "must"
+  } ],
+  "277528" : [ {
+    "card" : {
+      "key" : "notice:277528",
+      "kind" : "academic",
+      "title" : "2026-겨울계학기 성공회대학교 학점교류 안내",
+      "sourceTitle" : "[학사행정팀] 2026-겨울계학기 성공회대학교 학점교류 안내",
+      "url" : "https://example.test/277528",
+      "audience" : {
+        "scope" : "GENERAL",
+        "label" : null,
+        "excerpt" : null,
+        "grade" : null
+      },
+      "mine" : false,
+      "mineReason" : null,
+      "deadline" : {
+        "id" : 27752802,
+        "label" : "신청서 접수",
+        "startsOn" : "2026-11-11",
+        "endsOn" : "2026-11-11",
+        "startsAt" : null,
+        "endsAt" : "16:00:00",
+        "kind" : "ACTION",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      },
+      "next" : [ {
+        "id" : 27752801,
+        "label" : "수업기간",
+        "startsOn" : "2026-12-21",
+        "endsOn" : "2027-01-14",
+        "startsAt" : null,
+        "endsAt" : null,
+        "kind" : "INFO",
+        "saved" : false,
+        "done" : false,
+        "fromImage" : false
+      } ],
+      "topic" : "exchange"
+    },
+    "collapsed" : false,
+    "section" : "open"
+  } ]
+}

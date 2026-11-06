@@ -210,6 +210,8 @@ export type Quality = {
   audienceRead: { enabled: boolean; notices: number; agreed: number; inputTokens: number; outputTokens: number; costUsd: number };
   /** 공지 주제 규칙의 정확도 (ADR 014). */
   topics: { notices: number; exact: number; accuracy: number; humanChecked: number } | null;
+  /** 화면 행 제목 점수. dev는 규칙을 고칠 때 보는 공지, fresh는 보지 않는 공지다. */
+  rows: { dev: RowScore; fresh: RowScore } | null;
   /** 규칙을 고칠 때 보지 않은 새 공지의 점수. */
   fresh: {
     notices: number;
@@ -223,6 +225,9 @@ export type Quality = {
     topicTotal: number;
   } | null;
 };
+
+/** ok는 그날 행이 하나이고 필수 낱말을 담은 수, exact는 정답 문구와 글자까지 같은 수, extra는 정답에 없는 날의 행 수. */
+export type RowScore = { total: number; ok: number; ratio: number; exact: number; exactRatio: number; extra: number };
 
 export type AudienceScore = {
   precision: number;

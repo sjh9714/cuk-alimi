@@ -99,11 +99,12 @@ export default function QualityPage() {
                 <ScoreRow label="그림 공지" s={q.backtest.image} />
               </tbody>
             </table>
-            {q.backtest.labels && (
+            {q.rows && (
               <p>
-                행 제목의 회귀 기록도 남겨요. 추출기가 붙인 라벨을 기대 라벨과 글자 그대로 비교하면{" "}
-                {q.backtest.labels.exact}/{q.backtest.labels.total}건이에요. 기대 라벨은 2026-11-04에 추출 결과를 보면서 적어서 정확도가
-                아니라, 규칙을 고칠 때 다른 공지의 제목이 깨지지 않았는지 보는 기록이에요. 화면의 행 제목은 이 라벨에서 한 번 더 다듬어요.
+                화면의 행 제목도 채점해요. 정답셋 공지의 행을 홈과 같은 함수로 만들어, 마감마다 그날 행이 하나이고 무엇의 일인지 알
+                낱말(장학금 이름, 회사, 학교, 단계)을 담았는지 봐요. 맞은 행은 {q.rows.dev.ok}/{q.rows.dev.total}개(
+                {percent(q.rows.dev.ratio)})이고, 정답에 없는 날에 생긴 행이 {q.rows.dev.extra}개예요. 정답 행은 추출 결과를 보지
+                않고 원문만 읽어 적었어요.
               </p>
             )}
             <p className="muted">
@@ -287,12 +288,14 @@ export default function QualityPage() {
                       {q.fresh.exactNotices}/{q.fresh.notices}건
                     </td>
                   </tr>
-                  <tr>
-                    <th scope="row">행 제목이 기대와 같은 마감</th>
-                    <td>
-                      {q.fresh.labelExact}/{q.fresh.labelTotal}개
-                    </td>
-                  </tr>
+                  {q.rows && (
+                    <tr>
+                      <th scope="row">맞은 행 제목</th>
+                      <td>
+                        {q.rows.fresh.ok}/{q.rows.fresh.total}개, 정답에 없는 행 {q.rows.fresh.extra}개
+                      </td>
+                    </tr>
+                  )}
                   <tr>
                     <th scope="row">주제가 맞은 공지</th>
                     <td>

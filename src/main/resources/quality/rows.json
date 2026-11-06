@@ -1,0 +1,18 @@
+{
+  "dev": {
+    "total": 96,
+    "ok": 71,
+    "ratio": 0.74,
+    "exact": 25,
+    "exactRatio": 0.26,
+    "extra": 5
+  },
+  "fresh": {
+    "total": 17,
+    "ok": 6,
+    "ratio": 0.353,
+    "exact": 3,
+    "exactRatio": 0.176,
+    "extra": 8
+  }
+}
