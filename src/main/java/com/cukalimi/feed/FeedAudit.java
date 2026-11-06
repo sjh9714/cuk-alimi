@@ -22,6 +22,8 @@ public class FeedAudit {
     static final int TITLE_LIMIT = 36;
     static final Pattern JUNK_LABEL = Pattern.compile("^(구\\s*분|내\\s*용|일\\s*정|일\\s*자|비\\s*고|기\\s*간|순\\s*번|번\\s*호|항\\s*목|[\\d\\s./-]+)$");
     static final Pattern DESCRIPTION = Pattern.compile("[▶▷※:]|\\. ");
+    /** 표에서 딸려 온 기호. "수상 심의 필요>** …", "●어학성적제출●", "ㆍ 참가신청"처럼 칸의 꾸밈이 라벨에 남은 것이다. */
+    static final Pattern SYMBOL = Pattern.compile("[●○■□◆◇★☆•ㆍ*<>]");
 
     public record Finding(String kind, String date, String label, String notice) {
         @Override
@@ -59,6 +61,9 @@ public class FeedAudit {
                     }
                     if (!head.isEmpty() && JUNK_LABEL.matcher(head).find()) {
                         out.add(new Finding("자리 이름·숫자 라벨", line.endsOn().toString(), label, card.sourceTitle()));
+                    }
+                    if (SYMBOL.matcher(label).find()) {
+                        out.add(new Finding("기호가 든 라벨", line.endsOn().toString(), label, card.sourceTitle()));
                     }
                     if (DESCRIPTION.matcher(label).find()) {
                         out.add(new Finding("설명이 붙은 라벨", line.endsOn().toString(), label, card.sourceTitle()));
