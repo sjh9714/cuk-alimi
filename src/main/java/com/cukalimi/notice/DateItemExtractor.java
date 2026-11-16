@@ -87,7 +87,8 @@ public final class DateItemExtractor {
         // "<2026.09.04. 업데이트>" 같은 단일 날짜는 마감이 아니다.
         for (DateRange r : parser.parse(view.title())) {
             if (r.start() == null || !r.isSingleDay() || view.title().contains("까지")) {
-                items.add(new ExtractedItem(cleanTitle, r, gradeOf(view.title()), "title"));
+                items.add(new ExtractedItem(cleanTitle, r, gradeOf(view.title()), "title",
+                        Evidence.of(view.title(), List.of(r), r)));
             }
         }
 
@@ -128,10 +129,10 @@ public final class DateItemExtractor {
                     .collect(java.util.stream.Collectors.joining(" · "));
             String prefixed = subject == null || body.isEmpty() || subject.namedIn(body) ? null : subject.name() + " " + body;
             if (generic && titleIsAction) {
-                named.add(new ExtractedItem(cleanTitle, i.range(), i.targetGrade(), i.where()));
+                named.add(i.withTitle(cleanTitle));
             } else if (prefixed != null && prefixed.length() <= LABEL_LIMIT) {
                 // "트리니티 신청"처럼 무엇의 일인지 빠진 라벨이면 대상 이름을 앞에 붙인다("하나장학생 트리니티 신청").
-                named.add(new ExtractedItem(prefixed, i.range(), i.targetGrade(), i.where()));
+                named.add(i.withTitle(prefixed));
             } else {
                 named.add(i);
             }
@@ -241,8 +242,10 @@ public final class DateItemExtractor {
                         labelText = lead.length() >= 2 && lead.length() <= 40 ? lead : "";
                     }
                     String title = labelText.isEmpty() ? fallbackTitle : clip(labelText);
+                    // 근거는 그 행 전체다. 묶인 칸(rowspan)에서 내려온 라벨도 들어 있어 무슨 일의 날짜인지 행만 봐도 안다.
+                    String rowText = cells.stream().filter(s -> !s.isBlank()).collect(java.util.stream.Collectors.joining(" | "));
                     items.add(new ExtractedItem(title, range, gradeOf(String.join(" ", labels)),
-                            where + ".r" + rowIndex + ".c" + c + (separate ? "." + k : "")));
+                            where + ".r" + rowIndex + ".c" + c + (separate ? "." + k : ""), Evidence.of(rowText, found, range)));
                 }
             }
         }
@@ -272,8 +275,11 @@ public final class DateItemExtractor {
             DateRange merged = merge(ranges);
             String lead = leadOf(line, merged);
             // "신청기간" 줄 아래에 날짜만 적힌 줄이 오는 공지가 있다. 날짜 앞에 글이 없고 바로 윗줄이 날짜 없는 짧은 라벨이면 그 라벨을 쓴다.
+            // 근거는 날짜를 읽은 줄이다. 라벨을 윗줄에서 가져왔으면 윗줄도 함께 보여 준다.
+            String source = line;
             if (lead.isEmpty() && previous.length() <= LABEL_LINE_LIMIT && parser.parse(previous).isEmpty()) {
                 lead = cleanLabel(previous);
+                source = previous.isEmpty() ? line : previous + " " + line;
             }
             // 날짜 앞의 글이 "접수기간", "원본서류 제출"처럼 짧고 그 안에 핵심어가 있을 때만 항목으로 본다.
             // "학생 본인, 부 또는 모 중 1명 이상이 ... 거주" 같은 자격 조건의 날짜는 마감이 아니다.
@@ -284,7 +290,7 @@ public final class DateItemExtractor {
                 for (DateRange r : ranges) {
                     String name = sentenceName(line, r);
                     if (name != null) {
-                        items.add(new ExtractedItem(name, r, gradeOf(line), "sentence" + lineIndex));
+                        items.add(new ExtractedItem(name, r, gradeOf(line), "sentence" + lineIndex, Evidence.of(line, List.of(r), r)));
                     }
                 }
                 continue;
@@ -293,11 +299,11 @@ public final class DateItemExtractor {
             if (DESCRIPTION_LEAD.matcher(lead).find()) {
                 String name = sentenceName(line, merged);
                 if (name != null) {
-                    items.add(new ExtractedItem(name, merged, gradeOf(line), "sentence" + lineIndex));
+                    items.add(new ExtractedItem(name, merged, gradeOf(line), "sentence" + lineIndex, Evidence.of(line, ranges, merged)));
                     continue;
                 }
             }
-            items.add(new ExtractedItem(lead, merged, gradeOf(line), "line" + lineIndex));
+            items.add(new ExtractedItem(lead, merged, gradeOf(line), "line" + lineIndex, Evidence.of(source, ranges, merged)));
         }
         return items;
     }
