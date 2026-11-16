@@ -26,16 +26,16 @@ public class DateItem {
     public static final String STATUS_AUTO_IMAGE = "AUTO_IMAGE";
     /** 다시 뽑았더니 사라졌거나 다른 일이 된 자동 항목인데 학생의 저장이나 체크가 붙어 있어 지우지 않고 거둔 것. 화면과 알림에서 뺀다. */
     public static final String STATUS_RETIRED = "RETIRED";
-    /** 규칙은 못 찾았고 AI가 찾은 문장에서 읽어 자동으로 공개한 날짜 (ADR 016). 화면에 "확인"을 달고 신고가 오면 내린다. */
+    /** 규칙은 못 찾았고 AI가 찾은 문장에서 읽어, 큰 모델의 확인을 받아 자동으로 공개한 날짜 (ADR 016). 화면에 "확인"을 달고 신고가 오면 내린다. */
     public static final String STATUS_AUTO_AI = "AUTO_AI";
     /**
-     * AI가 찾았지만 표가 모자라 공개하지 않았거나 신고로 내린 날짜 (ADR 016). 운영자를 기다린다.
+     * 작은 모델이 찾았지만 큰 모델이 확인하지 않아 공개하지 않았거나, 신고로 내린 날짜 (ADR 016). 운영자를 기다린다.
      * 그림 후보(CANDIDATE)와 상태를 나눈 것은 CANDIDATE가 "날짜가 그림에만 있는 공지"를 가리는 데 쓰이기 때문이다.
      */
     public static final String STATUS_HELD_AI = "HELD_AI";
     /** 학생에게 보이지 않는 상태. */
     public static final java.util.List<String> HIDDEN = java.util.List.of(STATUS_CANDIDATE, STATUS_HELD_AI, STATUS_RETIRED);
-    /** 규칙이 할 일로 올린 날짜를 AI는 할 일이 아니라고 봤다. 숨기지 않고 "확인"을 단다. */
+    /** 규칙이 할 일로 올린 날짜를 두 모델이 모두 할 일이 아니라고 봤다. 숨기지 않고 "확인"을 단다. */
     public static final String AI_NOTE_DOUBT = "doubt";
 
     @Id
@@ -125,7 +125,7 @@ public class DateItem {
         return item;
     }
 
-    /** AI가 찾은 문장에서 읽은 항목 (ADR 016). 표가 모이기 전에는 보류다. */
+    /** AI가 찾은 문장에서 읽은 항목 (ADR 016). 큰 모델이 확인하기 전에는 보류다. */
     public static DateItem fromLocator(Long noticeId, String naturalKey, String title, LocalDate startsOn,
             LocalDate endsOn, LocalTime startsAt, LocalTime endsAt, String targetGrade) {
         DateItem item = fromNotice(noticeId, naturalKey, title, startsOn, endsOn, startsAt, endsAt, targetGrade);
@@ -133,7 +133,7 @@ public class DateItem {
         return item;
     }
 
-    /** 표가 모여 학생에게 공개한다. 신고로 내린 날짜와 사람이 판단한 항목은 건드리지 않는다. */
+    /** 큰 모델이 확인해 학생에게 공개한다. 신고로 내린 날짜와 사람이 판단한 항목은 건드리지 않는다. */
     public void publishFromLocator() {
         if (STATUS_HELD_AI.equals(status) && withdrawnAt == null) {
             status = STATUS_AUTO_AI;
@@ -141,7 +141,7 @@ public class DateItem {
         }
     }
 
-    /** 다시 읽었더니 표가 모자라거나 공지가 바뀌었다. 공개를 거둔다. 항목은 남아 학생의 저장이 유지된다. */
+    /** 다시 읽었더니 확인받지 못했거나 공지가 바뀌었다. 공개를 거둔다. 항목은 남아 학생의 저장이 유지된다. */
     public void holdFromLocator() {
         if (STATUS_AUTO_AI.equals(status)) {
             status = STATUS_HELD_AI;

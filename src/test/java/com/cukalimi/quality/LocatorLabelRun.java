@@ -25,7 +25,7 @@ import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
  * <ul>
  * <li>LOCATOR_RUN=count 입력 토큰을 세고 예상 비용을 적는다(무료).</li>
  * <li>LOCATOR_RUN=haiku 작은 모델이 공지마다 두 번 읽는다.</li>
- * <li>LOCATOR_RUN=opus 작은 모델의 두 읽기가 엇갈린 공지만 큰 모델이 한 번 읽는다. 운영과 같은 조건이다. 먼저 haiku 녹음이 있어야 한다.</li>
+ * <li>LOCATOR_RUN=opus 작은 모델의 답이 화면을 바꾸려 하는 공지만 큰 모델이 한 번 읽는다. 운영과 같은 조건이다. 먼저 haiku 녹음이 있어야 한다.</li>
  * <li>LOCATOR_SET=dev(기본) 또는 dev2. LOCATOR_RUN_MAX_USD(기본 3)를 넘기 전에 멈춘다.</li>
  * </ul>
  * 키는 ANTHROPIC_API_KEY. 이미 녹음한 공지는 다시 부르지 않아 멈춘 데서 이어 돌릴 수 있다. 지시문이 바뀌었으면 처음부터 다시 녹음한다.
@@ -74,7 +74,7 @@ class LocatorLabelRun {
                 opusUsd);
     }
 
-    /** @param haikuNotices opus 녹음일 때 작은 모델의 녹음. 두 읽기가 엇갈린 공지만 부른다 */
+    /** @param haikuNotices opus 녹음일 때 작은 모델의 녹음. 그 답이 화면을 바꾸려 하는 공지만 부른다 */
     private void record(ClaudeDeadlineLocator locator, List<LocatorSets.Case> cases, String set, String who, int reads, double maxUsd,
             JsonNode haikuNotices) throws Exception {
         Path out = LocatorSets.recording(set, who);
@@ -141,13 +141,13 @@ class LocatorLabelRun {
                 called, notices.size(), spent, in, outTokens);
     }
 
-    /** 작은 모델의 두 읽기가 결과를 바꿀 만큼 엇갈렸는가. 운영이 큰 모델을 부르는 조건과 같다. */
+    /** 작은 모델의 답이 화면을 바꾸려 하는가. 운영이 큰 모델을 부르는 조건과 같다. */
     private static boolean disagreed(LocatorSets.Case c, NoticeText text, JsonNode haiku) throws Exception {
         if (haiku == null || haiku.path("reads").size() < 2) {
             return false;
         }
         List<QuoteCheck.Located> a = QuoteCheck.check(text, c.view().postedOn(), JSON.treeToValue(haiku.get("reads").get(0), LocatorReading.class));
         List<QuoteCheck.Located> b = QuoteCheck.check(text, c.view().postedOn(), JSON.treeToValue(haiku.get("reads").get(1), LocatorReading.class));
-        return LocatorMerge.disagree(c.rule(), a, b);
+        return LocatorMerge.needsReview(c.rule(), List.of(a, b));
     }
 }

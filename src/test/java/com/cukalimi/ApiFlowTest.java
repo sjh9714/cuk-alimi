@@ -1037,7 +1037,7 @@ class ApiFlowTest {
     static final LocalDate MISSED = LocalDate.of(2026, 7, 25);
     static final LocalDate EXAM = LocalDate.of(2026, 7, 10);
 
-    /** 병합표의 세 줄 (ADR 016). 규칙이 놓친 마감은 "확인"을 달아 올리고, 규칙이 잘못 읽은 날짜는 숨기지 않고 의심만 달며, 신고가 오면 둘 다 내린다. */
+    /** 병합표 (ADR 016). 큰 모델이 확인하면 규칙이 놓친 마감은 "확인"을 달아 올리고, 규칙이 잘못 읽은 날짜는 숨기지 않고 의심만 달며, 신고가 오면 둘 다 내린다. */
     @Test
     void locatorAddsTheMissedDeadlineMarksTheDoubtedOneAndAReportTakesThemDown() {
         FakeLocator small = (FakeLocator) locators.small();
@@ -1053,7 +1053,7 @@ class ApiFlowTest {
 
             assertThat(r.published()).isEqualTo(1);
             assertThat(r.doubted()).isEqualTo(1);
-            assertThat(large.calls).as("두 읽기가 같으면 큰 모델을 부르지 않는다").isEqualTo(largeCalls);
+            assertThat(large.calls).as("화면을 바꾸려 하면 큰 모델에게 한 번 확인받는다").isEqualTo(largeCalls + 1);
             DateItem ai = itemOn(noticeId, MISSED);
             assertThat(ai.getStatus()).isEqualTo(DateItem.STATUS_AUTO_AI);
             assertThat(ai.getTitle()).isEqualTo("공결 신청 기한");
@@ -1062,8 +1062,8 @@ class ApiFlowTest {
             DateItem doubted = itemOn(noticeId, EXAM);
             assertThat(doubted.getStatus()).isEqualTo(DateItem.STATUS_AUTO);
             assertThat(doubted.isDoubted()).isTrue();
-            assertThat(locatorReads.findByNoticeIdOrderByIdAsc(noticeId)).hasSize(2)
-                    .allMatch(x -> x.getAnswer().contains("공결 신청 기한") && "fake-small".equals(x.getModel()));
+            assertThat(locatorReads.findByNoticeIdOrderByIdAsc(noticeId)).allMatch(x -> x.getAnswer().contains("공결 신청 기한"))
+                    .extracting(com.cukalimi.domain.LocatorRead::getModel).containsExactly("fake-small", "fake-small", "fake-large");
 
             String feed = rest.getForObject("/api/feed", String.class);
             assertThat(feed).contains("\"id\":" + ai.getId() + ",").contains("\"foundBy\":\"ai\"").contains("\"doubt\":true");
@@ -1094,7 +1094,7 @@ class ApiFlowTest {
         }
     }
 
-    /** 두 읽기가 엇갈리면 큰 모델이 한 번 더 읽어 셋 중 둘로 정한다. 큰 모델이 없으면 한 표뿐이라 공개하지 않고 보류한다. */
+    /** 작은 모델 한 번만 찾았어도 큰 모델이 확인하면 공개한다. 큰 모델을 부르지 못하면 공개하지 않고 보류한다. */
     @Test
     void whenTheSmallReadsDisagreeTheLargeModelDecidesAndWithoutItTheDateIsHeld() {
         FakeLocator small = (FakeLocator) locators.small();
@@ -1116,7 +1116,7 @@ class ApiFlowTest {
             DateItem waiting = itemOn(held, MISSED);
             assertThat(waiting.getStatus()).isEqualTo(DateItem.STATUS_HELD_AI);
             assertThat(itemIds()).doesNotContain(waiting.getId());
-            // 한 표뿐인 "아니다"로는 규칙의 날짜를 의심하지 않는다.
+            // 큰 모델의 확인 없이는 규칙의 날짜를 의심하지 않는다.
             assertThat(itemOn(held, EXAM).isDoubted()).isFalse();
         } finally {
             small.everyOther = false;
@@ -1125,6 +1125,40 @@ class ApiFlowTest {
             if (held > 0) {
                 retireLocatorNotice(held);
             }
+        }
+    }
+
+    /** 큰 모델의 하루 상한에 닿으면 보류로 굳히지 않는다. 공지를 읽지 않은 것으로 두고 다음 날 다시 확인받는다. */
+    @Test
+    void whenTheLargeModelsDailyLimitIsSpentTheNoticeWaitsForTomorrow() {
+        FakeLocator small = (FakeLocator) locators.small();
+        FakeLocator large = (FakeLocator) locators.large();
+        small.everyOther = false;
+        java.time.OffsetDateTime now = java.time.OffsetDateTime.now(Clock.fixed(Instant.parse("2026-07-10T00:00:00Z"), ZoneId.of("Asia/Seoul")));
+        long anyNotice = notices.findByArticleNo(273306L).orElseThrow().getId();
+        List<com.cukalimi.domain.LocatorRead> spent = new java.util.ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            spent.add(locatorReads.save(new com.cukalimi.domain.LocatorRead(anyNotice, "fake-large", "test",
+                    com.cukalimi.domain.LocatorRead.STATUS_READ, "{}", 0, 0, now)));
+        }
+        long noticeId = saveLocatorNotice(999704L, "문장찾기 상한 안내");
+        try {
+            int largeCalls = large.calls;
+            var r = locatorReader.readPending(LocalDate.of(2026, 7, 10));
+
+            assertThat(r.limitReached()).isTrue();
+            assertThat(large.calls).isEqualTo(largeCalls);
+            assertThat(itemOn(noticeId, MISSED)).isNull();
+            assertThat(notices.findById(noticeId).orElseThrow().getLocatorReadAt()).isNull();
+
+            // 상한이 풀리면 다시 읽어 확인받고 공개한다.
+            locatorReads.deleteAll(spent);
+            spent.clear();
+            assertThat(locatorReader.readPending(LocalDate.of(2026, 7, 10)).published()).isEqualTo(1);
+            assertThat(itemOn(noticeId, MISSED).getStatus()).isEqualTo(DateItem.STATUS_AUTO_AI);
+        } finally {
+            locatorReads.deleteAll(spent);
+            retireLocatorNotice(noticeId);
         }
     }
 

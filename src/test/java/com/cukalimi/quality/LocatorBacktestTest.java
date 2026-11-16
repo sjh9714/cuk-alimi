@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
  * 마감 정답과 비교한다. API를 부르지 않는다. 녹음이 없으면 건너뛴다.
  *
  * <p>지시문 해시가 녹음과 다르면 실패한다. 지시문을 고쳤으면 다시 녹음해야 수치가 지금 코드의 것이다.
- * 규칙만, AI만, 규칙+AI(운영), 거부권(AI가 아니라고 한 규칙 마감을 숨김)을 나란히 잰다.
+ * 규칙만, AI만, 규칙+작은 모델 두 표(처음 설계), 규칙+AI(운영. 큰 모델이 확인한 것만), 거부권(두 모델이 아니라고 한 규칙 마감을 숨김)을 나란히 잰다.
  * 결과는 build/reports/locator/에 남고, 공개 요약(src/main/resources/quality/locator.json)이 이번 결과와 다르면 실패한다.
  * 수치가 바뀌었으면 QUALITY_UPDATE=1로 다시 쓴다.
  */
@@ -92,7 +92,7 @@ class LocatorBacktestTest {
         }
 
         Map<String, Tally> tallies = new LinkedHashMap<>();
-        for (String k : List.of("rule", "aiOneRead", "aiTwoVotes", "ruleAndAi", "ruleAndAiVeto")) {
+        for (String k : List.of("rule", "aiOneRead", "aiTwoVotes", "ruleAndSmallVotes", "ruleAndAi", "ruleAndAiVeto")) {
             tallies.put(k, new Tally());
         }
         int notices = 0, deadlines = 0, quotes = 0, unverified = 0, noDate = 0, failed = 0, disagreed = 0, thirdReads = 0;
@@ -121,16 +121,21 @@ class LocatorBacktestTest {
             Set<LocalDate> one = LocatorMerge.dates(readings.get(0), true);
             Set<LocalDate> two = new TreeSet<>(one);
             two.retainAll(LocatorMerge.dates(readings.get(1), true));
-            // 운영과 같다. 두 읽기가 엇갈렸고 큰 모델의 녹음이 있으면 세 번째 표로 넣는다.
-            if (LocatorMerge.disagree(c.rule(), readings.get(0), readings.get(1))) {
+            // 운영과 같다. 작은 모델의 답이 화면을 바꾸려 하고 큰 모델의 녹음이 있으면 그 답으로 확인한다.
+            List<Located> large = null;
+            if (LocatorMerge.needsReview(c.rule(), readings)) {
                 disagreed++;
                 JsonNode third = opus == null ? null : opus.path("notices").get(c.articleNo());
                 if (third != null) {
                     thirdReads++;
-                    readings.add(QuoteCheck.check(text, c.view().postedOn(), JSON.treeToValue(third.get("reads").get(0), LocatorReading.class)));
+                    large = QuoteCheck.check(text, c.view().postedOn(), JSON.treeToValue(third.get("reads").get(0), LocatorReading.class));
                 }
             }
-            LocatorMerge.Result merged = LocatorMerge.merge(c.view(), c.rule(), readings);
+            LocatorMerge.Result merged = LocatorMerge.merge(c.view(), c.rule(), readings, large);
+            // 처음 설계. 큰 모델 없이 작은 모델 두 표가 모이면 더한다. 큰 모델의 확인이 무엇을 바꿨는지 보려고 나란히 잰다.
+            Set<LocalDate> smallOnly = new TreeSet<>(rule);
+            smallOnly.addAll(two);
+            tallies.get("ruleAndSmallVotes").add(c.want(), smallOnly);
             Set<LocalDate> addedDates = new TreeSet<>();
             merged.added().forEach(i -> addedDates.add(i.range().end()));
             Set<LocalDate> heldDates = new TreeSet<>();
@@ -169,7 +174,7 @@ class LocatorBacktestTest {
         s.putObject("added").put("total", added).put("right", addedRight);
         s.putObject("held").put("total", held).put("right", heldRight);
         s.putObject("doubt").put("total", doubt).put("right", doubtRight);
-        s.put("disagreedNotices", disagreed).put("thirdReads", thirdReads);
+        s.put("noticesNeedingReview", disagreed).put("largeModelReads", thirdReads);
         ObjectNode cost = s.putObject("cost");
         double usd = usd(haiku) + (opus == null ? 0 : usd(opus));
         cost.put("smallModel", haiku.path("model").asText()).put("smallModelUsd", round4(usd(haiku)));

@@ -25,7 +25,7 @@ public final class QuoteCheck {
         READ,
         /** 원문에 글자 그대로 없다. 지어냈거나 고쳐 썼다. */
         UNVERIFIED,
-        /** 원문에는 있지만 파서가 그 자리에서 날짜를 읽지 못했다. 검수 메모로만 남는다. */
+        /** 원문에는 있지만 파서가 그 자리에서 날짜를 읽지 못했다. 숫자가 없는 줄도 여기다. 아무 일도 일어나지 않는다. */
         NO_DATE
     }
 
@@ -52,9 +52,10 @@ public final class QuoteCheck {
 
     static Located check(NoticeText text, LocalDate postedOn, LocatorReading.Found found) {
         String quote = normalize(found.quote());
-        if (quote.length() < MIN_QUOTE || quote.chars().noneMatch(Character::isDigit)) {
+        if (quote.length() < MIN_QUOTE) {
             return new Located(Status.UNVERIFIED, found, null, List.of());
         }
+        boolean digits = quote.chars().anyMatch(Character::isDigit);
         List<String> lines = text.lines();
         // 한 줄에서 먼저 찾는다. 없으면 이어진 두 줄, 세 줄에 걸쳤는지 본다.
         for (int width = 1; width <= MAX_LINES; width++) {
@@ -65,7 +66,8 @@ public final class QuoteCheck {
                 if (joined.indexOf(quote) < 0) {
                     continue;
                 }
-                List<DateRange> ranges = datesInside(window, quote, postedOn);
+                // 숫자가 없는 줄은 원문에 있어도 날짜가 없다. 지어낸 것(UNVERIFIED)과는 가른다.
+                List<DateRange> ranges = digits ? datesInside(window, quote, postedOn) : List.of();
                 String source = String.join(" ", window);
                 return new Located(ranges.isEmpty() ? Status.NO_DATE : Status.READ, found, source, ranges);
             }

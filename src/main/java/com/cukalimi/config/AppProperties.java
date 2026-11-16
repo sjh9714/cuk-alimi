@@ -23,7 +23,7 @@ public record AppProperties(
         Locator locator) {
 
     /**
-     * 규칙이 놓친 마감 문장을 AI가 찾는다 (ADR 016). model이 공지마다 두 번 읽고, 둘이 엇갈릴 때만 adjudicatorModel이 한 번 더 읽는다.
+     * 규칙이 놓친 마감 문장을 AI가 찾는다 (ADR 016). model이 공지마다 두 번 읽고, 그 답이 화면을 바꾸려 할 때만 adjudicatorModel이 한 번 읽어 확인한다.
      * 키는 transcribe.apiKey를 같이 쓴다.
      */
     public record Locator(boolean enabled, String model, String adjudicatorModel, int dailyLimit, int adjudicatorDailyLimit, String cron) {

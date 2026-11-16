@@ -29,7 +29,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
- * 규칙이 놓친 마감 문장을 AI가 찾는다 (ADR 016). 작은 모델이 공지를 두 번 읽고, 결과를 바꿀 만큼 엇갈릴 때만 큰 모델이 한 번 더 읽는다.
+ * 규칙이 놓친 마감 문장을 AI가 찾는다 (ADR 016). 작은 모델이 공지를 두 번 읽고, 그 답이 화면을 바꾸려 할 때만 큰 모델이 한 번 읽어 확인한다.
  * AI는 줄을 옮길 뿐이다. 그 줄이 원문에 있는지 확인하고 날짜를 읽는 일은 QuoteCheck가, 규칙의 결과와 합치는 일은 LocatorMerge가 한다.
  * 대상은 홈에 나오는 장학·학사·학과 공지의 글이다. 날짜가 그림에만 있는 공지는 받아 적기(ImageNoticeReader)가 맡는다.
  */
@@ -113,11 +113,20 @@ public class LocatorReader {
                 read++;
                 published += saved.published();
                 doubted += saved.doubted();
+            } catch (LargeLimitReached e) {
+                return new Result(read, published, doubted, true);
             } catch (RuntimeException e) {
                 log.warn("locator notice {} will be retried: {}", n.getArticleNo(), e.getMessage());
             }
         }
         return new Result(read, published, doubted, false);
+    }
+
+    /** 큰 모델의 하루 상한에 닿아 확인받지 못했다. */
+    private static final class LargeLimitReached extends RuntimeException {
+        LargeLimitReached() {
+            super("large model daily limit reached", null, false, false);
+        }
     }
 
     /** 홈에 나올 수 있는 글 공지인가. 취업 공지는 기업 포스터가 많아 뺀다. 결과 발표는 할 일이 없다. */
@@ -155,15 +164,20 @@ public class LocatorReader {
             }
             readings.add(QuoteCheck.check(text, postedOn, reading));
         }
+        // 작은 모델의 답이 화면을 바꾸려 할 때만 큰 모델에게 확인받는다. 큰 모델이 꺼져 있으면 아무것도 공개하지 않고 보류한다.
         DeadlineLocator large = locators.large();
-        if (LocatorMerge.disagree(rule, readings.get(0), readings.get(1)) && large.enabled()
-                && reads.countByModelAndCreatedAtGreaterThanEqual(large.model(), startOfDay) < conf.adjudicatorDailyLimit()) {
+        List<QuoteCheck.Located> confirmed = null;
+        if (LocatorMerge.needsReview(rule, readings) && large.enabled()) {
+            // 큰 모델의 하루 상한에 닿았으면 이 공지는 읽지 않은 것으로 두고 오늘은 멈춘다. 보류로 굳히면 내일도 확인받지 못한다.
+            if (reads.countByModelAndCreatedAtGreaterThanEqual(large.model(), startOfDay) >= conf.adjudicatorDailyLimit()) {
+                throw new LargeLimitReached();
+            }
             LocatorReading third = call(large, n, text, postedOn, now);
             if (third != null) {
-                readings.add(QuoteCheck.check(text, postedOn, third));
+                confirmed = QuoteCheck.check(text, postedOn, third);
             }
         }
-        NoticeStore.Located saved = store.saveLocatedItems(n.getId(), n.getArticleNo(), LocatorMerge.merge(view, rule, readings));
+        NoticeStore.Located saved = store.saveLocatedItems(n.getId(), n.getArticleNo(), LocatorMerge.merge(view, rule, readings, confirmed));
         Notice fresh = notices.findById(n.getId()).orElseThrow();
         fresh.markLocatorRead(now);
         notices.save(fresh);

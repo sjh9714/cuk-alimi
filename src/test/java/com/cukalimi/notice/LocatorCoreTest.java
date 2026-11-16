@@ -90,9 +90,22 @@ class LocatorCoreTest {
     }
 
     @Test
-    void aQuoteWithoutDigitsOrTooShortIsNotAccepted() {
+    void aQuoteWithoutDigitsOrTooShortGivesNoDate() {
+        // 숫자 없는 줄은 원문에 있어도 날짜가 없고, 너무 짧은 인용은 어느 줄인지 가릴 수 없다.
         assertThat(read(LEAVE, new Found("공결 신청 기한", "신청", true), new Found("11월 25", "신청", true)))
-                .extracting(Located::status).containsOnly(Status.UNVERIFIED);
+                .extracting(Located::status).containsExactly(Status.NO_DATE, Status.UNVERIFIED);
+    }
+
+    /** 파서는 시각이 낀 기간을 날짜 둘로 읽는다. 뒤쪽이 "~"로 시작하면 한 기간이라 마감은 끝 날짜 하나다. */
+    @Test
+    void aRangeSplitByATimeOfDayIsOneDeadline() {
+        NoticeView view = view("[학사지원팀] 융복합트랙 이수여부 확인 기간 알림", "<div>- 확인기간 : 2026년 11월 12일(목) 오후 1시 ~ 11월 18일(수) 까지</div>");
+        List<Located> a = read(view, new Found("- 확인기간 : 2026년 11월 12일(목) 오후 1시 ~ 11월 18일(수) 까지", "이수여부 확인", true));
+
+        assertThat(LocatorMerge.dates(a, true)).containsExactly(LocalDate.of(2026, 11, 18));
+        ExtractedItem item = LocatorMerge.merge(view, List.of(), List.of(a, a), a).added().get(0);
+        assertThat(item.range().start()).isEqualTo(LocalDate.of(2026, 11, 12));
+        assertThat(item.evidence().match()).contains("11월 18일");
     }
 
     @Test
@@ -115,13 +128,14 @@ class LocatorCoreTest {
     }
 
     @Test
-    void twoAgreeingReadsAddTheMissedDeadlineWithItsEvidence() {
+    void aMissedDeadlineIsAddedOnlyWhenTheLargeModelConfirmsIt() {
         List<ExtractedItem> rule = DateItemExtractor.extract(LEAVE);
         List<Located> a = read(LEAVE, new Found("3. 공결 신청 기한 : 11월 25일(수) 17:00까지", "공결 신청", true));
         List<Located> b = read(LEAVE, new Found("공결 신청 기한 : 11월 25일(수) 17:00까지", "신청", true));
 
-        assertThat(LocatorMerge.disagree(rule, a, b)).isFalse();
-        LocatorMerge.Result merged = LocatorMerge.merge(LEAVE, rule, List.of(a, b));
+        // 작은 모델의 답이 화면을 바꾸려 한다. 큰 모델을 부른다.
+        assertThat(LocatorMerge.needsReview(rule, List.of(a, b))).isTrue();
+        LocatorMerge.Result merged = LocatorMerge.merge(LEAVE, rule, List.of(a, b), b);
 
         assertThat(merged.held()).isEmpty();
         assertThat(merged.added()).hasSize(1);
@@ -134,19 +148,24 @@ class LocatorCoreTest {
         assertThat(item.evidence().match()).contains("11월 25일");
     }
 
+    /** 같은 모델의 두 표는 확인이 아니다. 2026-11-16 개발셋에서 잘못 더한 날짜는 모두 두 읽기가 같이 틀린 것이었다. */
     @Test
-    void oneReadAloneIsHeldAndTheDisagreementCallsForAThirdRead() {
+    void twoSmallReadsAgreeingIsNotEnoughWithoutTheLargeModel() {
         List<ExtractedItem> rule = DateItemExtractor.extract(LEAVE);
         List<Located> a = read(LEAVE, new Found("공결 신청 기한 : 11월 25일(수) 17:00까지", "신청", true));
-        List<Located> b = read(LEAVE);
+        List<Located> silent = read(LEAVE);
 
-        assertThat(LocatorMerge.disagree(rule, a, b)).isTrue();
-        assertThat(LocatorMerge.merge(LEAVE, rule, List.of(a, b)).added()).isEmpty();
-        assertThat(LocatorMerge.merge(LEAVE, rule, List.of(a, b)).held()).hasSize(1);
-
-        // 큰 모델이 한 번 더 읽어 같은 줄을 가리키면 셋 중 둘이라 공개한다.
-        List<Located> third = read(LEAVE, new Found("공결 신청 기한 : 11월 25일(수) 17:00까지", "공결 신청", true));
-        assertThat(LocatorMerge.merge(LEAVE, rule, List.of(a, b, third)).added()).hasSize(1);
+        // 큰 모델을 부르지 못했다(꺼짐, 하루 상한).
+        LocatorMerge.Result alone = LocatorMerge.merge(LEAVE, rule, List.of(a, a), null);
+        assertThat(alone.added()).isEmpty();
+        assertThat(alone.held()).hasSize(1);
+        // 큰 모델이 그 줄을 마감으로 보지 않았다.
+        LocatorMerge.Result refused = LocatorMerge.merge(LEAVE, rule, List.of(a, a), silent);
+        assertThat(refused.added()).isEmpty();
+        assertThat(refused.held()).hasSize(1);
+        // 작은 모델 한 번만 찾았어도 큰 모델이 같은 줄을 가리키면 공개한다.
+        assertThat(LocatorMerge.needsReview(rule, List.of(a, silent))).isTrue();
+        assertThat(LocatorMerge.merge(LEAVE, rule, List.of(a, silent), a).added()).hasSize(1);
     }
 
     /** 규칙이 시험일을 마감으로 읽는 꼴. */
@@ -154,40 +173,43 @@ class LocatorCoreTest {
             "<p>신청기간 : 10. 12.(월) ~ 11. 6.(금)</p><p>시험일 접수 : 11. 16.(월) 저녁 예정</p>");
 
     @Test
-    void aRuleDeadlineTheAiCallsNotAnActionIsDoubtedButNeverRemoved() {
+    void aRuleDeadlineBothModelsCallNotAnActionIsDoubtedButNeverRemoved() {
         List<ExtractedItem> rule = DateItemExtractor.extract(EXAM);
         assertThat(LocatorMerge.ruleDeadlines(rule)).contains(LocalDate.of(2026, 11, 6), LocalDate.of(2026, 11, 16));
         Found apply = new Found("신청기간 : 10. 12.(월) ~ 11. 6.(금)", "졸업시험 신청", true);
         Found exam = new Found("시험일 접수 : 11. 16.(월) 저녁 예정", "시험", false);
         List<Located> a = read(EXAM, apply, exam);
-        List<Located> b = read(EXAM, apply, exam);
 
-        LocatorMerge.Result merged = LocatorMerge.merge(EXAM, rule, List.of(a, b));
+        assertThat(LocatorMerge.needsReview(rule, List.of(a, a))).isTrue();
+        LocatorMerge.Result merged = LocatorMerge.merge(EXAM, rule, List.of(a, a), a);
 
         assertThat(merged.doubt()).containsExactly(LocalDate.of(2026, 11, 16));
         assertThat(merged.added()).isEmpty();
         assertThat(merged.held()).isEmpty();
+        // 큰 모델이 확인하지 않았으면 의심하지 않는다.
+        assertThat(LocatorMerge.merge(EXAM, rule, List.of(a, a), null).doubt()).isEmpty();
+        assertThat(LocatorMerge.merge(EXAM, rule, List.of(a, a), read(EXAM, apply)).doubt()).isEmpty();
     }
 
     @Test
-    void aSingleNoVoteOrASilentAiLeavesTheRuleDeadlineUnmarked() {
+    void aRuleDeadlineOneReadCallsAnActionIsNotDoubted() {
         List<ExtractedItem> rule = DateItemExtractor.extract(EXAM);
-        List<Located> says = read(EXAM, new Found("시험일 접수 : 11. 16.(월) 저녁 예정", "시험", false));
-        List<Located> silent = read(EXAM);
+        List<Located> no = read(EXAM, new Found("시험일 접수 : 11. 16.(월) 저녁 예정", "시험", false));
+        List<Located> yes = read(EXAM, new Found("시험일 접수 : 11. 16.(월) 저녁 예정", "시험 접수", true));
 
-        assertThat(LocatorMerge.disagree(rule, says, silent)).isTrue();
-        assertThat(LocatorMerge.merge(EXAM, rule, List.of(says, silent)).doubt()).isEmpty();
-        assertThat(LocatorMerge.merge(EXAM, rule, List.of(silent, silent)).doubt()).isEmpty();
+        assertThat(LocatorMerge.needsReview(rule, List.of(no, yes))).isFalse();
+        assertThat(LocatorMerge.merge(EXAM, rule, List.of(no, yes), no).doubt()).isEmpty();
     }
 
     @Test
-    void agreeingOnADeadlineTheRulesAlreadyFoundChangesNothingAndNeedsNoThirdRead() {
+    void agreeingWithTheRulesOrSayingNothingChangesNothingAndNeedsNoLargeModel() {
         List<ExtractedItem> rule = DateItemExtractor.extract(EXAM);
         List<Located> a = read(EXAM, new Found("신청기간 : 10. 12.(월) ~ 11. 6.(금)", "신청", true));
         List<Located> silent = read(EXAM);
 
-        assertThat(LocatorMerge.disagree(rule, a, silent)).isFalse();
-        LocatorMerge.Result merged = LocatorMerge.merge(EXAM, rule, List.of(a, silent));
+        assertThat(LocatorMerge.needsReview(rule, List.of(a, silent))).isFalse();
+        assertThat(LocatorMerge.needsReview(rule, List.of(silent, silent))).isFalse();
+        LocatorMerge.Result merged = LocatorMerge.merge(EXAM, rule, List.of(a, silent), null);
         assertThat(merged.added()).isEmpty();
         assertThat(merged.held()).isEmpty();
         assertThat(merged.doubt()).isEmpty();
@@ -205,7 +227,7 @@ class LocatorCoreTest {
         NoticeView many = view("[학사지원팀] 서류 제출 안내", body.append("</div>").toString());
         List<Located> a = read(many, found);
 
-        LocatorMerge.Result merged = LocatorMerge.merge(many, DateItemExtractor.extract(many), List.of(a, a));
+        LocatorMerge.Result merged = LocatorMerge.merge(many, DateItemExtractor.extract(many), List.of(a, a), a);
 
         assertThat(merged.added()).isEmpty();
         assertThat(merged.held()).hasSize(found.length);

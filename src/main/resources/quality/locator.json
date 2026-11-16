@@ -1,0 +1,161 @@
+{
+  "dev" : {
+    "notices" : 51,
+    "deadlines" : 54,
+    "rule" : {
+      "found" : 54,
+      "missed" : 0,
+      "wrong" : 0,
+      "exactNotices" : 51,
+      "precision" : 1.0,
+      "recall" : 1.0
+    },
+    "aiOneRead" : {
+      "found" : 53,
+      "missed" : 1,
+      "wrong" : 3,
+      "exactNotices" : 48,
+      "precision" : 0.946,
+      "recall" : 0.981
+    },
+    "aiTwoVotes" : {
+      "found" : 53,
+      "missed" : 1,
+      "wrong" : 3,
+      "exactNotices" : 48,
+      "precision" : 0.946,
+      "recall" : 0.981
+    },
+    "ruleAndSmallVotes" : {
+      "found" : 54,
+      "missed" : 0,
+      "wrong" : 3,
+      "exactNotices" : 49,
+      "precision" : 0.947,
+      "recall" : 1.0
+    },
+    "ruleAndAi" : {
+      "found" : 54,
+      "missed" : 0,
+      "wrong" : 0,
+      "exactNotices" : 51,
+      "precision" : 1.0,
+      "recall" : 1.0
+    },
+    "ruleAndAiVeto" : {
+      "found" : 54,
+      "missed" : 0,
+      "wrong" : 0,
+      "exactNotices" : 51,
+      "precision" : 1.0,
+      "recall" : 1.0
+    },
+    "quotes" : {
+      "total" : 235,
+      "notInNotice" : 0,
+      "noDateRead" : 40,
+      "failedReads" : 0
+    },
+    "added" : {
+      "total" : 0,
+      "right" : 0
+    },
+    "held" : {
+      "total" : 3,
+      "right" : 0
+    },
+    "doubt" : {
+      "total" : 0,
+      "right" : 0
+    },
+    "noticesNeedingReview" : 2,
+    "largeModelReads" : 2,
+    "cost" : {
+      "smallModel" : "claude-haiku-5-5",
+      "smallModelUsd" : 0.0414,
+      "largeModel" : "claude-opus-5-5",
+      "largeModelUsd" : 0.0399,
+      "usdPerNotice" : 0.0016
+    }
+  },
+  "dev2" : {
+    "notices" : 26,
+    "deadlines" : 20,
+    "rule" : {
+      "found" : 14,
+      "missed" : 6,
+      "wrong" : 6,
+      "exactNotices" : 18,
+      "precision" : 0.7,
+      "recall" : 0.7
+    },
+    "aiOneRead" : {
+      "found" : 18,
+      "missed" : 2,
+      "wrong" : 4,
+      "exactNotices" : 22,
+      "precision" : 0.818,
+      "recall" : 0.9
+    },
+    "aiTwoVotes" : {
+      "found" : 18,
+      "missed" : 2,
+      "wrong" : 3,
+      "exactNotices" : 22,
+      "precision" : 0.857,
+      "recall" : 0.9
+    },
+    "ruleAndSmallVotes" : {
+      "found" : 19,
+      "missed" : 1,
+      "wrong" : 8,
+      "exactNotices" : 21,
+      "precision" : 0.704,
+      "recall" : 0.95
+    },
+    "ruleAndAi" : {
+      "found" : 20,
+      "missed" : 0,
+      "wrong" : 6,
+      "exactNotices" : 21,
+      "precision" : 0.769,
+      "recall" : 1.0
+    },
+    "ruleAndAiVeto" : {
+      "found" : 20,
+      "missed" : 0,
+      "wrong" : 2,
+      "exactNotices" : 24,
+      "precision" : 0.909,
+      "recall" : 1.0
+    },
+    "quotes" : {
+      "total" : 106,
+      "notInNotice" : 1,
+      "noDateRead" : 14,
+      "failedReads" : 0
+    },
+    "added" : {
+      "total" : 6,
+      "right" : 6
+    },
+    "held" : {
+      "total" : 3,
+      "right" : 0
+    },
+    "doubt" : {
+      "total" : 4,
+      "right" : 4
+    },
+    "noticesNeedingReview" : 8,
+    "largeModelReads" : 8,
+    "cost" : {
+      "smallModel" : "claude-haiku-5-5",
+      "smallModelUsd" : 0.0204,
+      "largeModel" : "claude-opus-5-5",
+      "largeModelUsd" : 0.165,
+      "usdPerNotice" : 0.0071
+    }
+  },
+  "promptHash" : "9b7e10163c14"
+}
