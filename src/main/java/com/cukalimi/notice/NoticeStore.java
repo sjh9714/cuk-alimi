@@ -173,6 +173,9 @@ public class NoticeStore {
             DateItem fresh = DateItem.fromNotice(notice.getId(), item.naturalKey(view.articleNo(), occurrence), item.title(),
                     item.range().start(), item.range().end(), item.range().startsAt(), item.range().endsAt(),
                     item.targetGrade());
+            if (item.evidence() != null) {
+                fresh.withEvidence(item.evidence().text(), item.evidence().match());
+            }
             seen.add(fresh.getNaturalKey());
             var existing = dateItems.findByNaturalKey(fresh.getNaturalKey());
             if (existing.isEmpty()) {
@@ -188,6 +191,7 @@ public class NoticeStore {
                     if (!adopted.refreshFrom(fresh)) {
                         adopted.extendTitle(fresh.getTitle());
                     }
+                    adopted.followEvidence(fresh);
                     unclaimed.remove(adopted);
                     reviewed.remove(adopted);
                 } else {
@@ -203,6 +207,8 @@ public class NoticeStore {
                 log.info("notice {} item {} retired (label changed under a saved item)", view.articleNo(), existing.get().getId());
             } else {
                 existing.get().refreshFrom(fresh);
+                // 승인한 항목은 날짜를 덮어쓰지 않는다. 근거는 날짜가 같을 때만 따른다.
+                existing.get().followEvidence(fresh);
                 unclaimed.remove(existing.get());
             }
         }
@@ -232,14 +238,20 @@ public class NoticeStore {
         for (ExtractedItem item : extracted) {
             String key = "notice:" + articleNo + ":img." + item.where();
             seen.add(key);
+            DateItem fresh = DateItem.fromImage(noticeId, key, item.title(), item.range().start(), item.range().end(),
+                    item.range().startsAt(), item.range().endsAt(), item.targetGrade());
+            if (item.evidence() != null) {
+                fresh.withEvidence(item.evidence().text(), item.evidence().match());
+            }
             DateItem row = dateItems.findByNaturalKey(key).orElse(null);
             if (row == null) {
-                row = dateItems.save(DateItem.fromImage(noticeId, key, item.title(), item.range().start(), item.range().end(),
-                        item.range().startsAt(), item.range().endsAt(), item.targetGrade()));
+                row = dateItems.save(fresh);
                 added++;
             } else {
                 row.refreshCandidate(item.title(), item.range().start(), item.range().end(), item.range().startsAt(),
                         item.range().endsAt());
+                // 근거는 받아 적은 글의 그 줄이다. 사람이 날짜를 고친 항목은 날짜가 달라 근거를 비운다.
+                row.followEvidence(fresh);
             }
             if (agreedDates.contains(item.range().end())) {
                 row.publishFromImage();

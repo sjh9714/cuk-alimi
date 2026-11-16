@@ -28,11 +28,14 @@ public class RunOnceRunner implements ApplicationRunner {
     private final com.cukalimi.domain.NoticeRawRepository raws;
     private final com.cukalimi.notice.NoticeStore store;
     private final com.cukalimi.feed.FeedAudit audit;
+    private final com.cukalimi.domain.DateItemRepository dateItems;
 
     public RunOnceRunner(AppProperties props, ScheduleCollector schedules, NoticeCollector noticesCollector,
             ConfigurableApplicationContext context, com.cukalimi.digest.DigestService digest,
             com.cukalimi.notice.ImageNoticeReader imageReader, com.cukalimi.domain.NoticeRepository notices,
-            com.cukalimi.domain.NoticeRawRepository raws, com.cukalimi.notice.NoticeStore store, com.cukalimi.feed.FeedAudit audit) {
+            com.cukalimi.domain.NoticeRawRepository raws, com.cukalimi.notice.NoticeStore store, com.cukalimi.feed.FeedAudit audit,
+            com.cukalimi.domain.DateItemRepository dateItems) {
+        this.dateItems = dateItems;
         this.audit = audit;
         this.notices = notices;
         this.raws = raws;
@@ -65,11 +68,17 @@ public class RunOnceRunner implements ApplicationRunner {
                 System.out.println("transcribe " + imageReader.readPending(java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul"))));
             }
             if (mode.equals("reparse")) {
-                // 추출 규칙을 고친 뒤 저장해 둔 원문으로 최근 90일 공지의 날짜 항목을 다시 뽑는다. 학교에 요청하지 않는다.
+                // 추출 규칙을 고친 뒤 저장해 둔 원문으로 날짜 항목을 다시 뽑는다. 학교에 요청하지 않는다.
+                // 최근 90일 공지와, 더 오래됐어도 아직 끝나지 않은 날짜가 남은 공지를 본다. 화면에 보이는 항목이 빠지지 않게.
                 int n = 0;
                 int failed = 0;
-                for (var notice : notices.findByPostedOnGreaterThanEqualAndRemovedAtIsNull(
-                        java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul")).minusDays(90))) {
+                java.time.LocalDate today = java.time.LocalDate.now(java.time.ZoneId.of("Asia/Seoul"));
+                java.util.Map<Long, com.cukalimi.domain.Notice> targets = new java.util.LinkedHashMap<>();
+                notices.findByPostedOnGreaterThanEqualAndRemovedAtIsNull(today.minusDays(90)).forEach(x -> targets.put(x.getId(), x));
+                java.util.Set<Long> open = dateItems.findByEndsOnGreaterThanEqual(today).stream().map(com.cukalimi.domain.DateItem::getNoticeId)
+                        .filter(java.util.Objects::nonNull).collect(java.util.stream.Collectors.toSet());
+                notices.findAllById(open).stream().filter(x -> !x.isRemoved()).forEach(x -> targets.putIfAbsent(x.getId(), x));
+                for (var notice : targets.values()) {
                     var raw = raws.findById(notice.getArticleNo()).orElse(null);
                     if (raw == null) {
                         continue;

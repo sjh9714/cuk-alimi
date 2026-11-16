@@ -50,8 +50,28 @@ public class DateItem {
     private OffsetDateTime updatedAt = OffsetDateTime.now();
     private OffsetDateTime reviewedAt;
     private String reviewedBy;
+    /** 날짜를 읽은 글과 그 안의 날짜 글자 (ADR 016). 화면의 근거다. 손으로 넣은 항목에는 없다. */
+    private String evidenceText;
+    private String evidenceMatch;
 
     protected DateItem() {
+    }
+
+    /** 새로 뽑은 항목에 근거를 단다. */
+    public DateItem withEvidence(String text, String match) {
+        this.evidenceText = text;
+        this.evidenceMatch = match;
+        return this;
+    }
+
+    /**
+     * 다시 뽑은 결과의 근거를 따른다. 날짜가 같을 때만이다. 사람이 날짜를 고친 항목에 옛 날짜가 적힌 글을 근거로 보여 주면 안 되므로,
+     * 날짜가 다르면 근거를 비운다. 근거는 화면에만 쓰여서 수정 시각을 건드리지 않는다.
+     */
+    public void followEvidence(DateItem fresh) {
+        boolean sameDates = java.util.Objects.equals(startsOn, fresh.startsOn) && endsOn.equals(fresh.endsOn);
+        evidenceText = sameDates ? fresh.evidenceText : null;
+        evidenceMatch = sameDates ? fresh.evidenceMatch : null;
     }
 
     public static DateItem fromSchedule(String naturalKey, String title, LocalDate startsOn, LocalDate endsOn,
@@ -180,6 +200,11 @@ public class DateItem {
     /** 검수. 사람이 확인하거나 고친 뒤에는 수집이 덮어쓰지 않는다. */
     public void review(String title, LocalDate startsOn, LocalDate endsOn, LocalTime startsAt, LocalTime endsAt,
             String targetGrade, String targetDept, String targetNote, String by) {
+        // 사람이 날짜를 고쳤으면 옛 날짜가 적힌 근거는 더 맞지 않는다.
+        if (this.endsOn != null && (!this.endsOn.equals(endsOn) || !java.util.Objects.equals(this.startsOn, startsOn))) {
+            this.evidenceText = null;
+            this.evidenceMatch = null;
+        }
         this.title = title;
         this.startsOn = startsOn;
         this.endsOn = endsOn;
@@ -273,5 +298,13 @@ public class DateItem {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getEvidenceText() {
+        return evidenceText;
+    }
+
+    public String getEvidenceMatch() {
+        return evidenceMatch;
     }
 }
