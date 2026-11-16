@@ -1,23 +1,28 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { api, dday, type Feed, type Line, type Me } from "@/lib/api";
-import { addDays, boardCards, cleanTitle, eventsOf, iso, mondayOf, startsOf, tasksOf, type CampusEvent, type Kind, type Task } from "@/lib/tasks";
+import { api, DEFAULT_TOPICS, type Feed, type Line, type Me, type Section } from "@/lib/api";
+import { cleanTitle, dayText, eventsOf, groupByWhen, iso, partsText, splitByInterest, tasksOf, topicParts, WEEKDAY, type CampusEvent, type Task } from "@/lib/tasks";
 import { ChevronIcon } from "./icons";
-import { Day, KIND_LABEL, shortDate, TAG_CLASS } from "./planner";
+import { Row, shortDate } from "./planner";
 
-const KINDS: (Kind | "all")[] = ["all", "scholarship", "academic", "career", "dept"];
 const DONE_KEY = "cuk-alimi.done";
-const MEMO_MAX = 6;
+/** "그 뒤" 묶음에서 먼저 보여 주는 행 수. 학사일정이 다음 학기까지 이어져 길다. */
+const LATER_MAX = 8;
+/** 관심 밖과 달리 자격으로 접힌 구간. 이름은 접힌 줄의 내역에 쓴다. */
+const NARROW: { key: Section["key"]; label: string }[] = [
+  { key: "region", label: "지역 장학" },
+  { key: "group", label: "특정 대상" },
+  { key: "dept", label: "다른 학과" },
+];
 
-/** 정적 HTML에는 빌드한 날이 박힌다. 이번 주는 브라우저에서 처음 그릴 때 정한다. */
+/** 정적 HTML에는 빌드한 날이 박힌다. 오늘은 브라우저에서 처음 그릴 때 정한다. */
 export default function Home() {
   const [today, setToday] = useState<Date | null>(null);
   useEffect(() => setToday(new Date()), []);
   if (!today) {
     return (
-      <main id="main" className="planner">
+      <main id="main">
         <div className="spread loading" aria-label="불러오는 중" />
       </main>
     );
@@ -25,14 +30,20 @@ export default function Home() {
   return <Planner today={today} />;
 }
 
+type Entry = { key: string; date: string; task?: Task; event?: CampusEvent };
+
 function Planner({ today }: { today: Date }) {
   const [feed, setFeed] = useState<Feed | null>(null);
   const [me, setMe] = useState<Me | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [kind, setKind] = useState<Kind | "all">("all");
   const [done, setDone] = useState<Set<string>>(new Set());
+  const [allLater, setAllLater] = useState(false);
   const todayIso = iso(today);
-  const tasksAll = useMemo(() => tasksOf(boardCards(feed?.sections ?? []), todayIso), [feed, todayIso]);
+  const sections = useMemo(() => feed?.sections ?? [], [feed]);
+  // 로그인 전에는 기본 관심 주제 다섯 개로 거른다 (ADR 015).
+  const interests = me ? me.interests : DEFAULT_TOPICS;
+  const { main, outside } = useMemo(() => splitByInterest(sections, interests, todayIso), [sections, interests, todayIso]);
+  const tasksAll = useMemo(() => [...main, ...outside], [main, outside]);
 
   const load = () =>
     Promise.all([api.feed(), api.me()])
@@ -90,7 +101,7 @@ function Planner({ today }: { today: Date }) {
     if (me && task) {
       setError(null);
       try {
-        // 행의 모든 줄에 보낸다. 첫 줄만 보내면 나머지 줄의 푸시와 캘린더가 계속 나간다.
+        // 행의 모든 줄에 보낸다. 첫 줄만 보내면 나머지 줄의 메일과 캘린더가 계속 나간다.
         await Promise.all(task.lines.filter((l) => l.done === task.done).map((l) => (task.done ? api.unmarkDone(l.id) : api.markDone(l.id))));
         await refresh();
       } catch (e) {
@@ -104,28 +115,6 @@ function Planner({ today }: { today: Date }) {
     writeDone(next);
   };
 
-  const monday = mondayOf(today);
-  const sections = useMemo(() => feed?.sections ?? [], [feed]);
-  const tasks = tasksAll;
-  const inKind = (k: Kind) => kind === "all" || k === kind || (kind === "academic" && k === "schedule");
-  const shown = tasks.filter((t) => inKind(t.kind));
-  const events = [...eventsOf(sections), ...startsOf(sections, todayIso)].filter((e) => inKind(e.kind));
-  const week2 = iso(addDays(monday, 7));
-  const after = iso(addDays(monday, 14));
-  const finishedKeys = serverDone ?? done;
-  const open = (t: Task) => !finishedKeys.has(t.key);
-  const word = kind === "all" ? "일" : `${KIND_LABEL[kind]} 일정`;
-  const todayCount = shown.filter((t) => t.date === todayIso && open(t)).length;
-  const weekCount = shown.filter((t) => t.date >= todayIso && t.date < week2 && open(t)).length;
-  const upcoming = upcomingRows(shown, events, after);
-  const others = shown.filter((t) => t.date >= after && t.kind !== "schedule");
-  const undated = (sections.find((s) => s.key === "undated")?.cards ?? []).filter((c) => inKind(c.kind));
-  const folded = sections
-    .filter((s) => s.key === "region" || s.key === "group" || s.key === "dept")
-    .map((s) => ({ ...s, cards: s.cards.filter((c) => inKind(c.kind)) }))
-    .filter((s) => s.cards.length > 0);
-  const saved = shown.filter((t) => t.saved);
-
   /** 그림 날짜 신고. 서버가 받으면 그 날짜를 내린다 (ADR 010). 확인을 따로 묻지 않고, 화면에 고맙다는 말만 남긴다. */
   const reportDate = async (lines: Line[]) => {
     setError(null);
@@ -137,88 +126,54 @@ function Planner({ today }: { today: Date }) {
     }
   };
 
+  const finishedKeys = serverDone ?? done;
   const board = { todayIso, done: finishedKeys, canSave: !!me, onDone: toggleDone, onSave: toggleSave, onReport: me ? reportDate : undefined };
 
-  const undatedMemo = (
-    <div className="cell memo">
-      <h2>{undated.length ? `날짜 확인 중 ${undated.length}건` : "날짜 확인 중"}</h2>
-      {undated.length === 0 ? (
-        <p className="hint">지금은 없어요.</p>
-      ) : (
-        <>
-          <p className="hint">날짜가 공지 그림에만 있어요.</p>
-          <ul>
-            {undated.slice(0, MEMO_MAX).map((c) => (
-              <li key={c.key}>
-                <a href={c.url} target="_blank" rel="noreferrer">
-                  {cleanTitle(c.title)}
-                </a>
-              </li>
-            ))}
-          </ul>
-          {undated.length > MEMO_MAX && <p className="hint">외 {undated.length - MEMO_MAX}건</p>}
-        </>
-      )}
-    </div>
-  );
-  const savedMemo = (
-    <div className="cell memo">
-      <h2>{me ? `내 저장 ${saved.length}건` : "내 저장"}</h2>
-      {!me ? (
-        <p className="hint">
-          <Link href="/settings/">로그인</Link>하면 마감을 저장하고 메일로 받을 수 있어요.
-        </p>
-      ) : saved.length === 0 ? (
-        <p className="hint">행 끝의 책갈피를 누르면 여기에 모여요.</p>
-      ) : (
-        <>
-          <ul>
-            {saved.slice(0, MEMO_MAX).map((t) => (
-              <li key={t.key} className={finishedKeys.has(t.key) || t.date < todayIso ? "done" : undefined}>
-                <a href={t.url} target="_blank" rel="noreferrer">
-                  {t.title}
-                </a>
-                <span>{shortDate(t.date)}</span>
-              </li>
-            ))}
-          </ul>
-          {saved.length > MEMO_MAX && <p className="hint">외 {saved.length - MEMO_MAX}건</p>}
-        </>
-      )}
-    </div>
-  );
+  // 할 일과 행사를 날짜순 한 줄기로 합친다. 같은 날에는 할 일이 먼저다.
+  const entries: Entry[] = [
+    ...main.map((t): Entry => ({ key: t.key, date: t.date, task: t })),
+    ...eventsOf(sections).map((e): Entry => ({ key: e.key, date: e.date, event: e })),
+  ].sort((a, b) => a.date.localeCompare(b.date) || Number(!!a.event) - Number(!!b.event));
+  const groups = groupByWhen(entries, todayIso);
+  const openCount = (key: "week" | "next") => (groups.find((g) => g.key === key)?.rows ?? []).filter((r) => r.task && !finishedKeys.has(r.task.key)).length;
+  const weekCount = openCount("week");
+  const nextCount = openCount("next");
+
+  const outsideRows = outside.filter((t) => t.date >= todayIso);
+  const narrow = NARROW.map((n) => ({ ...n, tasks: tasksOf(sections.find((s) => s.key === n.key)?.cards ?? [], todayIso).filter((t) => t.date >= todayIso) })).filter((n) => n.tasks.length > 0);
+  const narrowCount = narrow.reduce((sum, n) => sum + n.tasks.length, 0);
+  const undated = sections.find((s) => s.key === "undated")?.cards ?? [];
+  const mine = me ? "내 마감" : "마감";
 
   return (
-    <main id="main" className="planner">
+    <main id="main">
       <div className="head">
-        <div>
-          <h1>{weekTitle(monday)}</h1>
-          {feed && (
-            <p className={`say ${todayCount ? "" : "calm"}`} aria-live="polite">
-              {todayCount
-                ? `오늘 끝나는 ${word} ${todayCount}건`
-                : weekCount
-                  ? `이번 주 남은 ${word} ${weekCount}건`
-                  : `이번 주에 끝나는 ${word}은 없어요`}
-            </p>
-          )}
-        </div>
+        <h1>
+          {today.getMonth() + 1}월 {today.getDate()}일 {WEEKDAY[today.getDay()]}요일
+        </h1>
         {feed && (
-          <div className="head-tools">
-            {me && (
-              <p className="legend">
-                <span className="swatch" aria-hidden="true" />
-                내게 맞음
-              </p>
+          <p className="say" aria-live="polite">
+            {weekCount > 0 ? (
+              <>
+                이번 주 {mine} <b>{weekCount}건</b>
+              </>
+            ) : (
+              "이번 주에 끝나는 일은 없어요"
             )}
-            <div className="seg" role="group" aria-label="종류">
-              {KINDS.map((k) => (
-                <button key={k} aria-pressed={kind === k} onClick={() => setKind(k)}>
-                  {k === "all" ? "전체" : KIND_LABEL[k]}
-                </button>
-              ))}
-            </div>
-          </div>
+            {nextCount > 0 && (
+              <>
+                , 다음 주 <b>{nextCount}건</b>
+              </>
+            )}
+            {outsideRows.length > 0 && (
+              <>
+                {" "}
+                <a href="#outside" onClick={openOutside}>
+                  관심 밖 {outsideRows.length}건
+                </a>
+              </>
+            )}
+          </p>
         )}
       </div>
 
@@ -235,86 +190,102 @@ function Planner({ today }: { today: Date }) {
 
       {!feed && !error && <div className="spread loading" aria-label="불러오는 중" />}
 
+      {feed &&
+        groups.map((g) => {
+          const cut = g.key === "later" && !allLater && g.rows.length > LATER_MAX;
+          const rows = cut ? g.rows.slice(0, LATER_MAX) : g.rows;
+          return (
+            <section key={g.key} className="group" aria-labelledby={`group-${g.key}`}>
+              <h2 id={`group-${g.key}`}>{g.label}</h2>
+              <ul className="items">
+                {rows.map((r) => (r.task ? <Row key={r.key} task={r.task} {...board} /> : <EventRow key={r.key} event={r.event!} todayIso={todayIso} />))}
+              </ul>
+              {cut && (
+                <button className="text more" onClick={() => setAllLater(true)}>
+                  더 보기 {g.rows.length - LATER_MAX}건
+                </button>
+              )}
+            </section>
+          );
+        })}
+
       {feed && (
-        <>
-          <div className="spread">
-            {days(monday).map((d) => (
-              <Day key={iso(d)} date={d} tasks={shown} events={events} {...board} />
-            ))}
-            {undatedMemo}
-          </div>
-
-          <div className="next">
-            <h2>다음 주</h2>
-            <span>
-              {rangeText(addDays(monday, 7), addDays(monday, 13))}{" "}
-              {shown.filter((t) => t.date >= week2 && t.date < after).length}건
-            </span>
-          </div>
-          <div className="spread">
-            {days(addDays(monday, 7)).map((d) => (
-              <Day key={iso(d)} date={d} tasks={shown} events={events} {...board} />
-            ))}
-            {savedMemo}
-          </div>
-
-          <section className="upcoming" aria-labelledby="upcoming-title">
-            <div className="next">
-              <h2 id="upcoming-title">앞으로의 일정</h2>
-            </div>
-            {upcoming.length === 0 ? (
-              <p className="hint">앞으로 남은 일정이 없어요.</p>
-            ) : (
-              <ul className="fold-list">
-                {upcoming.map((r) => (
-                  <li key={r.key}>
-                    <span className="d">{shortDate(r.date)}</span>
-                    <span className={`tag ${TAG_CLASS[r.tag]}`}>{r.tag}</span>
-                    <a href={r.url} target="_blank" rel="noreferrer">
-                      {r.title}
+        <div className="folds">
+          {outsideRows.length > 0 && (
+            <Fold id="outside" title="관심 밖" count={outsideRows.length} note={partsText(topicParts(outsideRows))} open={groups.length === 0}>
+              <ul className="items">
+                {outsideRows.map((t) => (
+                  <Row key={t.key} task={t} {...board} />
+                ))}
+              </ul>
+            </Fold>
+          )}
+          {narrowCount > 0 && (
+            <Fold title="다른 대상" count={narrowCount} note={partsText(narrow.map((n) => ({ label: n.label, count: n.tasks.length })), 3)}>
+              {narrow.map((n) => (
+                <div key={n.key}>
+                  <h3>{n.label}</h3>
+                  <FoldList tasks={n.tasks} />
+                </div>
+              ))}
+            </Fold>
+          )}
+          {undated.length > 0 && (
+            <Fold title="날짜 확인 중" count={undated.length} note="그림에만 날짜가 있는 공지">
+              <ul className="fold-list plain">
+                {undated.map((c) => (
+                  <li key={c.key}>
+                    <a href={c.url} target="_blank" rel="noreferrer">
+                      {cleanTitle(c.title)}
                     </a>
                   </li>
                 ))}
               </ul>
-            )}
-            {others.length > 0 && (
-              <details className="fold">
-                <summary>
-                  <span className="fold-title">
-                    다른 공지 일정 <span className="count">{others.length}</span>
-                  </span>
-                  <ChevronIcon size={15} />
-                </summary>
-                <div className="fold-body">
-                  <FoldList tasks={others} tagged />
-                </div>
-              </details>
-            )}
-          </section>
-        </>
-      )}
-
-      {feed && (
-        <>
-          <div className="folds">
-            {folded.map((s) => (
-              <Fold key={s.key} title={s.title} count={s.cards.length} note={s.note}>
-                <FoldList tasks={tasksOf(s.cards, todayIso)} />
-              </Fold>
-            ))}
-          </div>
-        </>
+            </Fold>
+          )}
+        </div>
       )}
     </main>
   );
 }
 
-function Fold({ title, count, note, children }: { title: string; count: number; note: string; children: React.ReactNode }) {
+/** 요약 줄의 "관심 밖 N건"을 누르면 접힌 줄을 펼쳐서 보여 준다. */
+function openOutside() {
+  const fold = document.getElementById("outside");
+  if (fold instanceof HTMLDetailsElement) fold.open = true;
+}
+
+/** 행사. 할 일이 아니라서 체크와 남은 날 없이 회색으로만 적는다. */
+function EventRow({ event, todayIso }: { event: CampusEvent; todayIso: string }) {
   return (
-    <details className="fold">
+    <li className="it event">
+      <span aria-hidden />
+      <div className="txt">
+        <p className="do">
+          <a href={event.url} target="_blank" rel="noreferrer">
+            {event.title}
+          </a>
+        </p>
+        <div className="m">
+          <span className="what">
+            <b>행사</b>
+          </span>
+          {event.at && <em>{event.at}</em>}
+        </div>
+      </div>
+      <div className="when">
+        <span>{dayText(event.date, todayIso)}</span>
+      </div>
+    </li>
+  );
+}
+
+function Fold({ id, title, count, note, open, children }: { id?: string; title: string; count: number; note: string; open?: boolean; children: React.ReactNode }) {
+  return (
+    <details className="fold" id={id} open={open || undefined}>
       <summary>
         <span className="fold-title">
-          {title} <span className="count">{count}</span>
+          {title} {count}건
         </span>
         <span className="note">{note}</span>
         <ChevronIcon size={15} />
@@ -324,13 +295,12 @@ function Fold({ title, count, note, children }: { title: string; count: number; 
   );
 }
 
-function FoldList({ tasks, tagged = false }: { tasks: Task[]; tagged?: boolean }) {
+function FoldList({ tasks }: { tasks: Task[] }) {
   return (
     <ul className="fold-list">
       {tasks.map((t) => (
         <li key={t.key}>
           <span className="d">{shortDate(t.date)}</span>
-          {tagged && <span className="tag end">마감</span>}
           <a href={t.url} target="_blank" rel="noreferrer">
             {t.title}
           </a>
@@ -338,29 +308,6 @@ function FoldList({ tasks, tagged = false }: { tasks: Task[]; tagged?: boolean }
       ))}
     </ul>
   );
-}
-
-/** 2주 뒤 일정. 학사일정 표 항목과 행사, 시작일을 날짜순으로 항상 보여 준다. */
-function upcomingRows(tasks: Task[], events: CampusEvent[], after: string) {
-  const rows = [
-    ...tasks.filter((t) => t.date >= after && t.kind === "schedule").map((t) => ({ key: t.key, date: t.date, title: t.title, url: t.url, tag: "마감" as const })),
-    ...events.filter((e) => e.date >= after).map((e) => ({ key: e.key, date: e.date, title: e.title, url: e.url, tag: e.tag })),
-  ];
-  return rows.sort((a, b) => a.date.localeCompare(b.date));
-}
-
-function days(monday: Date): Date[] {
-  return Array.from({ length: 7 }, (_, i) => addDays(monday, i));
-}
-
-function weekTitle(monday: Date): string {
-  const nth = ["첫째", "둘째", "셋째", "넷째", "다섯째"][Math.ceil(monday.getDate() / 7) - 1];
-  return `${monday.getMonth() + 1}월 ${nth} 주`;
-}
-
-function rangeText(a: Date, b: Date): string {
-  const end = a.getMonth() === b.getMonth() ? `${b.getDate()}일` : `${b.getMonth() + 1}월 ${b.getDate()}일`;
-  return `${a.getMonth() + 1}월 ${a.getDate()}일부터 ${end}까지`;
 }
 
 /** 로그인 전의 끝냈어요 표시. 이 브라우저에만 남고, 로그인하면 서버로 옮긴다. */

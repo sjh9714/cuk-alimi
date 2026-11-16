@@ -50,6 +50,38 @@ export function ChevronIcon({ dir = "down", ...p }: Props & { dir?: "down" | "le
   );
 }
 
+/** 아래 탭의 일정 */
+export function CalendarIcon(p: Props) {
+  return (
+    <Svg {...p}>
+      <rect x="4" y="5" width="16" height="15" rx="3.5" />
+      <path d="M4 10h16M8.5 3v3.5M15.5 3v3.5" />
+    </Svg>
+  );
+}
+
+/** 아래 탭의 혜택 */
+export function TagIcon(p: Props) {
+  return (
+    <Svg {...p}>
+      <path d="M4 12.2V5.5A1.5 1.5 0 0 1 5.5 4h6.7l8 8-7.9 8.2z" />
+      <circle cx="8.6" cy="8.6" r="1.3" />
+    </Svg>
+  );
+}
+
+/** 아래 탭의 설정 */
+export function SlidersIcon(p: Props) {
+  return (
+    <Svg {...p}>
+      <path d="M5 7h9M18 7h1M5 12h2M11 12h8M5 17h9M18 17h1" />
+      <circle cx="16" cy="7" r="2" />
+      <circle cx="9" cy="12" r="2" />
+      <circle cx="16" cy="17" r="2" />
+    </Svg>
+  );
+}
+
 export function PlusIcon(p: Props) {
   return (
     <Svg {...p}>

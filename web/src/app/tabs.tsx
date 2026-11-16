@@ -4,18 +4,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api, type Me } from "@/lib/api";
+import { CalendarIcon, CheckIcon, SlidersIcon, TagIcon } from "./icons";
 
 const LINKS = [
-  { href: "/", label: "일정" },
-  { href: "/benefits/", label: "혜택" },
-  { href: "/settings/", label: "설정" },
+  { href: "/", label: "일정", icon: CalendarIcon },
+  { href: "/benefits/", label: "혜택", icon: TagIcon },
+  { href: "/settings/", label: "설정", icon: SlidersIcon },
 ];
 
 /** PC에서는 위쪽 머리글, 모바일에서는 아래쪽 탭. 같은 링크를 CSS로 나눠 보여준다. */
 export function Header() {
   const path = usePathname();
   const me = useMe(path);
-  const links = me?.admin ? [...LINKS, { href: "/admin/", label: "검수" }] : LINKS;
+  const links = me?.admin ? [...LINKS, { href: "/admin/", label: "검수", icon: CheckIcon }] : LINKS;
   return (
     <>
       <header className="site-header">
@@ -38,6 +39,7 @@ export function Header() {
       <nav className="tabs" aria-label="주 메뉴">
         {links.map((l) => (
           <Link key={l.href} href={l.href} className={path === l.href ? "active" : ""}>
+            <l.icon size={22} />
             {l.label}
           </Link>
         ))}

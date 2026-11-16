@@ -180,7 +180,7 @@ export function tasksOf(cards: Card[], today: string): Task[] {
   return tasks.sort((a, b) => a.date.localeCompare(b.date) || Number(b.mine) - Number(a.mine) || a.title.localeCompare(b.title, "ko"));
 }
 
-export type CampusEvent = { key: string; date: string; title: string; at: string; kind: Kind; url: string; line: Line; tag: "행사" | "시작" };
+export type CampusEvent = { key: string; date: string; title: string; at: string; kind: Kind; url: string; line: Line };
 
 /** 신청할 것 없이 날짜만 알아 두면 되는 행사 (학위수여식 등). */
 export function eventsOf(sections: Section[]): CampusEvent[] {
@@ -190,22 +190,11 @@ export function eventsOf(sections: Section[]): CampusEvent[] {
     .flatMap((c) => {
       if (!c.deadline) return [];
       const time = c.deadline.startsAt ?? c.deadline.endsAt;
-      return [{ key: c.key, date: c.deadline.endsOn, title: cleanTitle(c.title), at: time ? time.slice(0, 5) : "", kind: c.kind, url: c.url, line: c.deadline, tag: "행사" }];
+      return [{ key: c.key, date: c.deadline.endsOn, title: cleanTitle(c.title), at: time ? time.slice(0, 5) : "", kind: c.kind, url: c.url, line: c.deadline }];
     });
 }
 
-/** 학사일정 표 항목의 시작일. 수강신청처럼 시작하는 날이 마감만큼 중요한 일정이다. 지난 시작일은 뺀다. */
-export function startsOf(sections: Section[], today: string): CampusEvent[] {
-  return boardCards(sections)
-    .filter((c) => c.kind === "schedule")
-    .flatMap((c) => {
-      const line = c.deadline;
-      if (!line?.startsOn || line.startsOn === line.endsOn || line.startsOn < today) return [];
-      return [{ key: `start:${c.key}`, date: line.startsOn, title: c.title, at: "", kind: c.kind, url: c.url, line, tag: "시작" as const }];
-    });
-}
-
-/** 주간 판에 올릴 구간. 지역과 특정 대상은 ADR 009대로 접어 둔다. */
+/** 목록에 올릴 수 있는 구간. 열린 구간과 취업이다. 지역과 특정 대상은 ADR 009대로 접어 둔다. */
 export function boardCards(sections: Section[]): Card[] {
   return sections.filter((s) => !s.collapsed || s.key === "career").flatMap((s) => s.cards);
 }

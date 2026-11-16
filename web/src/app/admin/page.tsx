@@ -107,7 +107,7 @@ export default function Admin() {
   }
 
   return (
-    <main id="main">
+    <main id="main" className="wide">
       <div className="page-head">
         <h1>검수</h1>
         {queue && (
