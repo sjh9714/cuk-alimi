@@ -59,7 +59,7 @@ export function Row({ task, todayIso, done, canSave, onDone, onSave, onReport }:
         </div>
         {check && open && (
           <div className="check-body">
-            <p>공지 그림에서 읽은 날짜예요. 원문과 다르면 알려 주세요.</p>
+            <p>공지 그림에서 읽은 날짜예요.</p>
             {onReport && !reported && (
               <button
                 type="button"
@@ -72,7 +72,7 @@ export function Row({ task, todayIso, done, canSave, onDone, onSave, onReport }:
                 날짜가 달라요
               </button>
             )}
-            {reported && <p>알려 주셔서 고마워요. 그 날짜는 내리고 운영자가 확인해요.</p>}
+            {reported && <p>고마워요. 그 날짜는 내렸어요.</p>}
           </div>
         )}
       </div>

@@ -54,7 +54,7 @@ export default function Benefits() {
       <div className="page-head">
         <h1>학생 혜택</h1>
         <p className="sub">
-          대학생 자격으로 받는 것만 모았어요. 항목을 누르면 조건, 방법, 출처가 펼쳐져요.
+          대학생 자격으로 받는 것만 모았어요.
           {me ? (
             checked > 0 && ` 지금 받는 혜택 ${checked}개를 체크해 두었어요.`
           ) : (

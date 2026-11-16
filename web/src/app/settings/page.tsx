@@ -26,8 +26,8 @@ export default function Settings() {
 
   useEffect(() => {
     const flag = new URLSearchParams(window.location.search).get("digest");
-    if (flag === "off") setDigestNote("아침 알림을 껐어요. 다시 받으려면 아래에서 켜면 돼요.");
-    if (flag === "invalid") setDigestNote("링크가 맞지 않아요. 로그인한 뒤 아래에서 끌 수 있어요.");
+    if (flag === "off") setDigestNote("아침 알림을 껐어요.");
+    if (flag === "invalid") setDigestNote("링크가 맞지 않아요. 로그인해서 꺼 주세요.");
     api
       .me()
       .then((m) => {
@@ -151,7 +151,7 @@ export default function Settings() {
     <main id="main" className="narrow">
       <div className="page-head">
         <h1>설정</h1>
-        <p className="sub">{me ? me.email : "로그인하면 마감을 저장하고, 내 학년·전공에 맞는 항목을 먼저 볼 수 있어요."}</p>
+        <p className="sub">{me ? me.email : "로그인하면 관심 주제를 고르고 마감을 저장할 수 있어요."}</p>
       </div>
 
       {error && (
@@ -176,14 +176,14 @@ export default function Settings() {
               <p>
                 <strong>{sentTo}</strong>로 로그인 링크를 보냈어요.
               </p>
-              <p className="muted">15분 안에 메일의 링크를 누르면 로그인돼요. 한 번만 쓸 수 있어요.</p>
+              <p className="muted">15분 안에 한 번만 쓸 수 있어요.</p>
               <p style={{ marginTop: 14 }}>
                 <button onClick={() => setSentTo(null)}>다른 이메일로 받기</button>
               </p>
             </div>
           ) : (
             <form onSubmit={requestLogin}>
-              <p className="muted">비밀번호는 없어요. 이메일로 온 링크를 누르면 로그인돼요.</p>
+              <p className="muted">비밀번호 없이 메일의 링크로 로그인해요.</p>
               <label htmlFor="email">이메일</label>
               <div className="row fit">
                 <input
@@ -208,9 +208,7 @@ export default function Settings() {
         <>
           <section className="panel">
             <h2 className="panel-title">내 정보</h2>
-            <p className="muted">
-              모두 선택이에요. 형광펜은 고른 관심 주제 가운데 자격이 되는 일에만 칠하고, 알림도 그 일만 보내요. 소득이나 성적은 받지 않아요.
-            </p>
+            <p className="muted">모두 선택이에요. 소득과 성적은 받지 않아요.</p>
             <form onSubmit={saveProfile}>
               <fieldset className="topics">
                 <legend>관심 있는 일</legend>
@@ -232,9 +230,7 @@ export default function Settings() {
                     );
                   })}
                 </div>
-                <p className="hint">
-                  처음에는 학생들이 학교 게시판에서 가장 많이 여는 다섯 가지가 켜져 있어요. 모두 끄면 형광펜을 칠하지 않아요.
-                </p>
+                <p className="hint">고른 주제만 목록에 나오고 나머지는 &lsquo;관심 밖&rsquo;에 접혀요.</p>
               </fieldset>
               <div className="grid2">
                 <div>
@@ -295,7 +291,7 @@ export default function Settings() {
                 }}
                 placeholder="없으면 비워 두세요"
               />
-              <p className="hint">휴학이나 군 복무로 학기가 다르면 이번 학기를 골라 주세요. 3월과 9월에 한 학기씩 올라가요. "4학기 이상 이수" 같은 조건을 맞추는 데 써요.</p>
+              <p className="hint">휴학 등으로 학기가 다르면 직접 골라 주세요.</p>
 
               <fieldset className="region">
                 <legend>연고 지역</legend>
@@ -339,16 +335,14 @@ export default function Settings() {
                     </select>
                   </div>
                 </div>
-                <p className="hint">
-                  본인이나 부모님 주민등록 주소예요. 그 지역 재단·지자체 장학금이 접힌 구간에서 플래너로 들어오고 형광펜이 칠해져요.
-                </p>
+                <p className="hint">본인이나 부모님 주민등록 주소예요. 그 지역 장학금이 목록에 나와요.</p>
               </fieldset>
               <div className="row" style={{ marginTop: 16 }}>
                 <button className="primary" type="submit" disabled={busy}>
                   {busy ? "저장 중…" : "저장"}
                 </button>
                 {saved && (
-                  <span className="badge ok" role="status">
+                  <span className="badge" role="status">
                     저장했어요
                   </span>
                 )}
@@ -368,19 +362,15 @@ export default function Settings() {
               <span>매일 아침 8시, 보낼 것이 있는 날만 한 통</span>
             </label>
             <ul className="plain-list">
-              <li>새로 올라온 공지 가운데 꼭 챙길 일정, 내게 맞는 공지, 지역·특정 대상이 아닌 장학·학사 공지</li>
+              <li>관심 주제의 새 공지</li>
               <li>저장한 마감 3일 전</li>
               <li>체크한 혜택 만료 7일 전</li>
             </ul>
-            <p className="hint">같은 공지는 한 번만 보내요. 메일 맨 아래 링크로도 끌 수 있어요.</p>
           </section>
 
           <section className="panel">
             <h2 className="panel-title">캘린더 구독</h2>
-            <p className="muted">
-              이 주소를 구글·애플 캘린더에 &lsquo;URL로 구독&rsquo;으로 넣으면 내게 맞는 마감과 저장한 마감이 캘린더에 들어와요. 여기 오지
-              않아도 캘린더 앱이 몇 시간에 한 번 새로 받아 가요.
-            </p>
+            <p className="muted">구글·애플 캘린더에 &lsquo;URL로 구독&rsquo;으로 넣으면 형광펜 친 마감과 저장한 마감이 들어와요.</p>
             <div className="row fit">
               <input id="calendar-url" type="text" readOnly value={calendarUrl(me.calendarToken)} aria-label="캘린더 구독 주소" onFocus={(e) => e.currentTarget.select()} />
               <button type="button" onClick={copyCalendar}>
@@ -388,7 +378,7 @@ export default function Settings() {
               </button>
             </div>
             <p className="hint">
-              주소를 아는 사람은 누구나 내 마감 목록을 볼 수 있어요. 주소가 샜으면{" "}
+              주소를 아는 사람은 내 마감을 볼 수 있어요.{" "}
               {confirmRotate ? (
                 <>
                   <button type="button" className="link" disabled={busy} onClick={rotateCalendar}>
@@ -396,32 +386,26 @@ export default function Settings() {
                   </button>{" "}
                   <button type="button" className="link" onClick={() => setConfirmRotate(false)}>
                     취소
-                  </button>
+                  </button>{" "}
+                  이전 주소는 끊겨요.
                 </>
               ) : (
                 <button type="button" className="link" onClick={() => setConfirmRotate(true)}>
                   새로 만들기
                 </button>
               )}
-              . 그러면 이전 주소는 바로 끊겨요.
             </p>
           </section>
 
           <FeedbackPanel />
 
           <section className="panel">
-            <div className="row between">
-              <span className="sub">로그인 상태는 30일 동안 유지돼요.</span>
-              <button onClick={logout}>로그아웃</button>
-            </div>
+            <button onClick={logout}>로그아웃</button>
           </section>
 
           <section className="panel danger-zone">
             <h2 className="panel-title">탈퇴</h2>
-            <p className="muted">
-              이메일, 입학년도, 학기, 전공, 연고 지역, 저장한 마감, 체크한 혜택, 알림 기록, 남긴 의견, 날짜 신고를 모두 지워요. 되돌릴 수
-              없어요.
-            </p>
+            <p className="muted">내 정보와 저장한 것을 모두 지워요. 되돌릴 수 없어요.</p>
             {confirmDelete ? (
               <div className="row" style={{ marginTop: 12 }}>
                 <button className="danger" onClick={deleteAccount} disabled={busy}>
@@ -440,7 +424,7 @@ export default function Settings() {
             )}
           </section>
           <p className="hint" style={{ marginTop: 16 }}>
-            받는 정보와 보관 기간은 <Link href="/privacy/">개인정보 처리방침</Link>에 있어요.
+            <Link href="/privacy/">개인정보 처리방침</Link>
           </p>
         </>
       )}
@@ -481,7 +465,7 @@ function FeedbackPanel() {
   return (
     <section className="panel">
       <h2 className="panel-title">이건 왜 없나요?</h2>
-      <p className="muted">찾던 공지나 혜택이 없으면 한 줄 남겨 주세요. 모아서 수집 범위를 정할 때 봐요.</p>
+      <p className="muted">찾던 공지나 혜택이 없으면 알려 주세요.</p>
       <form onSubmit={submit}>
         <label htmlFor="feedback" className="sr-only">
           남길 말

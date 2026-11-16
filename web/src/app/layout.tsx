@@ -5,7 +5,7 @@ import { Header } from "./tabs";
 
 export const metadata: Metadata = {
   title: { default: "CUK 알리미", template: "%s | CUK 알리미" },
-  description: "가톨릭대 학생에게 돈이 걸린 공지와 학생 혜택을, 출처와 확인일이 붙은 것만 알려 드립니다.",
+  description: "가톨릭대 공지와 학사일정에서 신청 마감만 뽑아 날짜순으로 보여 드려요.",
   manifest: "/manifest.webmanifest",
   icons: { icon: "/icon.svg", apple: "/icon-180.png" },
   appleWebApp: { capable: true, title: "CUK 알리미", statusBarStyle: "default" },
@@ -29,10 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="site-footer">
           <div className="inner">
             <a href="/privacy/">개인정보 처리방침</a>
-            <span>
-              가톨릭대 학사일정과 장학·학사 공지에서 학생이 할 일만 골라 마감 순으로 보여 드려요. 공지는 학교 홈페이지의 공개 글을
-              옮긴 것이며 이 서비스는 학교와 관계가 없어요.
-            </span>
+            <span>학교 홈페이지의 공개 공지를 옮긴 것이고, 학교와 관계없는 서비스예요.</span>
           </div>
         </footer>
       </body>
