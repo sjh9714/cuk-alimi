@@ -501,7 +501,7 @@ legend + * {
 }
 
 fieldset.topics {
-  margin: 0 0 16px;
+  margin: 14px 0 16px;
   padding: 0;
   border: 0;
 }
