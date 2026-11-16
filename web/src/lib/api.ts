@@ -298,8 +298,7 @@ async function call<T>(method: string, path: string, body?: unknown): Promise<T>
 }
 
 export const api = {
-  /** from을 주면 그날부터 끝나는 항목까지 담는다(월 보기). */
-  feed: (from?: string) => call<Feed>("GET", from ? `/api/feed?from=${from}` : "/api/feed"),
+  feed: () => call<Feed>("GET", "/api/feed"),
   regions: () => call<Sido[]>("GET", "/api/regions"),
   benefits: () => call<Benefit[]>("GET", "/api/benefits"),
   me: async (): Promise<Me | null> => {

@@ -5,12 +5,10 @@ import { useEffect, useMemo, useState } from "react";
 import { api, dday, type Feed, type Line, type Me } from "@/lib/api";
 import { boardCards, cleanTitle, eventsOf, iso, startsOf, tasksOf, type CampusEvent, type Kind, type Task } from "@/lib/tasks";
 import { ChevronIcon } from "./icons";
-import { MonthView, monthRange } from "./month";
 import { addDays, Day, KIND_LABEL, shortDate, TAG_CLASS } from "./planner";
 
 const KINDS: (Kind | "all")[] = ["all", "scholarship", "academic", "career", "dept"];
 const DONE_KEY = "cuk-alimi.done";
-const VIEW_KEY = "cuk-alimi.view";
 const MEMO_MAX = 6;
 
 /** 정적 HTML에는 빌드한 날이 박힌다. 이번 주는 브라우저에서 처음 그릴 때 정한다. */
@@ -33,13 +31,8 @@ function Planner({ today }: { today: Date }) {
   const [error, setError] = useState<string | null>(null);
   const [kind, setKind] = useState<Kind | "all">("all");
   const [done, setDone] = useState<Set<string>>(new Set());
-  const [view, setView] = useState<"week" | "month">("week");
-  /** 월 보기용 피드. 작년 1월 1일부터 끝나는 항목까지 담는다. 월 보기를 처음 열 때 한 번 받는다. */
-  const [monthFeed, setMonthFeed] = useState<Feed | null>(null);
   const todayIso = iso(today);
-  const monthFrom = `${today.getFullYear() - 1}-01-01`;
   const tasksAll = useMemo(() => tasksOf(boardCards(feed?.sections ?? []), todayIso), [feed, todayIso]);
-  const monthTasksAll = useMemo(() => tasksOf(boardCards(monthFeed?.sections ?? []), todayIso), [monthFeed, todayIso]);
 
   const load = () =>
     Promise.all([api.feed(), api.me()])
@@ -53,26 +46,11 @@ function Planner({ today }: { today: Date }) {
   useEffect(() => {
     load();
     setDone(readDone());
-    setView(readView());
   }, []);
 
-  useEffect(() => {
-    if (view !== "month" || monthFeed) return;
-    api
-      .feed(monthFrom)
-      .then(setMonthFeed)
-      .catch((e) => setError(e.message));
-  }, [view, monthFeed, monthFrom]);
-
-  const switchView = (v: "week" | "month") => {
-    setView(v);
-    writeView(v);
-  };
-
-  /** 저장이나 끝냈어요 뒤에 두 피드를 같이 새로 받는다. */
+  /** 저장이나 끝냈어요 뒤에 피드를 새로 받는다. */
   const refresh = async () => {
     setFeed(await api.feed());
-    if (monthFeed) setMonthFeed(await api.feed(monthFrom));
   };
 
   // 로그인했으면 끝냈어요는 서버 값이다. 이 브라우저에만 있던 체크는 처음 한 번 서버로 옮기고 지운다.
@@ -108,7 +86,7 @@ function Planner({ today }: { today: Date }) {
   };
 
   const toggleDone = async (key: string) => {
-    const task = tasksAll.find((t) => t.key === key) ?? monthTasksAll.find((t) => t.key === key);
+    const task = tasksAll.find((t) => t.key === key);
     if (me && task) {
       setError(null);
       try {
@@ -210,17 +188,11 @@ function Planner({ today }: { today: Date }) {
     </div>
   );
 
-  const monthSections = monthFeed?.sections ?? [];
-  const monthShown = monthTasksAll.filter((t) => inKind(t.kind));
-  const monthEvents = [...eventsOf(monthSections), ...startsOf(monthSections, monthFrom)].filter((e) => inKind(e.kind));
-  const monthBoard = { ...board, done: me ? new Set(monthTasksAll.filter((t) => t.done).map((t) => t.key)) : done };
-  const range = monthRange([...monthTasksAll.map((t) => t.date), ...monthEvents.map((e) => e.date)], todayIso);
-
   return (
     <main id="main" className="planner">
       <div className="head">
         <div>
-          <h1>{view === "week" ? weekTitle(monday) : "월간 일정"}</h1>
+          <h1>{weekTitle(monday)}</h1>
           {feed && (
             <p className={`say ${todayCount ? "" : "calm"}`} aria-live="polite">
               {todayCount
@@ -233,14 +205,6 @@ function Planner({ today }: { today: Date }) {
         </div>
         {feed && (
           <div className="head-tools">
-            <div className="seg" role="group" aria-label="보기">
-              <button aria-pressed={view === "week"} onClick={() => switchView("week")}>
-                주
-              </button>
-              <button aria-pressed={view === "month"} onClick={() => switchView("month")}>
-                월
-              </button>
-            </div>
             {me && (
               <p className="legend">
                 <span className="swatch" aria-hidden="true" />
@@ -271,21 +235,7 @@ function Planner({ today }: { today: Date }) {
 
       {!feed && !error && <div className="spread loading" aria-label="불러오는 중" />}
 
-      {feed && view === "month" && (
-        <>
-          {monthFeed ? (
-            <MonthView tasks={monthShown} events={monthEvents} range={range} board={monthBoard} />
-          ) : (
-            <div className="spread loading" aria-label="불러오는 중" />
-          )}
-          <div className="spread two memos">
-            {undatedMemo}
-            {savedMemo}
-          </div>
-        </>
-      )}
-
-      {feed && view === "week" && (
+      {feed && (
         <>
           <div className="spread">
             {days(monday).map((d) => (
@@ -415,23 +365,6 @@ function weekTitle(monday: Date): string {
 function rangeText(a: Date, b: Date): string {
   const end = a.getMonth() === b.getMonth() ? `${b.getDate()}일` : `${b.getMonth() + 1}월 ${b.getDate()}일`;
   return `${a.getMonth() + 1}월 ${a.getDate()}일부터 ${end}까지`;
-}
-
-/** 고른 보기(주, 월). 저장소를 못 쓰면 주간으로 연다. */
-function readView(): "week" | "month" {
-  try {
-    return localStorage.getItem(VIEW_KEY) === "month" ? "month" : "week";
-  } catch {
-    return "week";
-  }
-}
-
-function writeView(v: "week" | "month") {
-  try {
-    localStorage.setItem(VIEW_KEY, v);
-  } catch {
-    // 저장소를 쓸 수 없으면 이번에만 바꾼다.
-  }
 }
 
 /** 로그인 전의 끝냈어요 표시. 이 브라우저에만 남고, 로그인하면 서버로 옮긴다. */
