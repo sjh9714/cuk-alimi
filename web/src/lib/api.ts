@@ -167,88 +167,6 @@ export type ReviewQueue = {
 
 export type FeedbackEntry = { id: number; message: string; createdAt: string };
 
-export type BacktestScore = {
-  notices: number;
-  exactNotices: number;
-  truePositive: number;
-  falsePositive: number;
-  falseNegative: number;
-  precision: number;
-  recall: number;
-};
-
-/** 공개 품질 페이지 수치 (ADR 011). */
-export type Quality = {
-  backtest: {
-    measuredOn: string;
-    notices: number;
-    deadlines: number;
-    all: BacktestScore;
-    text: BacktestScore;
-    image: BacktestScore;
-    remaining: { type: string; description: string; missed: number; invented: number }[];
-    /** 행 제목이 정답과 글자 그대로 같은 마감 수. 정답에 label을 적은 뒤부터 있다. */
-  };
-  review: {
-    judged: number;
-    approvedAsIs: number;
-    edited: number;
-    deleted: number;
-    added: number;
-    fromImageJudged: number;
-    fromImageApprovedAsIs: number;
-    noticesReviewed: number;
-  };
-  transcription: { images: number; skipped: number; inputTokens: number; outputTokens: number; costUsd: number };
-  autoPublish: { published: number; waiting: number; reports: number };
-  /** 형광펜 백테스트. 아직 재지 않았으면 null */
-  audienceBacktest: AudienceBacktest | null;
-  audienceRead: { enabled: boolean; notices: number; agreed: number; inputTokens: number; outputTokens: number; costUsd: number };
-  /** 공지 주제 규칙의 정확도 (ADR 014). */
-  topics: { notices: number; exact: number; accuracy: number; humanChecked: number } | null;
-  /** 화면 행 제목 점수. dev는 규칙을 고칠 때 보는 공지, fresh는 보지 않는 공지다. */
-  rows: { dev: RowScore; fresh: RowScore } | null;
-  /** 규칙을 고칠 때 보지 않은 새 공지의 점수. */
-  fresh: {
-    notices: number;
-    deadlines: number;
-    exactNotices: number;
-    precision: number;
-    recall: number;
-    topicExact: number;
-    topicTotal: number;
-  } | null;
-};
-
-/** ok는 그날 행이 하나이고 필수 낱말을 담은 수, exact는 정답 문구와 글자까지 같은 수, extra는 정답에 없는 날의 행 수. */
-export type RowScore = { total: number; ok: number; ratio: number; exact: number; exactRatio: number; extra: number };
-
-export type AudienceScore = {
-  precision: number;
-  recall: number;
-  expected: number;
-  predicted: number;
-  hit: number;
-  exactNotices: number;
-};
-
-export type AudienceBacktest = {
-  measuredOn: string;
-  /** holdout이면 지시문을 고칠 때 보지 않은 시험용 공지로 잰 값이다. */
-  set: "holdout" | "dev";
-  notices: number;
-  students: number;
-  goldModel: string;
-  humanChecked: number;
-  /** 사람이 확인해 고친 정답 수. */
-  humanFixed: number;
-  runModel: string;
-  runSource: string;
-  agreed: number;
-  regex: AudienceScore;
-  ai: AudienceScore;
-};
-
 export type ItemEdit = {
   title: string;
   startsOn: string | null;
@@ -314,7 +232,6 @@ export const api = {
   leaveFeedback: (message: string) => call<void>("POST", "/api/feedback", { message }),
   feedback: () => call<FeedbackEntry[]>("GET", "/api/admin/feedback"),
   meta: () => call<{ contactEmail: string }>("GET", "/api/meta"),
-  quality: () => call<Quality>("GET", "/api/quality"),
   updateProfile: (p: { entryYear: number | null; semester: number | null; major: string; secondMajor: string; homeRegion: string; interests: TopicKey[] }) =>
     call<Me>("PUT", "/api/me/profile", p),
   save: (id: number) => call<void>("POST", `/api/me/saved/${id}`),

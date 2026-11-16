@@ -1484,38 +1484,6 @@ details.fold .note {
   color: var(--body);
 }
 
-/* ───── 품질 ───── */
-
-.spread.stats {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-bottom: 12px;
-  background: var(--sheet);
-}
-
-.stats .cell {
-  gap: 4px;
-  min-height: 0;
-  border-bottom: 0;
-}
-
-.stats .cell:last-child {
-  border-right: 0;
-}
-
-.stats strong {
-  font-size: 36px;
-  font-weight: 800;
-  letter-spacing: -1px;
-  line-height: 1.1;
-  color: var(--pen);
-}
-
-.stats span {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--mute);
-}
-
 /* ───── 설정 ───── */
 
 .region {
@@ -1887,8 +1855,7 @@ details.fold .note {
   details.fold > summary svg {
     margin-left: auto;
   }
-  .spread.two,
-  .spread.stats {
+  .spread.two {
     grid-template-columns: minmax(0, 1fr);
   }
   .spread.two .cell:nth-child(n) {
@@ -1896,13 +1863,6 @@ details.fold .note {
   }
   .band {
     top: 52px;
-  }
-  .stats .cell {
-    border-right: 0;
-    border-bottom: 1px solid var(--hair);
-  }
-  .stats .cell:last-child {
-    border-bottom: 0;
   }
   .grid2 {
     grid-template-columns: minmax(0, 1fr);
