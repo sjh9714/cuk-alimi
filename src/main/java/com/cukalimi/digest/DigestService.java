@@ -15,6 +15,7 @@ import com.cukalimi.domain.UserBenefit;
 import com.cukalimi.domain.UserBenefitRepository;
 import com.cukalimi.feed.Feed;
 import com.cukalimi.feed.FeedService;
+import com.cukalimi.feed.Topic;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -160,6 +161,7 @@ public class DigestService {
                 .collect(Collectors.toSet());
         FeedService.Built built = feeds.build(user, today);
         OffsetDateTime since = now.minus(NEW_WINDOW);
+        Set<String> interests = Topic.keys(user.interests());
 
         List<Feed.Card> newNotices = new ArrayList<>();
         List<SavedLine> savedSoon = new ArrayList<>();
@@ -170,7 +172,8 @@ public class DigestService {
                     continue;
                 }
                 Notice notice = noticeOf(card, built);
-                if (NEW_SECTIONS.contains(section.key()) && notice != null && !already.contains(card.key())
+                if (NEW_SECTIONS.contains(section.key()) && inInterest(section.key(), card.topic(), interests)
+                        && notice != null && !already.contains(card.key())
                         && notice.getFirstSeenAt() != null && notice.getFirstSeenAt().isAfter(since)) {
                     newNotices.add(card);
                 }
@@ -192,6 +195,14 @@ public class DigestService {
                         && !b.getEndsOn().isBefore(today) && !b.getEndsOn().isAfter(today.plusDays(BENEFIT_DAYS)))
                 .toList();
         return new Digest(newNotices, savedSoon, ending);
+    }
+
+    /**
+     * 새 공지를 홈의 목록과 같은 규칙으로 거른다 (ADR 015). 홈에서 "관심 밖"으로 접히는 주제의 공지는 메일에도 넣지 않는다.
+     * 학사일정 구간과, 주제가 기타이거나 없는 공지는 관심 주제와 상관없이 남는다. 기타는 학생이 고를 수 없는 주제다.
+     */
+    static boolean inInterest(String sectionKey, String topic, Set<String> interests) {
+        return "must".equals(sectionKey) || topic == null || Topic.OTHER.key().equals(topic) || interests.contains(topic);
     }
 
     private static Notice noticeOf(Feed.Card card, FeedService.Built built) {

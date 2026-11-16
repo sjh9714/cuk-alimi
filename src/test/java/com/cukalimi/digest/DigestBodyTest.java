@@ -10,6 +10,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /** 메일 본문과 멱등 키. DB 없이 본다. */
@@ -54,5 +55,22 @@ class DigestBodyTest {
     @Test
     void emptyDigestIsNotSent() {
         assertThat(new DigestService.Digest(List.of(), List.of(), List.of()).isEmpty()).isTrue();
+    }
+
+    @Test
+    void newNoticesFollowInterestTopicsLikeTheHomeList() {
+        Set<String> defaults = Set.of("course", "seasonal", "scholarship", "workstudy", "graduation");
+
+        // 관심 주제 안의 공지는 보내고, 홈에서 "관심 밖"으로 접히는 학점교류는 보내지 않는다.
+        assertThat(DigestService.inInterest("open", "scholarship", defaults)).isTrue();
+        assertThat(DigestService.inInterest("open", "exchange", defaults)).isFalse();
+        assertThat(DigestService.inInterest("mine", "exchange", defaults)).isFalse();
+        assertThat(DigestService.inInterest("open", "exchange", Set.of("exchange"))).isTrue();
+
+        // 학사일정 구간, 주제가 기타이거나 없는 공지는 관심 주제를 모두 꺼도 남는다.
+        assertThat(DigestService.inInterest("must", "course", Set.of())).isTrue();
+        assertThat(DigestService.inInterest("open", "other", Set.of())).isTrue();
+        assertThat(DigestService.inInterest("open", null, Set.of())).isTrue();
+        assertThat(DigestService.inInterest("open", "scholarship", Set.of())).isFalse();
     }
 }
