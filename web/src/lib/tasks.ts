@@ -29,6 +29,8 @@ export type Task = {
   done: boolean;
   /** 사람 확인 없이 공개한 날짜(그림, AI)나 AI가 의심한 날짜가 섞인 행. "확인"을 달고 신고를 받는다 (ADR 016). */
   check: boolean;
+  /** 자격 (ADR 016). "mismatch"는 학년·학기·학과·지역이 프로필과 어긋난 것이다. 로그인 전에는 null이다. */
+  eligibility: NonNullable<Card["eligibility"]> | null;
   /** 공지에 적힌 대상 조건 문장. 근거 패널에 함께 보인다. */
   eligibilityEvidence: string | null;
 };
@@ -177,6 +179,7 @@ export function tasksOf(cards: Card[], today: string): Task[] {
         saved: group.some((l) => l.saved),
         done: group.some((l) => l.done),
         check: group.some(needsCheck),
+        eligibility: card.eligibility ?? null,
         eligibilityEvidence: card.eligibilityEvidence ?? null,
       });
     }
@@ -220,15 +223,23 @@ function dateOf(isoDate: string): Date {
 }
 
 /**
- * 판에 오르는 행을 목록에 둘 것과 "관심 밖"으로 접을 것으로 나눈다 (ADR 015).
- * 학사일정 표 항목(must 구간), 저장한 행, 주제가 기타이거나 없는 행은 관심 주제와 상관없이 목록에 남는다.
- * 기타는 학생이 고를 수 없는 주제라 접으면 되돌릴 길이 없다.
+ * 판에 오르는 행을 목록에 둘 것, "관심 밖"으로 접을 것, "다른 대상"으로 접을 것으로 나눈다 (ADR 015, 016).
+ * 학사일정 표 항목(must 구간)과 저장한 행은 어느 쪽으로도 접지 않는다.
+ * 프로필과 어긋난 행(mismatch)은 관심 주제보다 먼저 본다. 내 일이 아닌 것이 관심 밖보다 분명한 이유다.
+ * 주제가 기타이거나 없는 행은 관심 주제와 상관없이 목록에 남는다. 기타는 학생이 고를 수 없는 주제라 접으면 되돌릴 길이 없다.
  */
-export function splitByInterest(sections: Section[], interests: readonly string[], today: string): { main: Task[]; outside: Task[] } {
+export function splitByInterest(
+  sections: Section[],
+  interests: readonly string[],
+  today: string,
+): { main: Task[]; outside: Task[]; mismatch: Task[] } {
   const must = new Set(tasksOf(sections.filter((s) => s.key === "must").flatMap((s) => s.cards), today).map((t) => t.key));
-  const stays = (t: Task) => must.has(t.key) || t.saved || !t.topic || t.topic === "other" || interests.includes(t.topic);
+  const pinned = (t: Task) => must.has(t.key) || t.saved;
+  const off = (t: Task) => !pinned(t) && t.eligibility === "mismatch";
+  const stays = (t: Task) => pinned(t) || !t.topic || t.topic === "other" || interests.includes(t.topic);
   const all = tasksOf(boardCards(sections), today);
-  return { main: all.filter(stays), outside: all.filter((t) => !stays(t)) };
+  const rest = all.filter((t) => !off(t));
+  return { main: rest.filter(stays), outside: rest.filter((t) => !stays(t)), mismatch: all.filter(off) };
 }
 
 export type When = "week" | "next" | "month" | "later";

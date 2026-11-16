@@ -265,6 +265,26 @@ describe("splitByInterest", () => {
     expect(titles(sections)).toEqual({ main: [], outside: [] });
   });
 
+  it("프로필과 어긋난 행은 관심 주제여도 다른 대상으로 접고, 저장한 행과 학사일정은 남긴다 (ADR 016)", () => {
+    const sections = [
+      sec("must", [card("졸업논문", [line("2026-11-10", "제출")], { topic: "course", eligibility: "mismatch" })]),
+      sec("open", [
+        card("새내기 장학", [line("2026-11-10", "신청")], { topic: "scholarship", eligibility: "mismatch" }),
+        card("저장한 장학", [line("2026-11-11", "신청", { saved: true })], { topic: "scholarship", eligibility: "mismatch" }),
+        card("소득 장학", [line("2026-11-12", "신청")], { topic: "scholarship", eligibility: "check" }),
+        card("남의 학점교류", [line("2026-11-13", "신청")], { topic: "exchange", eligibility: "mismatch" }),
+      ]),
+    ];
+    const { main, outside, mismatch } = splitByInterest(sections, DEFAULT_TOPICS, TODAY);
+    expect(main.map((t) => t.sourceTitle)).toEqual(["졸업논문", "저장한 장학", "소득 장학"]);
+    expect(outside).toEqual([]);
+    expect(mismatch.map((t) => t.sourceTitle)).toEqual(["새내기 장학", "남의 학점교류"]);
+  });
+
+  it("로그인 전에는 자격이 없어 아무것도 다른 대상으로 접지 않는다", () => {
+    expect(splitByInterest([sec("open", [one("장학 공지", "scholarship")])], DEFAULT_TOPICS, TODAY).mismatch).toEqual([]);
+  });
+
   it("관심 주제를 모두 끄면 학사일정, 저장한 것, 기타만 남는다", () => {
     const sections = [
       sec("must", [one("수강신청", "course")]),

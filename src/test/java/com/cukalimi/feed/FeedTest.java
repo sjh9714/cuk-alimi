@@ -377,4 +377,57 @@ class FeedTest {
         assertThat(waiting.cards()).extracting(Feed.Card::title).containsExactly("2026-2학기 제1전공생 우선 수강신청 안내");
         assertThat(waiting.cards().get(0).deadline()).isNull();
     }
+
+    /** 자격은 알림 조건(mine)과 따로 싣는다 (ADR 016). 홈은 mismatch만 "다른 대상"으로 접는다. */
+    @Test
+    void eachCardCarriesEligibilityAndTheConditionSentence() {
+        Notice first = notice("장학", "[학생지원팀] 새내기 장학생 선발 안내", "");
+        audiences.put(first.getId(), Audience.of(first).withAi(
+                new AudienceFacts(List.of(1), List.of(), List.of(), List.of(), "지원 자격 : 1학년 재학생")));
+        item(first, "신청기간", 5);
+        Notice third = notice("장학", "[학생지원팀] 미래인재 장학생 선발 안내", "");
+        audiences.put(third.getId(), Audience.of(third).withAi(
+                new AudienceFacts(List.of(3, 4), List.of(), List.of(), List.of(), "3~4학년 재학생")));
+        item(third, "신청기간", 6);
+        Notice income = notice("장학", "[학생지원팀] 하나장학생 선발 안내", "");
+        audiences.put(income.getId(), Audience.of(income).withAi(
+                new AudienceFacts(List.of(), List.of(), List.of(), List.of(AudienceFacts.Blocker.INCOME), "소득 8구간 이하")));
+        item(income, "신청기간", 7);
+        Notice anyone = notice("학사", "2026학년도 겨울 계절학기 수강신청 안내", "");
+        item(anyone, "수강신청", 8);
+        Notice nursing = deptNotice("간호학과", "간호학과 실습 신청 안내", "");
+        item(nursing, "신청기간", 9);
+
+        Feed.View v = build(new Feed.Viewer(3, 6, "컴퓨터정보공학부", null, null, Topic.DEFAULTS));
+        assertThat(cardOf(v, "새내기").eligibility()).isEqualTo(Feed.MISMATCH);
+        assertThat(cardOf(v, "새내기").eligibilityEvidence()).isEqualTo("지원 자격 : 1학년 재학생");
+        assertThat(cardOf(v, "미래인재").eligibility()).isEqualTo(Feed.MATCH);
+        // 소득은 프로필로 알 수 없다. 접지 않고 조건 문장을 근거 패널에 보인다.
+        assertThat(cardOf(v, "하나장학생").eligibility()).isEqualTo(Feed.CHECK);
+        assertThat(cardOf(v, "하나장학생").eligibilityEvidence()).isEqualTo("소득 8구간 이하");
+        assertThat(cardOf(v, "계절학기 수강신청").eligibility()).isEqualTo(Feed.OPEN);
+        assertThat(cardOf(v, "간호학과 실습").eligibility()).isEqualTo(Feed.MISMATCH);
+
+        // 학년을 적지 않은 학생에게는 안 맞음이라고 하지 않는다.
+        Feed.View blank = build(new Feed.Viewer(null, null, "컴퓨터정보공학부", null, null, Topic.DEFAULTS));
+        assertThat(cardOf(blank, "새내기").eligibility()).isEqualTo(Feed.CHECK);
+
+        // 로그인 전에는 프로필이 없어 자격을 주지 않는다. 조건 문장은 학생마다 다르지 않아 그대로 준다.
+        Feed.View anonymous = build(Feed.Viewer.ANONYMOUS);
+        assertThat(cardOf(anonymous, "새내기").eligibility()).isNull();
+        assertThat(cardOf(anonymous, "새내기").eligibilityEvidence()).isEqualTo("지원 자격 : 1학년 재학생");
+    }
+
+    /** AI가 아직 읽지 않은 공지는 운영자 태그로 본다. 학년 태그가 어긋날 때만 접고, 프로필이 비었으면 확인이다. */
+    @Test
+    void withoutAnAiReadingTheItemTagDecidesEligibility() {
+        Notice n = notice("학사", "2026학년도 졸업논문 제출 안내", "");
+        DateItem i = item(n, "제출기간", 5);
+        ReflectionTestUtils.setField(i, "targetGrade", "4");
+
+        assertThat(cardOf(build(new Feed.Viewer(2, "컴퓨터정보공학부", null, null)), "졸업논문").eligibility()).isEqualTo(Feed.MISMATCH);
+        // 태그가 맞으면 걸리는 조건이 없는 것이다. "내 것"이라는 이유(mineReason)는 제목과 자격 문단에서만 만든다.
+        assertThat(cardOf(build(new Feed.Viewer(4, "컴퓨터정보공학부", null, null)), "졸업논문").eligibility()).isEqualTo(Feed.OPEN);
+        assertThat(cardOf(build(new Feed.Viewer(null, "컴퓨터정보공학부", null, null)), "졸업논문").eligibility()).isEqualTo(Feed.CHECK);
+    }
 }

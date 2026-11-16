@@ -108,4 +108,30 @@ class AudienceFactsTest {
         assertThat(AudienceFacts.sameDept("경영학부", "경영학과")).isTrue();
         assertThat(AudienceFacts.sameDept("공학", null)).isFalse();
     }
+
+    /** 자격은 넷으로 가른다 (ADR 016). 어긋난 조건이 하나라도 있으면 다른 조건을 모르더라도 안 맞음이다. */
+    @Test
+    void 자격은_조건_없음_맞음_안_맞음_알_수_없음으로_가른다() {
+        assertThat(facts(List.of(), List.of(), List.of(), List.of(Blocker.INCOME)).judge(THIRD_CS_SUNCHEON).fit())
+                .isEqualTo(AudienceFacts.Fit.OPEN);
+        AudienceFacts.Judgement match = facts(List.of(3, 4), List.of("컴퓨터정보공학부"), List.of(), List.of()).judge(THIRD_CS_SUNCHEON);
+        assertThat(match.fit()).isEqualTo(AudienceFacts.Fit.MATCH);
+        assertThat(match.reason()).isEqualTo("3~4학년·컴퓨터정보공학부 대상");
+        assertThat(facts(List.of(1), List.of(), List.of(), List.of()).judge(THIRD_CS_SUNCHEON).fit()).isEqualTo(AudienceFacts.Fit.MISMATCH);
+        assertThat(facts(List.of(3), List.of("간호학과"), List.of(), List.of()).judge(THIRD_CS_SUNCHEON).fit())
+                .isEqualTo(AudienceFacts.Fit.MISMATCH);
+        assertThat(facts(List.of(), List.of(), List.of("서울특별시"), List.of()).judge(THIRD_CS_SUNCHEON).fit())
+                .isEqualTo(AudienceFacts.Fit.MISMATCH);
+    }
+
+    @Test
+    void 프로필이_비어_못_대_본_조건은_안_맞음이_아니라_알_수_없음이다() {
+        Feed.Viewer noGrade = new Feed.Viewer(null, "컴퓨터정보공학부", null, null);
+        assertThat(facts(List.of(3), List.of(), List.of(), List.of()).judge(noGrade).fit()).isEqualTo(AudienceFacts.Fit.UNKNOWN);
+        assertThat(facts(List.of(), List.of(), List.of("서울특별시"), List.of()).judge(noGrade).fit()).isEqualTo(AudienceFacts.Fit.UNKNOWN);
+        assertThat(facts(List.of(), List.of("간호학과"), List.of(), List.of()).judge(new Feed.Viewer(3, null, null, null)).fit())
+                .isEqualTo(AudienceFacts.Fit.UNKNOWN);
+        // 학년은 모르지만 학과가 분명히 다르다. 접어도 된다.
+        assertThat(facts(List.of(3), List.of("간호학과"), List.of(), List.of()).judge(noGrade).fit()).isEqualTo(AudienceFacts.Fit.MISMATCH);
+    }
 }

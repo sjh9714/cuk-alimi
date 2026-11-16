@@ -42,8 +42,8 @@ function Planner({ today }: { today: Date }) {
   const sections = useMemo(() => feed?.sections ?? [], [feed]);
   // 로그인 전에는 기본 관심 주제 다섯 개로 거른다 (ADR 015).
   const interests = me ? me.interests : DEFAULT_TOPICS;
-  const { main, outside } = useMemo(() => splitByInterest(sections, interests, todayIso), [sections, interests, todayIso]);
-  const tasksAll = useMemo(() => [...main, ...outside], [main, outside]);
+  const { main, outside, mismatch } = useMemo(() => splitByInterest(sections, interests, todayIso), [sections, interests, todayIso]);
+  const tasksAll = useMemo(() => [...main, ...outside, ...mismatch], [main, outside, mismatch]);
 
   const load = () =>
     Promise.all([api.feed(), api.me()])
@@ -140,7 +140,13 @@ function Planner({ today }: { today: Date }) {
   const nextCount = openCount("next");
 
   const outsideRows = outside.filter((t) => t.date >= todayIso);
-  const narrow = NARROW.map((n) => ({ ...n, tasks: tasksOf(sections.find((s) => s.key === n.key)?.cards ?? [], todayIso).filter((t) => t.date >= todayIso) })).filter((n) => n.tasks.length > 0);
+  // 열린 구간에 있지만 학년·학기·학과가 프로필과 어긋난 행도 여기로 온다 (ADR 016). 저장한 행은 목록에 남는다.
+  const narrow = [
+    { key: "mismatch", label: "학년·학과가 다름", tasks: mismatch },
+    ...NARROW.map((n) => ({ ...n, tasks: tasksOf(sections.find((s) => s.key === n.key)?.cards ?? [], todayIso) })),
+  ]
+    .map((n) => ({ ...n, tasks: n.tasks.filter((t) => t.date >= todayIso) }))
+    .filter((n) => n.tasks.length > 0);
   const narrowCount = narrow.reduce((sum, n) => sum + n.tasks.length, 0);
   const undated = sections.find((s) => s.key === "undated")?.cards ?? [];
   const mine = me ? "내 마감" : "마감";
@@ -225,7 +231,16 @@ function Planner({ today }: { today: Date }) {
               {narrow.map((n) => (
                 <div key={n.key}>
                   <h3>{n.label}</h3>
-                  <FoldList tasks={n.tasks} />
+                  {n.key === "mismatch" ? (
+                    // 우리가 접은 행이다. 날짜를 누르면 조건 문장이 보이고, 저장하면 목록으로 돌아온다.
+                    <ul className="items">
+                      {n.tasks.map((t) => (
+                        <Row key={t.key} task={t} {...board} />
+                      ))}
+                    </ul>
+                  ) : (
+                    <FoldList tasks={n.tasks} />
+                  )}
                 </div>
               ))}
             </Fold>

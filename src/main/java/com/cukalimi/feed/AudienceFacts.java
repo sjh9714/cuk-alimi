@@ -93,49 +93,99 @@ public record AudienceFacts(
         return !grades.isEmpty() || !semesters.isEmpty() || !depts.isEmpty() || !regions.isEmpty();
     }
 
+    /** 학년·학기·학과·지역 조건을 프로필에 대 본 결과 (ADR 016). */
+    public enum Fit {
+        /** 그런 조건이 없다. 모두가 대상이다. */
+        OPEN,
+        /** 적힌 조건이 모두 프로필과 맞는다. */
+        MATCH,
+        /** 프로필과 어긋나는 조건이 있다. 홈은 이런 공지를 "다른 대상"으로 접는다. */
+        MISMATCH,
+        /** 조건은 있는데 프로필의 그 칸이 비어 있어 알 수 없다. */
+        UNKNOWN
+    }
+
+    /** reason은 MATCH일 때 맞은 조건("3학년·컴퓨터정보공학부 대상")이고 나머지는 null이다. */
+    public record Judgement(Fit fit, String reason) {
+    }
+
     /**
-     * 이 공지가 이 학생의 것이라는 이유. 아니면 null. 적힌 조건이 하나라도 프로필과 맞지 않거나 프로필로 알 수 없으면 null이다.
-     * 잘못 칠하는 것이 놓치는 것보다 해롭다.
+     * 학년·학기·학과·지역 조건을 프로필에 대 본다. 어긋나는 조건이 하나라도 있으면 MISMATCH이고, 어긋난 것은 없는데 프로필이 비어
+     * 못 대 본 조건이 있으면 UNKNOWN이다. 소득·성적·계층 같은 조건(blockers)은 프로필로 알 수 없어 여기서 보지 않는다.
      */
-    public String reasonFor(Feed.Viewer viewer) {
+    public Judgement judge(Feed.Viewer viewer) {
         AudienceFacts f = normalized();
-        if (!f.restricted() || f.blockers.stream().anyMatch(BLOCKING::contains)) {
-            return null;
+        if (!f.restricted()) {
+            return new Judgement(Fit.OPEN, null);
         }
+        boolean unknown = false;
+        boolean mismatch = false;
         List<String> parts = new ArrayList<>();
         if (!f.regions.isEmpty()) {
+            Optional<Regions.Region> hit = viewer.home() == null ? Optional.empty()
+                    : f.regions.stream().map(Regions::parseLoose).flatMap(Optional::stream).filter(r -> r.covers(viewer.home())).findFirst();
             if (viewer.home() == null) {
-                return null;
+                unknown = true;
+            } else if (hit.isEmpty()) {
+                mismatch = true;
+            } else {
+                parts.add(hit.get().label() + " 연고");
             }
-            Optional<Regions.Region> hit = f.regions.stream().map(Regions::parseLoose).flatMap(Optional::stream)
-                    .filter(r -> r.covers(viewer.home())).findFirst();
-            if (hit.isEmpty()) {
-                return null;
-            }
-            parts.add(hit.get().label() + " 연고");
         }
         if (!f.grades.isEmpty()) {
-            if (viewer.grade() == null || !f.grades.contains(viewer.grade())) {
-                return null;
+            if (viewer.grade() == null) {
+                unknown = true;
+            } else if (!f.grades.contains(viewer.grade())) {
+                mismatch = true;
+            } else {
+                parts.add(GradeTag.label(new TreeSet<>(f.grades)));
             }
-            parts.add(GradeTag.label(new TreeSet<>(f.grades)));
         }
         if (!f.semesters.isEmpty()) {
-            if (viewer.semester() == null || !f.semesters.contains(viewer.semester())) {
-                return null;
+            if (viewer.semester() == null) {
+                unknown = true;
+            } else if (!f.semesters.contains(viewer.semester())) {
+                mismatch = true;
+            } else {
+                parts.add(semesterLabel(f.semesters));
             }
-            parts.add(semesterLabel(f.semesters));
         }
         if (!f.depts.isEmpty()) {
             Optional<String> dept = f.depts.stream()
                     .filter(d -> sameDept(d, viewer.major()) || sameDept(d, viewer.secondMajor())).findFirst();
-            if (dept.isEmpty()) {
-                return null;
+            boolean noMajor = (viewer.major() == null || viewer.major().isBlank())
+                    && (viewer.secondMajor() == null || viewer.secondMajor().isBlank());
+            if (dept.isPresent()) {
+                parts.add(dept.get());
+            } else if (noMajor) {
+                unknown = true;
+            } else {
+                mismatch = true;
             }
-            parts.add(dept.get());
         }
-        String reason = String.join("·", parts) + " 대상";
-        return f.blockers.isEmpty() ? reason : reason + ", 자격 조건은 원문 확인";
+        if (mismatch) {
+            return new Judgement(Fit.MISMATCH, null);
+        }
+        if (unknown) {
+            return new Judgement(Fit.UNKNOWN, null);
+        }
+        return new Judgement(Fit.MATCH, String.join("·", parts) + " 대상");
+    }
+
+    /**
+     * 이 공지가 이 학생의 것이라는 이유. 아니면 null. 적힌 조건이 하나라도 프로필과 맞지 않거나 프로필로 알 수 없으면 null이다.
+     * 잘못 칠하는 것이 놓치는 것보다 해롭다. 알림(메일, 캘린더)의 조건으로 쓴다.
+     */
+    public String reasonFor(Feed.Viewer viewer) {
+        AudienceFacts f = normalized();
+        if (f.blockers.stream().anyMatch(BLOCKING::contains)) {
+            return null;
+        }
+        Judgement j = f.judge(viewer);
+        if (j.fit() != Fit.MATCH) {
+            return null;
+        }
+        return f.blockers.isEmpty() ? j.reason() : j.reason() + ", 자격 조건은 원문 확인";
     }
 
     /** "5~7학기", "2학기", 초과학기는 "초과학기"로 적는다. 이어지지 않으면 점으로 잇는다. */

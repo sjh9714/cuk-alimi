@@ -233,7 +233,7 @@ public final class Feed {
                 boolean lit = myDept && viewer.interests().contains(topic);
                 Card card = new Card(entry.getKey(), kind(notice), title, notice.getTitle(), notice.getUrl(),
                         AudienceView.of(audience), lit, lit ? topic.label() + " · " + why : null, line(deadline, title, saved, done), next,
-                        topic.key());
+                        topic.key(), !signedIn ? null : myDept ? MATCH : MISMATCH, conditionText(audience));
                 (myDept ? mine : dept).add(card);
                 continue;
             }
@@ -242,7 +242,8 @@ public final class Feed {
             boolean lit = viewer.interests().contains(topic) && (isMine || openToAll(audience, deadline, viewer));
             String why = !lit ? null : isMine ? topic.label() + " · " + reason.replace(", 자격 조건은 원문 확인", "") : topic.label();
             Card card = new Card(entry.getKey(), kind(notice), title, notice.getTitle(), notice.getUrl(),
-                    AudienceView.of(audience), lit, why, line(deadline, title, saved, done), next, topic.key());
+                    AudienceView.of(audience), lit, why, line(deadline, title, saved, done), next, topic.key(),
+                    signedIn ? eligibility(audience, deadline, viewer) : null, conditionText(audience));
             // 취업 공지는 학년이 맞아도 접힌 구간에 둔다. "내게 맞는 공지"와 아침 메일은 장학·학사만 다룬다.
             if (isMust(audience, title)) {
                 must.add(card);
@@ -351,6 +352,67 @@ public final class Feed {
             }
         }
         return true;
+    }
+
+    /** 자격 (ADR 016). 로그인 전에는 프로필이 없어 값을 주지 않는다. */
+    public static final String MATCH = "match";
+    public static final String OPEN = "open";
+    /** 프로필로 알 수 없는 조건이 있다(소득, 성적, 계층, 비어 있는 프로필 칸). 근거 패널이 조건 문장을 보여 준다. */
+    public static final String CHECK = "check";
+    /** 학년·학기·학과·지역이 프로필과 어긋난다. 홈은 "다른 대상"으로 접는다. */
+    public static final String MISMATCH = "mismatch";
+
+    /**
+     * 이 학생의 자격. AI가 읽은 대상 조건이 있으면 그것으로만 판단한다 (ADR 013). 없으면 제목·자격 문단의 정규식과 운영자 태그로 본다.
+     * 알림의 조건인 mine과 따로 둔다. mine은 관심 주제까지 본 "알릴 일"이고, 이것은 자격만 본다.
+     */
+    static String eligibility(Audience audience, DateItem deadline, Viewer viewer) {
+        if (audience.ai() != null) {
+            AudienceFacts f = audience.ai().normalized();
+            AudienceFacts.Fit fit = f.judge(viewer).fit();
+            if (fit == AudienceFacts.Fit.MISMATCH) {
+                return MISMATCH;
+            }
+            if (fit == AudienceFacts.Fit.UNKNOWN || !f.blockers().isEmpty()) {
+                return CHECK;
+            }
+            return fit == AudienceFacts.Fit.MATCH ? MATCH : OPEN;
+        }
+        if (mineReason(audience, deadline, viewer) != null) {
+            return MATCH;
+        }
+        if (openToAll(audience, deadline, viewer)) {
+            return OPEN;
+        }
+        if (Audience.REGION.equals(audience.scope())) {
+            return viewer.home() == null ? CHECK : MISMATCH;
+        }
+        if (Audience.GROUP.equals(audience.scope()) || Audience.FIELD.equals(audience.scope())) {
+            return CHECK;
+        }
+        // 모두의 공지인데 학년이나 학과가 걸렸다. 프로필에 적힌 값과 어긋날 때만 안 맞음이고, 프로필이 비어 못 대 본 것이면 확인이다.
+        boolean gradeOff = false;
+        boolean deptOff = false;
+        if (viewer.grade() != null) {
+            gradeOff = audience.grade() != GradeTag.NONE && audience.grade().label() != null && !audience.grade().covers(viewer.grade());
+            String g = deadline == null ? null : deadline.getTargetGrade();
+            gradeOff |= g != null && !"ALL".equals(g) && !g.equals(String.valueOf(viewer.grade()));
+        }
+        boolean hasMajor = (viewer.major() != null && !viewer.major().isBlank())
+                || (viewer.secondMajor() != null && !viewer.secondMajor().isBlank());
+        String d = deadline == null ? null : deadline.getTargetDept();
+        if (hasMajor && d != null && !"ALL".equals(d)) {
+            deptOff = !contains(d, viewer.major()) && !contains(d, viewer.secondMajor());
+        }
+        return gradeOff || deptOff ? MISMATCH : CHECK;
+    }
+
+    /** 공지에 적힌 대상 조건 문장. AI가 근거로 옮겨 둔 문장이 먼저이고, 없으면 자격 문단의 발췌다. 학생마다 다르지 않다. */
+    static String conditionText(Audience audience) {
+        if (audience.ai() != null && audience.ai().evidence() != null && !audience.ai().evidence().isBlank()) {
+            return audience.ai().evidence().trim();
+        }
+        return audience.excerpt();
     }
 
     public static String mineReason(Audience audience, DateItem deadline, Viewer viewer) {
