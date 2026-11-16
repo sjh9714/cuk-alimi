@@ -15,6 +15,12 @@ public interface ImageTranscriptRepository extends JpaRepository<ImageTranscript
 
     long countByInputTokens(long tokens);
 
+    /** 그때부터 쓴 토큰을 모델별로. 예산 가드가 이번 달 비용을 센다. */
+    @org.springframework.data.jpa.repository.Query("select t.model as model, coalesce(sum(t.inputTokens), 0) as inputTokens, "
+            + "coalesce(sum(t.outputTokens), 0) as outputTokens from ImageTranscript t "
+            + "where t.inputTokens > 0 and t.createdAt >= :since group by t.model")
+    java.util.List<com.cukalimi.ops.AiBudget.Usage> usageSince(@org.springframework.data.repository.query.Param("since") OffsetDateTime since);
+
     /** 공지 한 건의 받아 적은 글. AI 대상 읽기가 그림 공지의 글로 쓴다. */
     java.util.List<ImageTranscript> findByArticleNo(Long articleNo);
 

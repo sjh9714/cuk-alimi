@@ -30,8 +30,11 @@ public class HealthAlert {
     private final NoticeRepository notices;
     private final MailSender mail;
     private final Clock clock;
+    private final AiBudget budget;
 
-    public HealthAlert(AppProperties props, FetchLogRepository fetchLogs, NoticeRepository notices, MailSender mail, Clock clock) {
+    public HealthAlert(AppProperties props, FetchLogRepository fetchLogs, NoticeRepository notices, MailSender mail, Clock clock,
+            AiBudget budget) {
+        this.budget = budget;
         this.props = props;
         this.fetchLogs = fetchLogs;
         this.notices = notices;
@@ -52,6 +55,10 @@ public class HealthAlert {
         }
         if (notices.countByFirstSeenAtAfter(now.minus(QUIET)) == 0) {
             out.add("사흘 동안 새 공지가 하나도 들어오지 않았어요. 목록 HTML이 바뀌었을 수 있어요.");
+        }
+        if (!budget.allow()) {
+            out.add(String.format("이번 달 AI 비용이 %.2f달러로 상한 %.0f달러에 닿아 그림 받아 적기, 대상 읽기, 문장 찾기를 멈췄어요. "
+                    + "다음 달 1일에 다시 돌아요. 올리려면 AI_MONTHLY_BUDGET_USD를 바꿔 주세요.", budget.monthToDateUsd(), budget.limitUsd()));
         }
         return out;
     }

@@ -58,10 +58,13 @@ public class ImageNoticeReader {
     private final NoticeStore store;
     private final ReviewEventRepository reviewEvents;
     private final Clock clock;
+    private final com.cukalimi.ops.AiBudget budget;
 
     public ImageNoticeReader(AppProperties props, NoticeRepository notices, NoticeRawRepository raws,
             DateItemRepository dateItems, ImageTranscriptRepository transcripts, PageFetcher fetcher,
-            ImageTranscriber transcriber, NoticeStore store, ReviewEventRepository reviewEvents, Clock clock) {
+            ImageTranscriber transcriber, NoticeStore store, ReviewEventRepository reviewEvents, Clock clock,
+            com.cukalimi.ops.AiBudget budget) {
+        this.budget = budget;
         this.props = props;
         this.notices = notices;
         this.raws = raws;
@@ -119,6 +122,10 @@ public class ImageNoticeReader {
     public Result readPending(LocalDate today) {
         if (!transcriber.enabled()) {
             return new Result(0, 0, 0, false);
+        }
+        // 이번 달 AI 비용이 상한에 닿았으면 받아 적지 않는다 (ADR 016). 아침 운영자 메일이 알린다.
+        if (!budget.allow()) {
+            return new Result(0, 0, 0, true);
         }
         int seen = 0;
         int fresh = 0;

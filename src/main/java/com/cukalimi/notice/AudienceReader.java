@@ -41,9 +41,11 @@ public class AudienceReader {
     private final ImageTranscriptRepository transcripts;
     private final AudienceClassifier classifier;
     private final Clock clock;
+    private final com.cukalimi.ops.AiBudget budget;
 
     public AudienceReader(AppProperties props, NoticeRepository notices, DateItemRepository dateItems,
-            ImageTranscriptRepository transcripts, AudienceClassifier classifier, Clock clock) {
+            ImageTranscriptRepository transcripts, AudienceClassifier classifier, Clock clock, com.cukalimi.ops.AiBudget budget) {
+        this.budget = budget;
         this.props = props;
         this.notices = notices;
         this.dateItems = dateItems;
@@ -70,6 +72,10 @@ public class AudienceReader {
     public Result readPending(LocalDate today) {
         if (!classifier.enabled()) {
             return new Result(0, 0, false);
+        }
+        // 이번 달 AI 비용이 상한에 닿았으면 읽지 않는다 (ADR 016). 아침 운영자 메일이 알린다.
+        if (!budget.allow()) {
+            return new Result(0, 0, true);
         }
         Map<Long, Notice> targets = new LinkedHashMap<>();
         notices.findByAudienceReadAtIsNullAndPostedOnGreaterThanEqual(today.minusDays(FeedService.UNDATED_DAYS))

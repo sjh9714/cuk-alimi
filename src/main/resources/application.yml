@@ -70,8 +70,13 @@ app:
         dept: 컴퓨터정보공학부
         list-url: https://csie.catholic.ac.kr/csie/community/notice.do?mode=list&articleLimit=30
         view-url: https://csie.catholic.ac.kr/csie/community/notice.do?mode=view&articleNo=
+  # AI 전체의 월 지출 상한, 달러 (ADR 016). 저장한 토큰으로 이번 달 비용을 세어 닿으면 AI 작업을 모두 멈춘다.
+  ai:
+    monthly-budget-usd: ${AI_MONTHLY_BUDGET_USD:20}
   # 날짜가 그림에만 있는 공지를 AI가 받아 적는다 (ADR 010). 키가 없으면 꺼진다. 공지 수집(매시 07분) 뒤에 돈다.
+  # TRANSCRIBE_ENABLED=false면 그림만 끄고 글을 읽는 AI는 그대로 둔다. 학교 robots.txt가 그림 경로를 막고 있어서다.
   transcribe:
+    enabled: ${TRANSCRIBE_ENABLED:true}
     api-key: ${ANTHROPIC_API_KEY:}
     model: claude-haiku-5-5
     daily-limit: ${TRANSCRIBE_DAILY_LIMIT:40}

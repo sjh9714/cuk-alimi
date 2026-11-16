@@ -34,6 +34,12 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
             + "from Notice n where n.audienceReadAt is not null")
     AudienceUsage audienceUsage();
 
+    /** 그때부터 대상 읽기에 쓴 토큰을 모델별로. 공지마다 쌓인 토큰을 마지막으로 읽은 달에 넣는다. 예산 가드가 쓴다. */
+    @org.springframework.data.jpa.repository.Query("select n.audienceModel as model, coalesce(sum(n.audienceInputTokens), 0) as inputTokens, "
+            + "coalesce(sum(n.audienceOutputTokens), 0) as outputTokens from Notice n "
+            + "where n.audienceReadAt >= :since group by n.audienceModel")
+    java.util.List<com.cukalimi.ops.AiBudget.Usage> audienceUsageSince(@org.springframework.data.repository.query.Param("since") java.time.OffsetDateTime since);
+
     interface AudienceUsage {
         long getNotices();
 

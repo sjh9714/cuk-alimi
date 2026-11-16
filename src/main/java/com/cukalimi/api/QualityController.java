@@ -29,9 +29,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class QualityController {
 
-    /** claude-haiku-5-5 단가, 달러 / 100만 토큰 (2026-10 기준). */
-    static final double PRICE_IN = 0.10;
-    static final double PRICE_OUT = 0.50;
+    /** 운영에서 그림과 대상 조건을 읽는 모델. 단가는 AiPrices가 안다. */
+    private static final String HAIKU = "claude-haiku-5-5";
 
     private final ReviewEventRepository reviewEvents;
     private final ImageTranscriptRepository transcripts;
@@ -127,7 +126,7 @@ public class QualityController {
             q = new Quality(backtest, review(), transcription(), new AutoPublish(dateItems.countByStatus(DateItem.STATUS_AUTO_IMAGE),
                     dateItems.countByStatus(DateItem.STATUS_CANDIDATE), reports.count()), audienceBacktest,
                     new AudienceRead(audienceClassifier.enabled(), u.getNotices(), u.getAgreed(), u.getInputTokens(), u.getOutputTokens(),
-                            Math.round((u.getInputTokens() * PRICE_IN + u.getOutputTokens() * PRICE_OUT) / 1e6 * 10000) / 10000.0), topics, fresh, rows);
+                            Math.round(com.cukalimi.ops.AiPrices.usd(HAIKU, u.getInputTokens(), u.getOutputTokens()) * 10000) / 10000.0), topics, fresh, rows);
             cached = q;
             cachedAt = now;
         }
@@ -186,7 +185,7 @@ public class QualityController {
 
     private Transcription transcription() {
         ImageTranscriptRepository.Usage u = transcripts.usage();
-        double cost = u.getInputTokens() / 1e6 * PRICE_IN + u.getOutputTokens() / 1e6 * PRICE_OUT;
+        double cost = com.cukalimi.ops.AiPrices.usd(HAIKU, u.getInputTokens(), u.getOutputTokens());
         return new Transcription((int) u.getImages(), (int) transcripts.countByInputTokens(0), u.getInputTokens(),
                 u.getOutputTokens(), Math.round(cost * 10000) / 10000.0);
     }

@@ -209,6 +209,10 @@ class ApiFlowTest {
 
     @Autowired
     com.cukalimi.ops.HealthAlert healthAlert;
+    @Autowired
+    com.cukalimi.ops.AiBudget aiBudget;
+    @Autowired
+    com.cukalimi.domain.NoticeRawRepository rawPages;
 
     @Test
     void healthAlertNamesAStoppedCollector() {
@@ -966,6 +970,36 @@ class ApiFlowTest {
         assertThat(mail.lastTo()).isEqualTo("admin@catholic.ac.kr");
         assertThat(mail.lastBody()).contains("원문과 맞춰 봐 주세요");
         assertThat(itemIds()).contains(item.getId());
+    }
+
+    @Test
+    void aiJobsStopAndTheOperatorIsToldWhenTheMonthlyBudgetIsSpent() {
+        assertThat(aiBudget.allow()).isTrue();
+        // Opus 값으로 입력 600만 토큰이면 24달러다. 상한 20달러를 넘는다.
+        String url = "https://example.test/budget.png";
+        rawPages.save(new com.cukalimi.domain.NoticeRaw(999_999L, ""));
+        transcripts.save(new com.cukalimi.domain.ImageTranscript(url, 999_999L, "", "claude-opus-5-5", 6_000_000, 0));
+        try {
+            assertThat(aiBudget.monthToDateUsd()).isGreaterThanOrEqualTo(24.0);
+            assertThat(aiBudget.allow()).isFalse();
+
+            int calls = audienceClassifier.calls;
+            var audience = audienceReader.readPending(LocalDate.of(2026, 7, 10));
+            assertThat(audience.read()).isZero();
+            assertThat(audience.limitReached()).isTrue();
+            assertThat(audienceClassifier.calls).isEqualTo(calls);
+
+            var images = imageReader.readPending(LocalDate.of(2026, 7, 10));
+            assertThat(images.newTranscripts()).isZero();
+            assertThat(images.limitReached()).isTrue();
+
+            assertThat(healthAlert.problems()).anyMatch(p -> p.contains("AI 비용") && p.contains("20달러"));
+        } finally {
+            transcripts.deleteById(url);
+            rawPages.deleteById(999_999L);
+        }
+        assertThat(aiBudget.allow()).isTrue();
+        assertThat(healthAlert.problems()).noneMatch(p -> p.contains("AI 비용"));
     }
 
     @Test

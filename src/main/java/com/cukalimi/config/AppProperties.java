@@ -18,7 +18,12 @@ public record AppProperties(
         Notice notice,
         Transcribe transcribe,
         AudienceRead audienceRead,
-        Push push) {
+        Push push,
+        Ai ai) {
+
+    /** AI 전체에 거는 월 지출 상한, 달러 (ADR 016). 닿으면 AI 작업이 모두 멈춘다. 0 이하면 가드를 끈다. */
+    public record Ai(double monthlyBudgetUsd) {
+    }
 
     /**
      * 웹 푸시 (ADR 004). VAPID 키 쌍이 없으면 꺼진다. subject는 푸시 서비스가 문제 있을 때 연락할 mailto 주소다.
@@ -67,12 +72,19 @@ public record AppProperties(
     }
 
     /**
-     * 그림 공지 받아 적기 (ADR 010). apiKey가 비면 꺼진다. dailyLimit은 하루 호출 수의 상한이다. 그림 한 장을 두 번 읽으니 그림 수로는 절반이다.
-     * toString에 키가 찍히지 않게 한다.
+     * 그림 공지 받아 적기 (ADR 010). apiKey가 비거나 enabled가 false면 꺼진다. dailyLimit은 하루 호출 수의 상한이다. 그림 한 장을 두 번 읽으니 그림 수로는 절반이다.
+     * 키는 글을 읽는 AI(대상 읽기, 문장 찾기)도 함께 쓴다. 그림만 끄고 글 AI는 켜 둘 수 있게 스위치를 따로 둔다 (ADR 016).
+     * 학교 robots.txt가 그림 경로를 막고 있어 그림만 끄고 배포할 수 있어야 한다. toString에 키가 찍히지 않게 한다.
      */
-    public record Transcribe(String apiKey, String model, int dailyLimit, String cron) {
-        public boolean enabled() {
+    public record Transcribe(String apiKey, String model, int dailyLimit, String cron, boolean enabled) {
+        /** AI 키가 있는가. 글을 읽는 AI는 이것만 본다. */
+        public boolean hasKey() {
             return apiKey != null && !apiKey.isBlank();
+        }
+
+        @Override
+        public boolean enabled() {
+            return enabled && hasKey();
         }
 
         @Override
