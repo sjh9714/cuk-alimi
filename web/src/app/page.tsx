@@ -212,7 +212,7 @@ function Planner({ today }: { today: Date }) {
       {feed && (
         <div className="folds">
           {outsideRows.length > 0 && (
-            <Fold id="outside" title="관심 밖" count={outsideRows.length} note={partsText(topicParts(outsideRows))} open={groups.length === 0}>
+            <Fold id="outside" title="관심 밖" count={outsideRows.length} note={partsText(topicParts(outsideRows), 3)} open={groups.length === 0}>
               <ul className="items">
                 {outsideRows.map((t) => (
                   <Row key={t.key} task={t} {...board} />
