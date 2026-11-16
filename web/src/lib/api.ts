@@ -113,7 +113,15 @@ export type Line = {
   done: boolean;
   /** 그림에서 두 번 읽어 사람 확인 없이 공개한 날짜. 학생이 신고하면 바로 내린다 (ADR 010). */
   fromImage: boolean;
+  /** 날짜를 읽은 자리 (ADR 016). text는 공지의 그 줄이나 표의 행, match는 그 안의 날짜 글자다. 손으로 넣은 항목에는 없다. */
+  evidence: Evidence | null;
+  /** 누가 읽었나. rule은 규칙, image는 그림 받아 적기, ai는 AI가 찾아 준 문장이다. */
+  foundBy: "rule" | "image" | "ai";
+  /** 규칙이 찾았지만 AI가 학생이 할 일이 아니라고 본 날짜. "확인"을 달고 보여 준다. */
+  doubt: boolean;
 };
+
+export type Evidence = { text: string; match: string | null };
 
 /** deadline은 날짜가 그림에만 있어 확인 중인 카드(undated 구간)에서만 null이다. */
 export type Card = {
@@ -129,6 +137,10 @@ export type Card = {
   mineReason: string | null;
   /** 공지 주제 키. 학사일정 표 항목과 공지 카드에 있다 */
   topic?: TopicKey | "other" | null;
+  /** 이 학생의 자격 (ADR 016). 로그인 전에는 없다. mismatch는 학년·학기·학과·지역이 안 맞는다는 뜻이고 "다른 대상"으로 접는다. */
+  eligibility?: "match" | "open" | "check" | "mismatch" | null;
+  /** 공지에 적힌 대상 조건 문장. 근거 패널이 보여 준다 */
+  eligibilityEvidence?: string | null;
   deadline: Line | null;
   next: Line[];
 };

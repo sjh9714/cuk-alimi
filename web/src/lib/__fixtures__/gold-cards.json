@@ -26,10 +26,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[기간연장] 2026학년도 학술연구장학생 신청 안내(~8/21)",
+          "match" : "8/21"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -59,10 +67,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "1) 원서 접수기간 : 2026.07.06.(월) ~ 2026.07.10.(금) 오후 4시 (시간 엄수 必) 2) 제출 장소 : 일반대학원 교학팀(김수환관 3층, K340호, 20번 자리)",
+          "match" : "2026.07.06.(월) ~ 2026.07.10.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "grad"
+      "topic" : "grad",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -92,7 +108,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "입력 기간 | 2026. 07. 07. (화) 까지",
+          "match" : "2026. 07. 07. (화) 까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27350103,
@@ -104,7 +126,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "승인 기간 | 2026. 07. 08. (수) ~ 2026. 07. 15. (수)",
+          "match" : "2026. 07. 08. (수) ~ 2026. 07. 15. (수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27350104,
         "label" : "ELP+ 프로그램 점수 확인 및 이의신청 기간",
@@ -115,9 +143,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "점수 확인 및 이의신청 기간 | 2026. 07. 16. (목) ~ 2026. 07. 20. (월)",
+          "match" : "2026. 07. 16. (목) ~ 2026. 07. 20. (월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "extracurricular"
+      "topic" : "extracurricular",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -154,10 +190,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 확인기간 : 2026년 8월 12일(수) 오후 1시 ~ 8월 18일(화) 까지",
+          "match" : "8월 18일(화) 까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "graduation"
+      "topic" : "graduation",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -187,10 +231,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 설치 기간 : 2026.08.19.(수) ~ 08.21.(금)",
+          "match" : "2026.08.19.(수) ~ 08.21.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "graduation"
+      "topic" : "graduation",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -220,10 +272,18 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 일시: 2026. 8. 20.(목) 14:00 (장소: 콘서트홀)",
+          "match" : "2026. 8. 20.(목) 14:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : null
+      "topic" : null,
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "events"
@@ -253,10 +313,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "3) 학기말 서류 제출 안내는 12월 14일에 가대득 및 이메일로 안내하오니, 해당 날짜 이후 발급한 서류를 12월 24일까지 학사행정팀으로 제출해 주시기 바랍니다.",
+          "match" : "12월 24일까지"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "course"
+      "topic" : "course",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -286,10 +354,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "마감 기한 | ⦁ 모든 조항의 공결은 11월 25일(수) 17:00까지 서류 업로드 및 출력 등 관련 절차를 모두 완료한 경우에만 인정",
+          "match" : "11월 25일(수) 17:00까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "course"
+      "topic" : "course",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -320,10 +396,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "7 | 여학생 생리 | 매월1회 (학기별 4회 제한, 시험기간에는 인정하지 않음) | 1. 종합포털시스템트리니티에서 ‘생리공결신청’ 작성및출력 2. 7일이내수업교수님께제출 *학생본인직접작성및제출 *희망 날짜의 전날/당일 신청 가능",
+          "match" : "2. 7일"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "course"
+      "topic" : "course",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -354,10 +438,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "가. 신청기간 : 2026. 8. 31.(월) ~ 9. 7.(월) 17시까지 학사행정팀 제출(17시까지 오프라인 서류 제출분에 한함)",
+          "match" : "2026. 8. 31.(월) ~ 9. 7.(월)"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "graduation"
+      "topic" : "graduation",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -387,10 +479,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "2. 신청 기간 : 2026. 9. 1.(화) 09:00 ~ 9. 7.(월) 17:00",
+          "match" : "2026. 9. 1.(화) 09:00 ~ 9. 7.(월) 17:00"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "course"
+      "topic" : "course",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -421,10 +521,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "• 확인기간 : 2026. 8. 31.(월) ~ 9. 4.(금) ※ 수강신청 변경기간내 확인 및 조정 요망",
+          "match" : "2026. 8. 31.(월) ~ 9. 4.(금)"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "graduation"
+      "topic" : "graduation",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -455,10 +563,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "1. 수강취소 신청기간 : 2026.09.21.(월) 09:00 ~ 9.22.(화) 17:00",
+          "match" : "2026.09.21.(월) 09:00 ~ 9.22.(화) 17:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "course"
+      "topic" : "course",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "must"
@@ -488,10 +604,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 확인 기간 : 2026. 8. 31.(월) ~ 9. 4.(금)",
+          "match" : "2026. 8. 31.(월) ~ 9. 4.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "graduation"
+      "topic" : "graduation",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -528,10 +652,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "신청기간 | 9. 1.(화) ~ 10. 8.(목) 17:00",
+          "match" : "9. 1.(화) ~ 10. 8.(목) 17:00"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -561,10 +693,18 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "「모두의 창업 프로젝트」 설명회 개최 안내 (사전신청 : ~9.9)",
+          "match" : "9.9"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : null
+      "topic" : null,
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "events"
@@ -594,10 +734,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "ㆍ 참가신청: 9월 17(목) 오후 6시까지",
+          "match" : "9월 17(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "extracurricular"
+      "topic" : "extracurricular",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -627,10 +775,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[★필독] 2026학년도 필수교육 재학생 폭력예방교육 안내(2학기 성적 확인 필수요건)(~12.13까지)",
+          "match" : "12.13까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "course"
+      "topic" : "course",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -660,7 +816,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "1. 원서 접수 : 2026. 10. 1(목), 09:00 ~ 10. 16(금), 24:00",
+          "match" : "10. 16(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27588802,
@@ -672,9 +834,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "2. 서류 제출 : 2026. 10. 20(화), 17:00 도착분까지 접수",
+          "match" : "2026. 10. 20(화)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "grad"
+      "topic" : "grad",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -704,7 +874,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "신청기간 | 2026.09.17.(목)~2026.09.27.(일) | 트리니티 신청 및 근로지 자기소개서 제출",
+          "match" : "2026.09.17.(목)~2026.09.27.(일)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27592903,
@@ -716,9 +892,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "선발기간 | 2026.09.28.(월)~2026.10.08.(목) | 근로지별 서류/면접 평가 실시",
+          "match" : "2026.09.28.(월)~2026.10.08.(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "workstudy"
+      "topic" : "workstudy",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -748,7 +932,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "신청기간 | 2026.09.17.(목)~2026.09.27.(일) | 트리니티 신청 및 근로지 자기소개서 제출",
+          "match" : "2026.09.17.(목)~2026.09.27.(일)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27594703,
@@ -760,9 +950,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "선발기간 | 2026.09.28.(월)~2026.10.08.(목) | 근로지별 서류/면접 평가 실시",
+          "match" : "2026.09.28.(월)~2026.10.08.(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "workstudy"
+      "topic" : "workstudy",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -793,10 +991,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "'26. 9. 1. (화) 09시 ~ 9. 30. (수) 18시 | • 중소·중견기업 : 수혜 학기 등록금 전액 • 대기업·비영리기관 : 수혜 학기 등록금 50%",
+          "match" : "9. 30. (수)"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -826,7 +1032,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "가. 신청기간: 2026. 9. 16.(수) ~ 9. 30.(수) 18:00까지",
+          "match" : "2026. 9. 16.(수) ~ 9. 30.(수) 18:00까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27598802,
@@ -838,9 +1050,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "가. 근무기간: 2026. 10. 12.(월) ~ 11. 6.(금), 4주(실근무일수 20일)",
+          "match" : "2026. 10. 12.(월) ~ 11. 6.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -870,10 +1090,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "1. 접수기간: 2026. 9. 28.(월) ~ 10. 7.(수)",
+          "match" : "2026. 9. 28.(월) ~ 10. 7.(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -903,7 +1131,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 10월 3일 오전까지 대플 컨설턴트와 첨삭 후 완성된 자소서를 노진영(jobnjy@hanmail.net)으로 보내주세요.",
+          "match" : "10월 3일"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27609701,
@@ -915,9 +1149,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 추천 의뢰 기간 : 9/16(수) ~ 10/4(일)",
+          "match" : "9/16(수) ~ 10/4(일)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -947,10 +1189,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : ": 명단 발송 및 제출 확인을 위해 9월 30일 오전 11시까지 채용 공고에 지원한 것과 동일한 자소서를 노진영(jobnjy@hanmail.net)으로 보내주세요.",
+          "match" : "9월 30일"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -980,10 +1230,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 10월 12일 오전 11시까지 대플 컨설턴트와 첨삭 후 완성된 자소서를 노진영(jobnjy@hanmail.net)으로 보내주세요(학교에서 지원서 취합 후 발송).",
+          "match" : "10월 12일"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -1013,7 +1271,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : ": 명단 발송 및 제출 확인을 위해 9월 29일 오전 11시까지 채용 공고에 지원한 것과 동일한 자소서를 노진영(jobnjy@hanmail.net)으로 보내주세요.",
+          "match" : "9월 29일"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27611401,
@@ -1025,9 +1289,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "1) 첨부된 학과장(또는 취업지원담당자) 추천서 작성 후 2026년 9월 30일 (수)까지 이메일 접수",
+          "match" : "2026년 9월 30일 (수)까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -1057,7 +1329,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "온라인 지원 | 2026. 9. 30.(수) 10:00 ~ 10. 6.(화) 15:00",
+          "match" : "2026. 9. 30.(수) 10:00 ~ 10. 6.(화) 15:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27615002,
@@ -1069,7 +1347,13 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "서류 합격자 발표 | 2026. 11. 5.(목) 15:00",
+          "match" : "2026. 11. 5.(목) 15:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27615003,
         "label" : "온라인 영상 면접",
@@ -1080,7 +1364,13 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "온라인 영상 면접 | 2026. 11. 10.(화) 10:00~19:00",
+          "match" : "2026. 11. 10.(화) 10:00~19:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27615004,
         "label" : "최종 합격자 발표",
@@ -1091,7 +1381,13 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "최종 합격자 발표 | 2026. 12. 3.(목) 15:00",
+          "match" : "2026. 12. 3.(목) 15:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27615005,
         "label" : "장학증서 수여식",
@@ -1102,9 +1398,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "장학증서 수여식 | 2026. 12. 23.(수)",
+          "match" : "2026. 12. 23.(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1133,10 +1437,18 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "장학증서 수여식 | 2026. 12. 23.(수)",
+          "match" : "2026. 12. 23.(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : null
+      "topic" : null,
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "events"
@@ -1166,10 +1478,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "3. 신청기간 2026.09.28.(월) 09:00 ~ 10. 30.(금) 18:00",
+          "match" : "2026.09.28.(월) 09:00 ~ 10. 30.(금) 18:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1199,10 +1519,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "AI전자정보융합대학 FESTIVAL 「AI:VERSE」 부스 모집(~10/7)",
+          "match" : "10/7"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "other"
+      "topic" : "other",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1233,7 +1561,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "✅ 모집기간 2026.09.30.(수) ~ 2026.10.16.(금)",
+          "match" : "2026.09.30.(수) ~ 2026.10.16.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27624702,
@@ -1245,7 +1579,13 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "10.26.(월) | OT (1시간) | 전문강사 진행",
+          "match" : "10.26.(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27624703,
         "label" : "우수 강소기업 찾기 특강 (2시간) · 전문강사 진행",
@@ -1256,7 +1596,13 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "10.26.(월) | 우수 강소기업 찾기 특강 (2시간) | 전문강사 진행",
+          "match" : "10.26.(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27624704,
         "label" : "기업분석 특강 (2시간) · 전문강사 진행",
@@ -1267,7 +1613,13 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "11.02.(월) | 기업분석 특강 (2시간) | 전문강사 진행",
+          "match" : "11.02.(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27624706,
         "label" : "기업분석 보고서 작성 특강 (조별 2시간)",
@@ -1278,7 +1630,13 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "11.09.(월) ~ 11.18.(수) | 기업분석 보고서 작성 특강 (조별 2시간) | 전문강사의 팀별 기업 발굴 1:1 지도",
+          "match" : "11.09.(월) ~ 11.18.(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27624707,
         "label" : "차별화된 기업분석 노하우 심화특강 (조별 2시간)",
@@ -1289,9 +1647,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "11.16.(월) ~ 11.25.(수) | 차별화된 기업분석 노하우 심화특강 (조별 2시간) | 전문강사의 팀별 기업 발굴 1:1 지도",
+          "match" : "11.16.(월) ~ 11.25.(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "extracurricular"
+      "topic" : "extracurricular",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -1320,10 +1686,18 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "10.26.(월) | OT (1시간) | 전문강사 진행",
+          "match" : "10.26.(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : null
+      "topic" : null,
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "events"
@@ -1354,7 +1728,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 트리니티 신청: 2026. 10. 2.(금)까지",
+          "match" : "2026. 10. 2.(금)까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27626402,
@@ -1366,9 +1746,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 원본서류 제출: 2026. 10. 6.(화) 오전 11:59까지(12-13시 점심시간)",
+          "match" : "2026. 10. 6.(화)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1398,7 +1786,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "라. 모집기간 : 2026. 9. 28.(월) ~ 10. 12.(월) 18:00",
+          "match" : "2026. 9. 28.(월) ~ 10. 12.(월) 18:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27628602,
@@ -1410,9 +1804,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 온라인 신청 후기업매칭을 위해 10/12(월) 18시까지 희망기업 순위 구글폼 설문 참여, 이력서 및 자기소개서 제출",
+          "match" : "10/12(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -1443,7 +1845,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "신청 접수 | ~ 2026. 10. 18. (일)",
+          "match" : "2026. 10. 18. (일)"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27633202,
@@ -1455,9 +1863,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "합격자 발표 | 2026. 10. 30. (금)",
+          "match" : "2026. 10. 30. (금)"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       } ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1487,10 +1903,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "모집기한 2026. 11. 11.(수)",
+          "match" : "2026. 11. 11.(수)"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1520,7 +1944,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "신청기간 | 2026.10.01.(수)~2026.10.07.(수) | 트리니티 신청 및 근로지 자기소개서 제출",
+          "match" : "2026.10.01.(수)~2026.10.07.(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27634503,
@@ -1532,9 +1962,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "선발기간 | 2026.10.08.(목)~2026.10.15.(목) | 근로지별 서류/면접 평가 실시",
+          "match" : "2026.10.08.(목)~2026.10.15.(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "workstudy"
+      "topic" : "workstudy",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1565,10 +2003,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "접수기간 | 2026. 9. 30.(수) ~ 10. 7.(수)",
+          "match" : "2026. 9. 30.(수) ~ 10. 7.(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1598,10 +2044,18 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "일시: 10월 8일 목요일 오후 1시 ~ 3시",
+          "match" : "10월 8일"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : null
+      "topic" : null,
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "events"
@@ -1631,10 +2085,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "- 접수기간 : 10월 6일(화) ~ 10월 26일(월)",
+          "match" : "10월 6일(화) ~ 10월 26일(월)"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1664,10 +2126,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] ﻿2026년 2학기 문주장학재단 AI·ICT 분야 인재 장학생 선발 안(2026. 9. 21.(월) ~ 10. 8.(목))",
+          "match" : "2026. 9. 21.(월) ~ 10. 8.(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1697,10 +2167,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] 2026년도 2학기 진도군인재육성장학회 장학생 선발 안내(2026. 9. 21.(월) ~ 10. 8.(목))",
+          "match" : "2026. 9. 21.(월) ~ 10. 8.(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1730,10 +2208,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] 2026년 하반기 영주시 대학생 학자금대출 이자 지원 신청 안내( ~ 10. 8.(목) 18:00)",
+          "match" : "10. 8.(목) 18:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1763,10 +2249,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] <아산사회복지재단> 2027년도 북한이탈청소년 장학생 선발 안내(~10.26)",
+          "match" : "10.26"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1796,7 +2290,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "1. 조사기간:2026. 10.8.(목) 09:00 ~ 10.19.(월) 17:00",
+          "match" : "10.8.(목) 09:00 ~ 10.19.(월) 17:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27653201,
@@ -1808,7 +2308,13 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "‣ 개설대상과목 공고 | 2026. 11. 2.(월) 15시 이후 학교 홈페이지에 공고 예정",
+          "match" : "2026. 11. 2.(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27653204,
         "label" : "계절학기 수업기간",
@@ -1819,9 +2325,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "‣ 계절학기 수업기간 | 2026. 12. 21.(월) ~ 2027. 1. 12.(화)",
+          "match" : "2026. 12. 21.(월) ~ 2027. 1. 12.(화)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "seasonal"
+      "topic" : "seasonal",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1851,7 +2365,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "신청기간: 2026. 10. 07.(수) ~ 10. 18.(일)",
+          "match" : "2026. 10. 07.(수) ~ 10. 18.(일)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27654001,
@@ -1863,9 +2383,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "일시: 2026. 11. 06.(금) 10:00-17:00",
+          "match" : "2026. 11. 06.(금) 10:00-17:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -1895,7 +2423,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "수상 | <심의 필요>** IT관련 전국 및 교내외 대회 입상자 | [일정유의] 10.8(목) ~ 10.16(금)까지",
+          "match" : "10.8(목) ~ 10.16(금)까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27657902,
@@ -1907,7 +2441,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "졸업시험과목면제신청 – ●어학성적제출● | ~ 10.20(화) 23:59까지",
+          "match" : "10.20(화) 23:59까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27657901,
         "label" : "졸업시험신청",
@@ -1918,7 +2458,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "졸업시험신청 | ~ 10.20(화) 23:59까지",
+          "match" : "10.20(화) 23:59까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27657903,
         "label" : "졸업시험",
@@ -1929,7 +2475,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "졸업시험 | 11. 2(월) 저녁 예정",
+          "match" : "11. 2(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27657907,
         "label" : "수상 · 심의 불필요> ACM-ICPC",
@@ -1940,7 +2492,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "수상 | <심의 불필요> ACM-ICPC | 11.16(월) ~ 11.27(금)까지",
+          "match" : "11.16(월) ~ 11.27(금)까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27657905,
         "label" : "자격증",
@@ -1951,7 +2509,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "자격증 | 국가공인자격증(1급) 또는국제공인자격증 제출자 (정보처리기사, OCP, 빅데이터분석기사, 정보보안기사) | 11.16(월) ~ 11.27(금)까지*",
+          "match" : "11.16(월) ~ 11.27(금)까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27657904,
         "label" : "졸업논문",
@@ -1962,9 +2526,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "졸업논문 | ①컴퓨터정보공학부 교수의 지도하에 공식적으로 인정된 학회 발표 논문을 제출한 자 ②컴퓨터정보공학부 학술연구논문 장학생으로서 심사를 통과한 자(논문제출 및 최종발표까지 마친 자) | 11.16(월) ~ 11.27(금)까지",
+          "match" : "11.16(월) ~ 11.27(금)까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "graduation"
+      "topic" : "graduation",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -1994,7 +2566,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 신청 기간: ~10. 19.(월) 17:00까지",
+          "match" : "10. 19.(월) 17:00까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27658201,
@@ -2006,9 +2584,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 일시 : 2026. 10. 21.(수) 12:00~14:00 (점심시간)",
+          "match" : "2026. 10. 21.(수) 12:00~14:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -2038,10 +2624,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "📌 신청기간 : 10. 13.(화) 까지",
+          "match" : "10. 13.(화) 까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -2071,10 +2665,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] (재)인천광역시 계양구 인재양성장학교육재단 2026년 2학기 장학생 선발 안내(10. 1.(목) ~ 10. 12.(월))",
+          "match" : "10. 1.(목) ~ 10. 12.(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2104,10 +2706,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] 2026년 2학기 한국선원복지고용센터 선원가족장학생 선발 안내(~10.30 접수기간 연장)",
+          "match" : "10.30"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2137,10 +2747,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] 2026년 2학기 전남인재육성 장학생 선발 안내(9. 21.(월) ~ 10. 23.(금) 18:00)",
+          "match" : "9. 21.(월) ~ 10. 23.(금) 18:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2170,10 +2788,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] 2026년 (재)순천시인재육성장학회 장학생 선발 모집 안내(9.28.(월)~10.23.(금))",
+          "match" : "9.28.(월)~10.23.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2203,10 +2829,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] 2026년 양산시 대학생 학자금 대출 이자지원 접수 안내(9. 14.(월) ~ 10. 23.(금))",
+          "match" : "9. 14.(월) ~ 10. 23.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2236,10 +2870,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] 2026년 하반기 은평구민장학재단 장학생 선발 안내(10. 12.(월) ~ 10. 28.(수))",
+          "match" : "10. 12.(월) ~ 10. 28.(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2269,10 +2911,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "1. 평가기간 : 2026. 10. 26. (월) ~ 10. 30. (금)",
+          "match" : "2026. 10. 26. (월) ~ 10. 30. (금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "course"
+      "topic" : "course",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2302,10 +2952,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "● 조사기간: 2026. 10. 13 ~ 10. 30",
+          "match" : "2026. 10. 13 ~ 10. 30"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2335,10 +2993,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : ": 명단 발송 및 제출 확인을 위해 10월 15일까지 채용 공고에 지원한 것과 동일한 자소서를 노진영(jobnjy@hanmail.net)으로 보내주세요.",
+          "match" : "10월 15일까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -2368,7 +3034,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] (한국장학재단) 2026-2학기 국가근로장학금 추가신청기간 안내(10/21~10/29)",
+          "match" : "10/21~10/29"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27668603,
@@ -2380,7 +3052,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "재단 희망근로지 신청 | 2026. 10. 30.(금) ~ 11. 12.(목)",
+          "match" : "2026. 10. 30.(금) ~ 11. 12.(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27668604,
         "label" : "대학 선발",
@@ -2391,7 +3069,13 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "대학 선발 | 2026. 11. 23.(월) ~ 12. 11.(금)",
+          "match" : "2026. 11. 23.(월) ~ 12. 11.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27668605,
         "label" : "최종 선발 결과 공개",
@@ -2402,7 +3086,13 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "최종 선발 결과 공개 | 2026. 12. 14.(월)",
+          "match" : "2026. 12. 14.(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27668602,
         "label" : "근로기간",
@@ -2413,9 +3103,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "근로기간 | 2027. 1. 1.(금) ~ 2. 28.(일)",
+          "match" : "2027. 1. 1.(금) ~ 2. 28.(일)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "workstudy"
+      "topic" : "workstudy",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "must"
@@ -2445,10 +3143,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "4. 수강신청 기간 : 2026.10.13.(화) 09:00 ~ 10.25.(일) 23:59",
+          "match" : "2026.10.13.(화) 09:00 ~ 10.25.(일) 23:59"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "course"
+      "topic" : "course",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2479,10 +3185,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 서류 제출 마감 : `26.10.19(월)",
+          "match" : "`26.10.19(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -2512,10 +3226,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] 2027년도 두산연강재단 대학 장학생 선발 안내(10. 14.(수) ~ 11. 13.(금) 18:00까지)",
+          "match" : "10. 14.(수) ~ 11. 13.(금) 18:00까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2545,7 +3267,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "동국대학교 | http://www.dongguk.edu/ | 서울 | ~ 2026. 10. 28(수)",
+          "match" : "2026. 10. 28(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27679109,
@@ -2557,7 +3285,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "한국항공대학교 | http://www.hangkong.ac.kr/ | 경인 | ~ 2026. 10. 30(금)",
+          "match" : "2026. 10. 30(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27679110,
         "label" : "한성대학교 · 서울",
@@ -2568,7 +3302,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "한성대학교 | http://www.hansung.ac.kr/ | 서울 | ~ 2026. 11. 02(월)",
+          "match" : "2026. 11. 02(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27679111,
         "label" : "한신대학교 · 경인",
@@ -2579,7 +3319,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "한신대학교 | http://www.hs.ac.kr/ | 경인 | ~ 2026. 11. 02(월)",
+          "match" : "2026. 11. 02(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27679104,
         "label" : "동덕여자대학교 · 서울",
@@ -2590,7 +3336,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "동덕여자대학교 | http://www.dongduk.ac.kr | 서울 | ~ 2026. 11. 03(화)",
+          "match" : "2026. 11. 03(화)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27679112,
         "label" : "한양대학교 (안산ERICA) · 경인",
@@ -2601,7 +3353,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "한양대학교 (안산ERICA) | http://www.hanyang.ac.kr/ | 경인 | ~ 2026. 11. 04(수)",
+          "match" : "2026. 11. 04(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27679106,
         "label" : "서울시립대학교 · 서울",
@@ -2612,7 +3370,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "서울시립대학교 | http://www.uos.ac.kr/ | 서울 | ~ 2026. 11. 09(월)",
+          "match" : "2026. 11. 09(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27679105,
         "label" : "상명대학교 · 서울",
@@ -2623,7 +3387,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "상명대학교 | http://www.smu.ac.kr/ | 서울 | ~ 2026. 11. 10(화)",
+          "match" : "2026. 11. 10(화)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27679107,
         "label" : "성신여자대학교 · 서울",
@@ -2634,7 +3404,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "성신여자대학교 | http://www.sungshin.ac.kr/ | 서울 | ~ 2026. 11. 10(화)",
+          "match" : "2026. 11. 10(화)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27679101,
         "label" : "경희대학교 (수원 국제) · 경인",
@@ -2645,7 +3421,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "경희대학교 (수원 국제) | http://www.kyunghee.ac.kr/ | 경인 | ~ 2026. 11. 13(금)",
+          "match" : "2026. 11. 13(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27679102,
         "label" : "국민대학교 · 서울",
@@ -2656,7 +3438,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "국민대학교 | https://www.kookmin.ac.kr/ | 서울 | ~ 2026. 11. 16(월)",
+          "match" : "2026. 11. 16(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27679108,
         "label" : "세종대학교 · 서울",
@@ -2667,9 +3455,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "세종대학교 | http://www.sejong.ac.kr/ | 서울 | ~ 2026. 11. 16(월)",
+          "match" : "2026. 11. 16(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "exchange"
+      "topic" : "exchange",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2699,10 +3495,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "모집기간 2026. 10.08(목) – 10.29(목) 🕒 15:00",
+          "match" : "2026. 10.08(목) – 10.29(목)"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2732,10 +3536,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 추천마감 : `26.10.21(수) 오전 11시",
+          "match" : "`26.10.21(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -2765,10 +3577,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "접수기간 | 2026년 10월 16일 ~ 11월 16일",
+          "match" : "2026년 10월 16일 ~ 11월 16일"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "must"
@@ -2798,7 +3618,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 모집 기간: 2026. 10. 19.(월) ~ 10. 23.(금)",
+          "match" : "2026. 10. 19.(월) ~ 10. 23.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27686802,
@@ -2810,9 +3636,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 운영 기간: 2026. 10. 26.(월) ~ 11. 20.(금)",
+          "match" : "2026. 10. 26.(월) ~ 11. 20.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "extracurricular"
+      "topic" : "extracurricular",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2842,10 +3676,18 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "일시 : 11/4(수), 오후 4시-5시",
+          "match" : "11/4(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : null
+      "topic" : null,
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "events"
@@ -2875,10 +3717,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 조사기간: ~ 2026. 11. 27. (금)까지",
+          "match" : "2026. 11. 27. (금)까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "extracurricular"
+      "topic" : "extracurricular",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -2908,7 +3758,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "2. 신청기간 : 2026.10.26.(월) ~ 11.13.(금)",
+          "match" : "2026.10.26.(월) ~ 11.13.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27692802,
@@ -2920,9 +3776,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 일시 : 10.26.(월) ~ 11.13.(금)",
+          "match" : "10.26.(월) ~ 11.13.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "course"
+      "topic" : "course",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2952,7 +3816,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 트리니티 신청: 2026. 10. 27.(화)까지",
+          "match" : "2026. 10. 27.(화)까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27694102,
@@ -2964,9 +3834,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 원본서류 제출: 2026. 10. 28.(수) 17:00까지(12-13시 점심시간)",
+          "match" : "2026. 10. 28.(수) 17:00까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -2996,7 +3874,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "신청서 접수 | 2026. 10. 30.(금) 15:00까지 학점교류 학점인정 신청서 제출",
+          "match" : "2026. 10. 30.(금) 15:00까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27698401,
@@ -3008,9 +3892,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "수업기간 | 2026. 12. 22.(화) ~ 27. 01. 13.(수)",
+          "match" : "2026. 12. 22.(화) ~ 27. 01. 13.(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "exchange"
+      "topic" : "exchange",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -3041,10 +3933,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "10.23(금) / 17:30 | 질병휴학(4주이상 종합병원진단서 첨부) 및 입대휴학 제외",
+          "match" : "10.23(금) / 17:30"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "course"
+      "topic" : "course",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "must"
@@ -3074,10 +3974,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "신청기간 2026. 10. 22.(목) 9시 ~ 11. 12.(목) 18시",
+          "match" : "11. 12.(목)"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -3107,7 +4015,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 11월 12일(목) 11시까지 완성된 입사지원서를 노진영(jobnjy@hanmail.net)으로 보내주세요.",
+          "match" : "11월 12일(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27701102,
@@ -3119,7 +4033,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 추천마감 : `26.11.12(목)",
+          "match" : "`26.11.12(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27701101,
         "label" : "추천자 마감일",
@@ -3130,9 +4050,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "-추천자 마감일 : 11/12(목) 오전 11시(추천자 서류 가점 혜택)",
+          "match" : "11/12(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -3162,10 +4090,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "서강대학교 | 서강대학교 | 서울 | ~ 2026. 11. 04.(수) | 첨부파일 참조",
+          "match" : "2026. 11. 04.(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "exchange"
+      "topic" : "exchange",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -3196,10 +4132,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "◯ 이벤트 기간: 2026. 10. 26.(월) ~ 10. 30.(금) ◯ 참여 방법 1. 대학일자리플러스센터 홈페이지 로그인(트리니티 ID&PW 사용, 회원가입 불필요)",
+          "match" : "2026. 10. 26.(월) ~ 10. 30.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -3229,10 +4173,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 기간: 2026년 10월 26일(월) ~ 10월 30일(금)",
+          "match" : "2026년 10월 26일(월) ~ 10월 30일(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -3262,7 +4214,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 추천마감 : `26.11.04(수) 11:00",
+          "match" : "`26.11.04(수) 11:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27709703,
@@ -3274,7 +4232,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 11월 04일 (수) 11시까지 완성된 입사지원서를 노진영(jobnjy@hanmail.net)으로 보내주세요.",
+          "match" : "11월 04일 (수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27709701,
         "label" : "추천자 마감일",
@@ -3285,9 +4249,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "-추천자 마감일 : 11/04(수) 오전 11시 (추천자 서류 심사 면제 ※ 단, 서류 제출은 필수)",
+          "match" : "11/04(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -3317,7 +4289,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 추천마감 : 26.11.05 (목) 11:00",
+          "match" : "26.11.05 (목) 11:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27711703,
@@ -3329,7 +4307,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 11월 05일 (목) 11시까지 완성된 입사지원서를 노진영(jobnjy@hanmail.net)으로 보내주세요.",
+          "match" : "11월 05일 (목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27711701,
         "label" : "추천자 마감일",
@@ -3340,9 +4324,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "-추천자 마감일 : 11/05(목) 오전 11시 (※ 추천자 서류 전형 가점 혜택)",
+          "match" : "11/05(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -3372,7 +4364,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 추천마감 : 26.11.06 (금) 11:00",
+          "match" : "26.11.06 (금) 11:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27711901,
@@ -3384,7 +4382,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "-추천자 마감일 : 11/06(금) 오전 11시 (※ 추천자 서류 전형 가점 혜택)",
+          "match" : "11/06(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27711903,
         "label" : "모두투어 인턴 취업추천서 제출",
@@ -3395,9 +4399,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 서류 제출 확인 및 추천자 명단 발송을 위해 11월 06일 (금) 11시까지 완성된 입사지원서 및 취업추천서를 노진영(jobnjy@hanmail.net)으로 보내주세요.",
+          "match" : "11월 06일 (금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -3427,10 +4439,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] 2026년도 하반기 강화군 대학생 등록금 지원사업 안내(10. 26.(월) ~ 11. 9.(월) 18:00)",
+          "match" : "10. 26.(월) ~ 11. 9.(월) 18:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "must"
@@ -3460,10 +4480,18 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : true
+        "fromImage" : true,
+        "evidence" : {
+          "text" : "● 일시 : 2026.11.4.(수), 16:00 ~ 18:00",
+          "match" : "2026.11.4.(수)"
+        },
+        "foundBy" : "image",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : null
+      "topic" : null,
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "events"
@@ -3493,7 +4521,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "신청기간 | 2026.11.02.(월)~2026.11.08.(일) | 트리니티 신청 및 근로지 자기소개서 제출",
+          "match" : "2026.11.02.(월)~2026.11.08.(일)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27722703,
@@ -3505,9 +4539,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "선발기간 | 2026.11.09.(월)~2026.11.16.(월) | 근로지별 서류/면접 평가 실시",
+          "match" : "2026.11.09.(월)~2026.11.16.(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "workstudy"
+      "topic" : "workstudy",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -3537,7 +4579,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "신청서 접수 | 1) 제출기간 : 2026. 11. 09.(월) 17:00까지 2) 신청서류 : 총 5장(상단 신청서류 설명 확인) 3) 신청절차 : 트리니티 내 학점인정 사항 입력(강의계획서 탑재 필수) - 신청서류 학부(과)장 날인 – 학사행정팀 제출",
+          "match" : "2026. 11. 09.(월) 17:00까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27724403,
@@ -3549,7 +4597,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "온라인 학적 등록 | 1) 2026. 11. 09.(월) 09:00 ~ 11. 12.(목) 11:00까지 고려대 홈페이지에서 직접 등록 2) 학생이 온라인 학적 미등록 시 학점교류 불가능 3) 첨부된 학점교류 안내자료 확인 필수",
+          "match" : "2026. 11. 09.(월) 09:00 ~ 11. 12.(목) 11:00까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27724401,
         "label" : "수업기간",
@@ -3560,9 +4614,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "수업기간 | 2026. 12. 21.(월) ~ 2027. 01. 15.(금)",
+          "match" : "2026. 12. 21.(월) ~ 2027. 01. 15.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "exchange"
+      "topic" : "exchange",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -3592,10 +4654,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "[학생지원팀] 2026년도 통영시 저소득 대학생 장학금 지원대상자 선발 안내(11. 2.(월) ~ 11. 23.(월))",
+          "match" : "11. 2.(월) ~ 11. 23.(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "scholarship"
+      "topic" : "scholarship",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -3625,7 +4695,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "신청서 접수 | 1) 1차 제출 : ~ 2026. 11. 10.(화) 16:00까지(학점교류 신청에 대한 사항) - 학점교류 신청서 제출(트리니티) 2) 2차 제출 : ~ 2026. 12. 21.(월) 16:00까지(수강신청 확정 후 학점인정에 관한 사항) - 학점교류 학점인정 신청서 제출",
+          "match" : "2026. 11. 10.(화) 16:00까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27727403,
@@ -3637,7 +4713,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "신청서 접수 | 1) 1차 제출 : ~ 2026. 11. 10.(화) 16:00까지(학점교류 신청에 대한 사항) - 학점교류 신청서 제출(트리니티) 2) 2차 제출 : ~ 2026. 12. 21.(월) 16:00까지(수강신청 확정 후 학점인정에 관한 사항) - 학점교류 학점인정 신청서 제출",
+          "match" : "2026. 12. 21.(월) 16:00까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27727404,
         "label" : "학점인정 신청",
@@ -3648,7 +4730,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "학점인정 신청 | 1) 2차 제출에 해당하는 학점인정 신청서 제출 2) 제출기한 : ~ 2026. 12. 21.(월) 16:00까지 3) 트리니티에 학점인정 사항 입력(상대교 강의계획서 업로드 필수) → 출력 후 학부(과)장 날인 → 해당서류 학사지원팀 제출",
+          "match" : "2026. 12. 21.(월) 16:00까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27727401,
         "label" : "수업기간",
@@ -3659,9 +4747,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "수업기간 | 2026. 12. 21.(월) ~ 2027. 01. 13.(수)",
+          "match" : "2026. 12. 21.(월) ~ 2027. 01. 13.(수)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "exchange"
+      "topic" : "exchange",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"
@@ -3691,10 +4787,18 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "일시 : 11/5(목) 오후 4시 / D409",
+          "match" : "11/5(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : null
+      "topic" : null,
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "events"
@@ -3724,7 +4828,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 추천마감 : 26.11.12 (목) 11:00",
+          "match" : "26.11.12 (목) 11:00"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27731603,
@@ -3736,7 +4846,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 11월 12일 (목) 11시까지 완성된 입사지원서를 노진영(jobnjy@hanmail.net)으로 보내주세요.",
+          "match" : "11월 12일 (목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27731601,
         "label" : "추천자 마감일",
@@ -3747,9 +4863,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "-추천자 마감일 : 11/12(목) 오전 11시 (※ 추천자 서류 전형 면제)",
+          "match" : "11/12(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -3779,7 +4903,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "수강신청 | 11.5(목),09:00~ 11.10(화),17:00 | ▶ 개설과목은 첨부된 파일 참조 - 과목정정이 필요한 경우 수강신청 변경/취소기간을 이용",
+          "match" : "11.10(화)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27737202,
@@ -3791,7 +4921,13 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "폐강과목 공고 (1차) | 11.16(월) 15시 이후 예정 | ▶ 수강신청 인원이 15명 미만인 경우 폐강을 원칙으로 함.",
+          "match" : "11.16(월)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27737203,
         "label" : "겨울 계절학기 수강신청 변경/취소 및 추가신청",
@@ -3802,7 +4938,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "수강신청 변경/취소 및 추가신청 | 11.19(목),09:00 ~11.26(목),17:00 | ▶ 수강신청한 과목이 폐강된 경우, Trinity에 접속하여 수강가능한 과목으로 변경 혹은 취소 신청 - 신규 과목 추가신청 가능 - 이 기간 이후에는 수강신청 과목 변경이 절대 불가함",
+          "match" : "11.26(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27737204,
         "label" : "겨울 계절학기 고지서 출력 및 수강료 납부 (등록)",
@@ -3813,7 +4955,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "고지서 출력 및 수강료 납부 (등록) | 11.30(월)~12.04(금) [은행 영업시간만 가능] | ▶ Trinity에서 고지서 출력 ※ 학사정보-등록/장학-등록-계절학기등록금고지서 출력 ▶ 수강료 : 학점당 8만원 ※ (예외)기초교양필수 사랑나누기(2학점)는 수강료: 6만원",
+          "match" : "11.30(월)~12.04(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27737205,
         "label" : "폐강과목 공고 (2차)",
@@ -3824,7 +4972,13 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "폐강과목 공고 (2차) | 12.10(목) 15시 이후 예정 | ▶ 학교 홈페이지 공지사항 확인 ▶ 등록인원이15명 미만일 경우 폐강하는 것을 원칙으로 함",
+          "match" : "12.10(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       }, {
         "id" : 27737207,
         "label" : "수업기간",
@@ -3835,9 +4989,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "수업기간 | 12.21(월)~1.12(화) | ▶주5일(월~금), 매일 각 해당과목 주당 시간 수만큼 시험을 포함하여 총15일 수업(공휴일은 제외)",
+          "match" : "12.21(월)~1.12(화)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "seasonal"
+      "topic" : "seasonal",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "must"
@@ -3868,7 +5030,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "4. 모집기간: ~ 2026.11.08.(일)",
+          "match" : "2026.11.08.(일)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27742201,
@@ -3880,9 +5048,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "2. 운영기간: 2026.11.16.(월)~2027.01.08.(금) / 8주간 진행",
+          "match" : "2026.11.16.(월)~2027.01.08.(금)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -3912,7 +5088,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 1기: 1기 신청 바로가기 (신청기간: 11.03.화~11.11.수)",
+          "match" : "11.11."
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27744702,
@@ -3924,9 +5106,17 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "- 2기: 2기 신청 바로가기 (신청기간: 11.03.화~11.18.수)",
+          "match" : "11.18."
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "career"
+      "topic" : "career",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : true,
     "section" : "career"
@@ -3956,10 +5146,18 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "1. 신청 기간 : 2026. 11. 9. (월) ~ 11. 19. (목)",
+          "match" : "2026. 11. 9. (월) ~ 11. 19. (목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ ],
-      "topic" : "course"
+      "topic" : "course",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "must"
@@ -3989,7 +5187,13 @@
         "kind" : "ACTION",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "신청서 접수 | 2026. 11. 11.(수) 16:00까지",
+          "match" : "2026. 11. 11.(수) 16:00까지"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       },
       "next" : [ {
         "id" : 27752801,
@@ -4001,9 +5205,17 @@
         "kind" : "INFO",
         "saved" : false,
         "done" : false,
-        "fromImage" : false
+        "fromImage" : false,
+        "evidence" : {
+          "text" : "수업기간 | 2026. 12. 21.(월) ~ 2027. 01. 14.(목)",
+          "match" : "2026. 12. 21.(월) ~ 2027. 01. 14.(목)"
+        },
+        "foundBy" : "rule",
+        "doubt" : false
       } ],
-      "topic" : "exchange"
+      "topic" : "exchange",
+      "eligibility" : null,
+      "eligibilityEvidence" : null
     },
     "collapsed" : false,
     "section" : "open"

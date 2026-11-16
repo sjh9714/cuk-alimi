@@ -53,9 +53,30 @@ public final class Feed {
         }
     }
 
-    /** label은 공지 안에서 이 날짜가 무엇인지("트리니티 신청", "서류 합격자 발표"). 공지 제목과 같으면 비운다. */
+    /** 날짜를 읽은 글과 그 안의 날짜 글자 (ADR 016). 화면이 근거로 보여 주고 match에 형광펜을 긋는다. match는 없을 수 있다. */
+    public record Evidence(String text, String match) {
+    }
+
+    /** 규칙이 본문에서 읽은 날짜. */
+    public static final String FOUND_BY_RULE = "rule";
+    /** 그림을 받아 적은 글에서 읽어 사람 확인 없이 공개한 날짜 (ADR 010). */
+    public static final String FOUND_BY_IMAGE = "image";
+    /** 규칙이 놓친 문장을 AI가 찾아 주어 읽은 날짜 (ADR 016). */
+    public static final String FOUND_BY_AI = "ai";
+
+    /**
+     * label은 공지 안에서 이 날짜가 무엇인지("트리니티 신청", "서류 합격자 발표"). 공지 제목과 같으면 비운다.
+     * evidence는 그 날짜를 읽은 자리이고 손으로 넣은 항목과 학사일정 표 항목에는 없다. foundBy는 누가 읽었는지(rule, image, ai),
+     * doubt는 규칙이 찾았지만 AI가 학생이 할 일이 아니라고 본 날짜다. image, ai, doubt인 줄에는 화면이 "확인"을 달고 신고를 받는다.
+     */
     public record Line(long id, String label, LocalDate startsOn, LocalDate endsOn, LocalTime startsAt, LocalTime endsAt,
-            String kind, boolean saved, boolean done, boolean fromImage) {
+            String kind, boolean saved, boolean done, boolean fromImage, Evidence evidence, String foundBy, boolean doubt) {
+
+        public Line(long id, String label, LocalDate startsOn, LocalDate endsOn, LocalTime startsAt, LocalTime endsAt,
+                String kind, boolean saved, boolean done, boolean fromImage) {
+            this(id, label, startsOn, endsOn, startsAt, endsAt, kind, saved, done, fromImage, null,
+                    fromImage ? FOUND_BY_IMAGE : FOUND_BY_RULE, false);
+        }
 
         public Line(long id, String label, LocalDate startsOn, LocalDate endsOn, LocalTime startsAt, LocalTime endsAt,
                 String kind, boolean saved, boolean done) {
@@ -77,10 +98,17 @@ public final class Feed {
 
     /**
      * kind는 schedule, scholarship, academic, career. deadline은 날짜 확인 중인 카드에서만 null이다.
-     * mineReason은 내게 맞는 이유("3학년·컴퓨터정보공학부 대상"). mine일 때만 있다.
+     * mineReason은 내게 맞는 이유("3학년·컴퓨터정보공학부 대상"). mine일 때만 있다. mine은 알림(메일, 캘린더)의 조건으로만 쓴다.
+     * eligibility는 이 학생의 자격(ADR 016). 로그인 전에는 null이다. eligibilityEvidence는 공지에 적힌 대상 조건 문장이다.
      */
     public record Card(String key, String kind, String title, String sourceTitle, String url, AudienceView audience,
-            boolean mine, String mineReason, Line deadline, List<Line> next, String topic) {
+            boolean mine, String mineReason, Line deadline, List<Line> next, String topic, String eligibility,
+            String eligibilityEvidence) {
+
+        public Card(String key, String kind, String title, String sourceTitle, String url, AudienceView audience,
+                boolean mine, String mineReason, Line deadline, List<Line> next, String topic) {
+            this(key, kind, title, sourceTitle, url, audience, mine, mineReason, deadline, next, topic, null, null);
+        }
 
         public Card(String key, String kind, String title, String sourceTitle, String url, AudienceView audience,
                 boolean mine, String mineReason, Line deadline, List<Line> next) {
@@ -376,9 +404,11 @@ public final class Feed {
 
     private static Line line(DateItem i, String noticeTitle, Set<Long> saved, Set<Long> done) {
         String label = noticeTitle == null || sameThing(i.getTitle(), noticeTitle) ? null : tidyLabel(i.getTitle());
+        boolean fromImage = DateItem.STATUS_AUTO_IMAGE.equals(i.getStatus());
+        Evidence evidence = i.getEvidenceText() == null ? null : new Evidence(i.getEvidenceText(), i.getEvidenceMatch());
         return new Line(i.getId(), label, i.getStartsOn(), i.getEndsOn(), i.getStartsAt(), i.getEndsAt(),
-                ItemKind.of(i.getTitle()), saved.contains(i.getId()), done.contains(i.getId()),
-                DateItem.STATUS_AUTO_IMAGE.equals(i.getStatus()));
+                ItemKind.of(i.getTitle()), saved.contains(i.getId()), done.contains(i.getId()), fromImage, evidence,
+                fromImage ? FOUND_BY_IMAGE : FOUND_BY_RULE, false);
     }
 
     /** 표의 칸을 이어 붙인 이름("서강대학교 · 서강대학교 · 서울 · 첨부파일 참조")에서 겹친 칸과 안내 문구를 뺀다. */

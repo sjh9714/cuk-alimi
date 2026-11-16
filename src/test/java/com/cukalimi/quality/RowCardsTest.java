@@ -86,6 +86,9 @@ class RowCardsTest {
             int occurrence = occurrences.merge(e.naturalKey(0, 0), 1, Integer::sum);
             DateItem item = DateItem.fromNotice(noticeId, e.naturalKey(view.articleNo(), occurrence), e.title(), e.range().start(),
                     e.range().end(), e.range().startsAt(), e.range().endsAt(), e.targetGrade());
+            if (e.evidence() != null) {
+                item.withEvidence(e.evidence().text(), e.evidence().match());
+            }
             if (image) {
                 ReflectionTestUtils.setField(item, "status", DateItem.STATUS_AUTO_IMAGE);
             }
