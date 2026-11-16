@@ -1,53 +1,29 @@
 /*
  * CUK 알리미 화면 규칙. 값은 docs/design.md가 기준이다.
- * 점 찍힌 종이에 볼펜 파랑. 형광펜은 내게 맞는 일과 저장한 일에만, 빨강은 오늘과 이틀 안의 표시에만.
+ * 흰 종이에 검은 글자. 위계는 굵기와 크기로 만들고, 색은 형광펜(내게 맞는 일)과 빨강(이틀 안의 마감) 둘만 쓴다.
  */
 
 :root {
-  --paper: #fcfcfa;
-  --paper-2: #f3f4f8;
+  --paper: #ffffff;
+  --paper-2: #f5f6f8;
   --sheet: #ffffff;
-  --dot: #d5dae8;
-  --pen: #1b2ba3;
-  --ink: #10163f;
-  --body: #3d4366;
-  --mute: #5d6484;
-  --hair: #cfd5e6;
-  --hair-2: #b3bbd2;
-  --seg: #ebedf4;
-  --today: #fffbe3;
+  --ink: #17191f;
+  /* 옛 이름. 값은 먹색과 같다. */
+  --pen: var(--ink);
+  --select: var(--ink);
+  --select-2: #f1f2f4;
+  --body: #3c404b;
+  --mute: #6b7080;
+  --hair: #eceef2;
+  --hair-2: #c3c7d0;
   --hl: #ffe94d;
   --alarm: #e5281e;
   --alarm-2: #fdecea;
-  --select: #1b2ba3;
-  --select-2: #e8ebff;
-  --c-jang: #0f7f55;
-  --c-hak: #2b55d6;
-  --c-chwi: #bf540b;
-  --c-gwa: #6d3bbd;
+  /* 검수 화면의 상태 표시에만 쓴다. */
   --soon: #a35a00;
   --soon-2: #fdf1e1;
   --ok: #1c7a4b;
   --ok-2: #e6f4ec;
-
-  /* 2단계 전까지 다른 페이지가 쓰는 옛 이름 */
-  --ground: var(--paper);
-  --surface: var(--paper);
-  --surface-2: var(--paper-2);
-  --ink-2: var(--body);
-  --muted: var(--mute);
-  --line: var(--hair);
-  --line-strong: var(--hair-2);
-  --shell: var(--ink);
-  --shell-ink: var(--paper);
-  --shell-muted: var(--mute);
-  --accent: var(--select);
-  --accent-ink: #ffffff;
-  --accent-soft: var(--select-2);
-  --urgent: var(--alarm);
-  --urgent-soft: var(--alarm-2);
-  --soon-soft: var(--soon-2);
-  --ok-soft: var(--ok-2);
 
   --radius: 6px;
   --radius-sm: 6px;
@@ -70,8 +46,6 @@ body {
   margin: 0;
   padding: 0;
   background-color: var(--paper);
-  background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
-  background-size: 20px 20px;
   color: var(--body);
   font-family: var(--font);
   font-size: 15px;
@@ -182,10 +156,10 @@ a {
 }
 
 .brand {
-  color: var(--pen);
-  font-weight: 800;
-  font-size: 18px;
-  letter-spacing: -0.03em;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: -0.01em;
   text-decoration: none;
 }
 
@@ -201,8 +175,8 @@ a {
   padding: 0 10px;
   color: var(--mute);
   text-decoration: none;
-  font-weight: 600;
-  font-size: 15px;
+  font-weight: 500;
+  font-size: 14px;
   box-shadow: inset 0 -2px 0 transparent;
 }
 
@@ -212,6 +186,7 @@ a {
 
 .top-nav a.active {
   color: var(--ink);
+  font-weight: 600;
   box-shadow: inset 0 -2px 0 var(--ink);
 }
 
@@ -304,11 +279,10 @@ main.narrow {
 }
 
 .page-head h1 {
-  font-size: 40px;
-  line-height: 1.15;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  color: var(--pen);
+  font-size: 27px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.035em;
 }
 
 .page-head .sub {
@@ -323,7 +297,7 @@ main.narrow {
 .hint {
   margin-top: 8px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--mute);
 }
 
@@ -363,7 +337,7 @@ button.primary,
 
 button.primary:hover,
 .btn.primary:hover {
-  background: #15228a;
+  background: #30333d;
 }
 
 button.ghost {
@@ -451,7 +425,7 @@ legend {
   width: 100%;
   padding: 18px 0 0;
   border-top: 1px solid var(--hair);
-  font-weight: 700;
+  font-weight: 600;
   font-size: 15px;
   color: var(--ink);
 }
@@ -474,8 +448,8 @@ legend + * {
   border: 1px solid var(--hair-2);
   border-radius: 999px;
   background: transparent;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 600;
   line-height: 1.6;
   color: var(--mute);
 }
@@ -498,7 +472,7 @@ legend + * {
   font-size: 13px;
 }
 
-/* 관심 주제 고르기. 분류 고르기(.seg)와 같은 글자와 눌림 색이고, 줄이 넘치면 다음 줄로 간다. */
+/* 관심 주제 고르기. 줄이 넘치면 다음 줄로 간다. */
 .topic-chips {
   display: flex;
   flex-wrap: wrap;
@@ -512,7 +486,7 @@ legend + * {
   border-radius: 999px;
   background: var(--paper);
   font-size: 14px;
-  font-weight: 650;
+  font-weight: 500;
   color: var(--mute);
 }
 
@@ -530,8 +504,9 @@ fieldset.topics {
 
 fieldset.topics legend {
   padding: 0;
+  border-top: 0;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--ink);
 }
 
@@ -580,12 +555,10 @@ button.link:disabled {
   gap: 0 12px;
 }
 
+/* 묶음. 상자를 두르지 않고 위 선 하나로만 나눈다. */
 .panel {
-  padding: 20px 22px;
-  margin-bottom: 12px;
-  background: var(--sheet);
-  border: 1px solid var(--hair);
-  border-radius: 14px;
+  padding: 22px 0;
+  border-top: 1px solid var(--hair);
 }
 
 .panel-title {
@@ -594,10 +567,9 @@ button.link:disabled {
   justify-content: space-between;
   gap: 8px;
   margin-bottom: 10px;
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
-  color: var(--pen);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
 }
 
 .panel-link {
@@ -694,7 +666,7 @@ button.link:disabled {
   color: var(--alarm);
 }
 
-/* 분류 고르기 (검수 필터). 홈의 .seg와 같은 모양. */
+/* 분류 고르기 (검수 필터). */
 .segmented {
   display: flex;
   flex-wrap: wrap;
@@ -703,7 +675,7 @@ button.link:disabled {
   width: fit-content;
   max-width: 100%;
   border-radius: 10px;
-  background: var(--seg);
+  background: var(--paper-2);
 }
 
 .segmented.wrap {
@@ -716,7 +688,7 @@ button.link:disabled {
   border-radius: 8px;
   background: transparent;
   font-size: 14px;
-  font-weight: 650;
+  font-weight: 500;
   color: var(--mute);
   white-space: nowrap;
 }
@@ -728,7 +700,8 @@ button.link:disabled {
 
 .segmented button[aria-pressed="true"] {
   background: #fff;
-  color: var(--pen);
+  font-weight: 600;
+  color: var(--ink);
 }
 
 .segmented button .n {
@@ -1299,23 +1272,6 @@ details.fold .note {
 
 /* ───── 혜택 ───── */
 
-/* 분류마다 색이 하나다. 제목, 왼쪽 막대, 항목 이름이 같은 색을 써서 스크롤 중에도 구역이 보인다. */
-.cat-scholarship {
-  --cat: #0b6e49;
-}
-
-.cat-school {
-  --cat: #2348c2;
-}
-
-.cat-subscription {
-  --cat: #a84806;
-}
-
-.cat-tool {
-  --cat: #6d3bbd;
-}
-
 .benefit-group {
   margin-top: 28px;
 }
@@ -1330,15 +1286,14 @@ details.fold .note {
   gap: 12px;
   padding: 8px 0;
   background: var(--paper);
-  font-size: 20px;
-  font-weight: 800;
-  letter-spacing: -0.4px;
-  color: var(--cat, var(--pen));
+  border-bottom: 1px solid var(--hair);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mute);
 }
 
 .band span {
-  font-size: 14px;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .spread.two {
@@ -1354,7 +1309,6 @@ details.fold .note {
   margin-bottom: -1px;
   border-right: 1px solid var(--hair);
   border-bottom: 1px solid var(--hair);
-  box-shadow: inset 4px 0 0 var(--cat, var(--pen));
 }
 
 .spread.two .cell:nth-child(2n) {
@@ -1401,7 +1355,7 @@ details.fold .note {
 }
 
 .benefit summary:hover > svg {
-  color: var(--cat, var(--pen));
+  color: var(--ink);
 }
 
 .benefit details[open] summary > svg {
@@ -1414,11 +1368,10 @@ details.fold .note {
 }
 
 .benefit .name {
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
+  font-size: 16px;
+  font-weight: 600;
   line-height: 1.45;
-  color: var(--cat, var(--ink));
+  color: var(--ink);
 }
 
 .benefit .desc {
@@ -1428,8 +1381,8 @@ details.fold .note {
 }
 
 .benefit .left {
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 600;
   line-height: 1.7;
   color: var(--mute);
   white-space: nowrap;
@@ -1455,7 +1408,7 @@ details.fold .note {
 .benefit .stale {
   margin-top: 2px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--alarm);
 }
 
@@ -1475,7 +1428,7 @@ details.fold .note {
 }
 
 .benefit dt {
-  font-weight: 700;
+  font-weight: 500;
   color: var(--mute);
 }
 
@@ -1496,7 +1449,7 @@ details.fold .note {
   gap: 10px;
   margin: 4px 0 10px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--ink);
   cursor: pointer;
 }
@@ -1519,18 +1472,12 @@ details.fold .note {
   margin-top: 2px;
 }
 
-.danger-zone {
-  border-color: #f1c3bf;
-}
-
 /* ───── 긴 글 (개인정보 처리방침) ───── */
 
 .prose .panel h2 {
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
+  font-size: 15px;
+  font-weight: 600;
   margin-bottom: 8px;
-  color: var(--pen);
 }
 
 .prose p + p,
@@ -1826,7 +1773,6 @@ details.fold .note {
   main {
     padding: 14px 16px 96px;
   }
-  .page-head h1,
   .head h1 {
     font-size: 32px;
   }
