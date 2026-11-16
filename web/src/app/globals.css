@@ -1,6 +1,6 @@
 /*
  * CUK 알리미 화면 규칙. 값은 docs/design.md가 기준이다.
- * 흰 종이에 검은 글자. 위계는 굵기와 크기로 만들고, 색은 형광펜(내게 맞는 일)과 빨강(이틀 안의 마감) 둘만 쓴다.
+ * 흰 종이에 검은 글자. 위계는 굵기와 크기로 만들고, 색은 형광펜(날짜를 읽은 자리)과 빨강(이틀 안의 마감) 둘만 쓴다.
  */
 
 :root {
@@ -445,7 +445,7 @@ legend + * {
   gap: 8px;
 }
 
-/* 확인할 것이 있는 행의 작은 표시. 그림에서 읽은 날짜와 자격 조건이 붙은 형광펜에만 붙는다. */
+/* 사람 확인 없이 공개한 날짜(그림, AI가 찾은 문장)나 AI가 의심한 날짜가 든 행의 작은 표시. 누르면 근거가 펼쳐진다. */
 .it .m .check-tag {
   padding: 0 6px;
   min-height: 0;
@@ -463,12 +463,38 @@ legend + * {
   color: var(--pen);
 }
 
+/* 근거 (ADR 016). 날짜를 누르면 공지에서 그 날짜를 읽은 글이 그대로 펼쳐진다. 왼쪽 선 하나로 인용임을 알린다. */
 .it .check-body {
   display: grid;
-  gap: 4px;
-  margin-top: 6px;
+  gap: 6px;
+  margin-top: 8px;
+  padding-left: 10px;
+  border-left: 2px solid var(--hair);
   font-size: 13px;
-  color: var(--body);
+  line-height: 1.55;
+  color: var(--mute);
+}
+
+.it .check-body .ev {
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.it .check-body .ev b {
+  margin-right: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mute);
+}
+
+/* 형광펜. 우리가 날짜를 읽은 자리에만 긋는다. 화면에서 노란색이 나오는 곳은 여기 하나다. */
+.it .check-body mark {
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  margin: 0 -2px;
+  padding: 0 2px;
+  background: linear-gradient(transparent 46%, var(--hl) 46%, var(--hl) 94%, transparent 94%);
+  color: inherit;
 }
 
 .it .check-body button.link {
@@ -891,6 +917,32 @@ button.link:disabled {
   color: var(--ink);
 }
 
+/* 날짜가 단추일 때. 누르면 근거가 펼쳐진다는 것을 날짜 아래 점선으로만 알린다. */
+.it button.when {
+  display: block;
+  margin: 0;
+  padding: 2px 0 0;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  font-weight: 400;
+}
+
+.it button.when:hover {
+  background: transparent;
+}
+
+.it button.when span {
+  text-decoration: underline dotted var(--hair-2);
+  text-underline-offset: 3px;
+}
+
+.it button.when:hover span,
+.it button.when[aria-expanded="true"] span {
+  color: var(--ink);
+  text-decoration-color: var(--ink);
+}
+
 .it .when.soon b {
   color: var(--alarm);
 }
@@ -923,19 +975,6 @@ button.link:disabled {
 
 .keep[aria-pressed="true"] {
   color: var(--ink);
-}
-
-/* 형광펜. 관심 주제이면서 자격이 되는 일의 제목 아래 절반에 긋는다. 급한 날짜는 빨강이 맡는다. */
-.it.picked .do a > span:first-child {
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  margin: 0 -2px;
-  padding: 0 2px;
-  background: linear-gradient(transparent 52%, var(--hl) 52%, var(--hl) 94%, transparent 94%);
-}
-
-.it.done .do a > span:first-child {
-  background: none;
 }
 
 /* 행사. 할 일이 아니라서 체크와 남은 날 없이 회색으로만 적는다. */

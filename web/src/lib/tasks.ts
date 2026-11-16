@@ -2,6 +2,7 @@
 // 화면에는 공문 제목 대신 "서강대 학점교류 신청"처럼 할 일을 적는다. 날짜는 서버 값을 그대로 쓰고 추측하지 않는다.
 
 import { TOPICS, type Card, type Line, type Section, type TopicKey } from "./api";
+import { needsCheck } from "./evidence";
 
 export type Kind = Card["kind"];
 
@@ -26,8 +27,10 @@ export type Task = {
   saved: boolean;
   /** 서버에 남은 끝냈어요. 로그인 전에는 false이고 브라우저 저장소가 대신한다. */
   done: boolean;
-  /** 그림에서 읽은 날짜가 섞인 행. 확인 표시를 단다. */
-  fromImage: boolean;
+  /** 사람 확인 없이 공개한 날짜(그림, AI)나 AI가 의심한 날짜가 섞인 행. "확인"을 달고 신고를 받는다 (ADR 016). */
+  check: boolean;
+  /** 공지에 적힌 대상 조건 문장. 근거 패널에 함께 보인다. */
+  eligibilityEvidence: string | null;
 };
 
 /** "신청기간", "모집기한", "마감 기한"처럼 일의 이름이 아니라 자리 이름인 라벨 조각. 서버의 DateItemExtractor.GENERIC_LABEL과 같은 규칙이다. */
@@ -173,7 +176,8 @@ export function tasksOf(cards: Card[], today: string): Task[] {
         lines: group,
         saved: group.some((l) => l.saved),
         done: group.some((l) => l.done),
-        fromImage: group.some((l) => l.fromImage),
+        check: group.some(needsCheck),
+        eligibilityEvidence: card.eligibilityEvidence ?? null,
       });
     }
   }
