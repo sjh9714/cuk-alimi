@@ -400,7 +400,7 @@ public final class DateItemExtractor {
     }
 
     /** 날짜 앞에 적힌 글. "접수기간 : 10. 1.(수)"에서 "접수기간". */
-    private static String leadOf(String text, DateRange merged) {
+    static String leadOf(String text, DateRange merged) {
         int cut = text.indexOf(merged.matchedText().replaceFirst("^~", ""));
         String lead = cleanLabel(cut > 0 ? text.substring(0, cut) : "");
         lead = lead.replaceAll("[\\s:：\\-–—·~∼〜～(\\[\\d.]+$", "").replaceAll("\\s*(안내는|안내|입니다|합니다)$", "").trim();
@@ -429,7 +429,7 @@ public final class DateItemExtractor {
     }
 
     /** 한 칸 안에 날짜가 여럿이면(변경기간 2차처럼 날마다 한 줄) 처음부터 끝까지 한 기간으로 합친다. 칸을 넘어 합치지는 않는다. */
-    private static DateRange merge(List<DateRange> ranges) {
+    static DateRange merge(List<DateRange> ranges) {
         if (ranges.size() == 1) {
             return ranges.get(0);
         }
