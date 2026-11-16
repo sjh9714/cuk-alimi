@@ -3,13 +3,12 @@
 // 주간 판과 월 달력이 함께 쓰는 행, 표시, 날짜 계산.
 
 import { dday, type Line } from "@/lib/api";
-import { iso, type CampusEvent, type Kind, type Task } from "@/lib/tasks";
+import { iso, WEEKDAY, type CampusEvent, type Kind, type Task } from "@/lib/tasks";
 import { useState } from "react";
 import { BookmarkIcon, CheckIcon } from "./icons";
 
 /** 학사일정 표와 학사 공지는 출처만 다르다. 학생에게는 둘 다 학사다. */
 export const KIND_LABEL: Record<Kind, string> = { schedule: "학사", scholarship: "장학", academic: "학사", career: "취업", dept: "학과" };
-export const WEEKDAY = ["일", "월", "화", "수", "목", "금", "토"];
 export const TAG_CLASS = { 시작: "start", 마감: "end", 행사: "event" };
 
 export type Board = {
@@ -142,10 +141,6 @@ export function Ring() {
       />
     </svg>
   );
-}
-
-export function addDays(d: Date, n: number): Date {
-  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
 }
 
 export function leftText(d: number): string {

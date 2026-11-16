@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { api, dday, type Feed, type Line, type Me } from "@/lib/api";
-import { boardCards, cleanTitle, eventsOf, iso, startsOf, tasksOf, type CampusEvent, type Kind, type Task } from "@/lib/tasks";
+import { addDays, boardCards, cleanTitle, eventsOf, iso, mondayOf, startsOf, tasksOf, type CampusEvent, type Kind, type Task } from "@/lib/tasks";
 import { ChevronIcon } from "./icons";
-import { addDays, Day, KIND_LABEL, shortDate, TAG_CLASS } from "./planner";
+import { Day, KIND_LABEL, shortDate, TAG_CLASS } from "./planner";
 
 const KINDS: (Kind | "all")[] = ["all", "scholarship", "academic", "career", "dept"];
 const DONE_KEY = "cuk-alimi.done";
@@ -347,10 +347,6 @@ function upcomingRows(tasks: Task[], events: CampusEvent[], after: string) {
     ...events.filter((e) => e.date >= after).map((e) => ({ key: e.key, date: e.date, title: e.title, url: e.url, tag: e.tag })),
   ];
   return rows.sort((a, b) => a.date.localeCompare(b.date));
-}
-
-function mondayOf(d: Date): Date {
-  return addDays(d, -((d.getDay() + 6) % 7));
 }
 
 function days(monday: Date): Date[] {

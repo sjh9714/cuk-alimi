@@ -77,19 +77,25 @@ export type Me = {
   interests: TopicKey[];
 };
 
-/** 공지 주제. 서버 `feed/Topic.java`와 같은 키와 순서다. */
+/**
+ * 공지 주제. 키는 서버 `feed/Topic.java`와 같다. 앞의 다섯이 고르기 전 기본값이다(`Topic.DEFAULTS`).
+ * short는 "학점교류 7 · 취업 3"처럼 가운뎃점으로 잇는 자리에 쓰는 이름이다.
+ */
 export const TOPICS = [
-  { key: "course", label: "수강·학적" },
-  { key: "seasonal", label: "계절학기" },
-  { key: "scholarship", label: "장학금" },
-  { key: "workstudy", label: "근로·인턴장학" },
-  { key: "graduation", label: "졸업" },
-  { key: "exchange", label: "학점교류" },
-  { key: "career", label: "취업·채용" },
-  { key: "extracurricular", label: "비교과·대회·특강" },
-  { key: "grad", label: "대학원" },
+  { key: "course", label: "수강·학적", short: "수강" },
+  { key: "seasonal", label: "계절학기", short: "계절학기" },
+  { key: "scholarship", label: "장학금", short: "장학금" },
+  { key: "workstudy", label: "근로·인턴장학", short: "근로" },
+  { key: "graduation", label: "졸업", short: "졸업" },
+  { key: "exchange", label: "학점교류", short: "학점교류" },
+  { key: "career", label: "취업·채용", short: "취업" },
+  { key: "extracurricular", label: "비교과·대회·특강", short: "비교과" },
+  { key: "grad", label: "대학원", short: "대학원" },
 ] as const;
 export type TopicKey = (typeof TOPICS)[number]["key"];
+
+/** 로그인 전이나 관심 주제를 고르기 전에 쓰는 다섯 주제. */
+export const DEFAULT_TOPICS: readonly TopicKey[] = TOPICS.slice(0, 5).map((t) => t.key);
 
 export type Scope = "GENERAL" | "REGION" | "GROUP" | "FIELD" | "RESULT";
 

@@ -1,7 +1,7 @@
 // 피드의 공지 카드를 학생이 할 일 한 줄로 바꾼다.
 // 화면에는 공문 제목 대신 "서강대 학점교류 신청"처럼 할 일을 적는다. 날짜는 서버 값을 그대로 쓰고 추측하지 않는다.
 
-import type { Card, Line, Section } from "./api";
+import { TOPICS, type Card, type Line, type Section, type TopicKey } from "./api";
 
 export type Kind = Card["kind"];
 
@@ -12,6 +12,8 @@ export type Task = {
   from: string;
   at: string;
   kind: Kind;
+  /** 공지 주제. 행사와 날짜 확인 중 카드에는 없다. */
+  topic: TopicKey | "other" | null;
   mine: boolean;
   mineReason: string | null;
   url: string;
@@ -161,6 +163,7 @@ export function tasksOf(cards: Card[], today: string): Task[] {
         from: [named[0].name.from, since(line, today)].filter(Boolean).join(", "),
         at: at ? `${at.slice(0, 5)}까지` : "",
         kind: card.kind,
+        topic: card.topic ?? null,
         mine: card.mine,
         mineReason: card.mineReason ?? null,
         url: card.url,
@@ -205,4 +208,81 @@ export function startsOf(sections: Section[], today: string): CampusEvent[] {
 /** 주간 판에 올릴 구간. 지역과 특정 대상은 ADR 009대로 접어 둔다. */
 export function boardCards(sections: Section[]): Card[] {
   return sections.filter((s) => !s.collapsed || s.key === "career").flatMap((s) => s.cards);
+}
+
+export const WEEKDAY = ["일", "월", "화", "수", "목", "금", "토"];
+
+export function addDays(d: Date, n: number): Date {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+}
+
+/** 그 날이 든 주의 월요일. */
+export function mondayOf(d: Date): Date {
+  return addDays(d, -((d.getDay() + 6) % 7));
+}
+
+function dateOf(isoDate: string): Date {
+  const [y, m, d] = isoDate.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+/**
+ * 판에 오르는 행을 목록에 둘 것과 "관심 밖"으로 접을 것으로 나눈다 (ADR 015).
+ * 학사일정 표 항목(must 구간), 저장한 행, 주제가 기타이거나 없는 행은 관심 주제와 상관없이 목록에 남는다.
+ * 기타는 학생이 고를 수 없는 주제라 접으면 되돌릴 길이 없다.
+ */
+export function splitByInterest(sections: Section[], interests: readonly string[], today: string): { main: Task[]; outside: Task[] } {
+  const must = new Set(tasksOf(sections.filter((s) => s.key === "must").flatMap((s) => s.cards), today).map((t) => t.key));
+  const stays = (t: Task) => must.has(t.key) || t.saved || !t.topic || t.topic === "other" || interests.includes(t.topic);
+  const all = tasksOf(boardCards(sections), today);
+  return { main: all.filter(stays), outside: all.filter((t) => !stays(t)) };
+}
+
+export type When = "week" | "next" | "month" | "later";
+const WHEN_LABEL: Record<When, string> = { week: "이번 주", next: "다음 주", month: "이달 안", later: "그 뒤" };
+
+/**
+ * 날짜순 행을 이번 주, 다음 주, 이달 안, 그 뒤로 묶는다. 주는 월요일에 시작한다.
+ * 지난 날의 행은 버리고, 빈 묶음은 만들지 않는다. 다음 주가 달을 넘기면 이달 안은 없다.
+ */
+export function groupByWhen<T extends { date: string }>(rows: T[], today: string): { key: When; label: string; rows: T[] }[] {
+  const now = dateOf(today);
+  const monday = mondayOf(now);
+  const next = iso(addDays(monday, 7));
+  const after = iso(addDays(monday, 14));
+  const monthEnd = iso(new Date(now.getFullYear(), now.getMonth() + 1, 0));
+  const whenOf = (date: string): When => (date < next ? "week" : date < after ? "next" : date <= monthEnd ? "month" : "later");
+  const upcoming = rows.filter((r) => r.date >= today);
+  return (["week", "next", "month", "later"] as const)
+    .map((key) => ({ key, label: WHEN_LABEL[key], rows: upcoming.filter((r) => whenOf(r.date) === key) }))
+    .filter((g) => g.rows.length > 0);
+}
+
+export type Part = { label: string; count: number };
+
+/** 행을 주제별로 센다. 많은 주제가 먼저이고, 주제가 기타이거나 없으면 "그 밖"이다. */
+export function topicParts(tasks: Task[]): Part[] {
+  const count = new Map<string, number>();
+  for (const t of tasks) {
+    const label = TOPICS.find((x) => x.key === t.topic)?.short ?? "그 밖";
+    count.set(label, (count.get(label) ?? 0) + 1);
+  }
+  const order = [...TOPICS.map((t) => t.short as string), "그 밖"];
+  return [...count].map(([label, n]) => ({ label, count: n })).sort((a, b) => b.count - a.count || order.indexOf(a.label) - order.indexOf(b.label));
+}
+
+/** "학점교류 7 · 취업 3"처럼 잇는다. max개를 넘는 나머지는 "그 밖 N"으로 합친다. */
+export function partsText(parts: Part[], max = 2): string {
+  const shown = parts.filter((p) => p.count > 0);
+  if (shown.length <= max) return shown.map((p) => `${p.label} ${p.count}`).join(" · ");
+  const rest = shown.slice(max).reduce((n, p) => n + p.count, 0);
+  return [...shown.slice(0, max).map((p) => `${p.label} ${p.count}`), `그 밖 ${rest}`].join(" · ");
+}
+
+/** 남은 날 아래에 적는 날짜. 이번 달이거나 두 주 안이면 "목 12", 더 멀면 "12.3". */
+export function dayText(date: string, today: string): string {
+  const d = dateOf(date);
+  const now = dateOf(today);
+  const near = date < iso(addDays(now, 14)) || (d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth());
+  return near ? `${WEEKDAY[d.getDay()]} ${d.getDate()}` : `${d.getMonth() + 1}.${d.getDate()}`;
 }

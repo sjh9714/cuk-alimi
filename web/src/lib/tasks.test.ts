@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { Card, Line, Section } from "./api";
-import { boardCards, cleanTitle, eventsOf, schoolName, startsOf, tasksOf } from "./tasks";
+import { DEFAULT_TOPICS, type Card, type Line, type Section } from "./api";
+import { boardCards, cleanTitle, dayText, eventsOf, groupByWhen, partsText, schoolName, splitByInterest, startsOf, tasksOf, topicParts } from "./tasks";
 
 const TODAY = "2026-11-02";
 let nextId = 1;
@@ -231,5 +231,143 @@ describe("tasksOf 긴 이름", () => {
     const c = card("2026학년도 겨울 계절학기 수강신청 안내", [line("2026-12-24", "환불신청 (2차) · 수업개시 이후 수강취소를 신청할 경우"), line("2026-12-24", "환불 금액 · 2/3 환불")]);
     const [t] = tasksOf([c], TODAY);
     expect(t.title).toBe("겨울 계절학기 수강신청");
+  });
+});
+
+describe("splitByInterest", () => {
+  const sec = (key: Section["key"], cards: Card[]): Section => ({ key, title: key, note: "", collapsed: !["must", "mine", "open"].includes(key), cards });
+  const one = (title: string, topic: Card["topic"], extra: Partial<Line> = {}) => card(title, [line("2026-11-10", "신청", extra)], { topic });
+  const titles = (sections: Section[], interests: readonly string[] = DEFAULT_TOPICS) => {
+    const { main, outside } = splitByInterest(sections, interests, TODAY);
+    return { main: main.map((t) => t.sourceTitle), outside: outside.map((t) => t.sourceTitle) };
+  };
+
+  it("기본 관심 주제 밖인 학점교류는 접고, 고르면 목록에 올린다", () => {
+    const sections = [sec("open", [one("학점교류 공지", "exchange"), one("장학 공지", "scholarship")])];
+    expect(titles(sections)).toEqual({ main: ["장학 공지"], outside: ["학점교류 공지"] });
+    expect(titles(sections, [...DEFAULT_TOPICS, "exchange"]).outside).toEqual([]);
+  });
+
+  it("학사일정 표 항목은 주제가 기타이거나 꺼 둔 주제여도 목록에 남는다", () => {
+    const sections = [sec("must", [one("중간고사", "other"), one("수강신청", "course")])];
+    expect(titles(sections, []).main).toEqual(["중간고사", "수강신청"]);
+  });
+
+  it("저장한 행은 남고, 같은 공지의 다른 날 행은 접힌다", () => {
+    const exchange = card("학점교류 공지", [line("2026-11-10", "서강대학교", { saved: true }), line("2026-11-12", "고려대학교")], { topic: "exchange" });
+    const { main, outside } = splitByInterest([sec("open", [exchange])], DEFAULT_TOPICS, TODAY);
+    expect(main.map((t) => t.date)).toEqual(["2026-11-10"]);
+    expect(outside.map((t) => t.date)).toEqual(["2026-11-12"]);
+  });
+
+  it("주제가 기타이거나 없는 행은 접지 않는다", () => {
+    const sections = [sec("open", [one("기타 공지", "other"), one("주제 없는 공지", null), one("주제 빠진 공지", undefined)])];
+    expect(titles(sections).outside).toEqual([]);
+  });
+
+  it("취업 공지는 기본으로 접히고 취업·채용을 고르면 목록에 오른다", () => {
+    const sections = [sec("career", [one("추천채용", "career")])];
+    expect(titles(sections)).toEqual({ main: [], outside: ["추천채용"] });
+    expect(titles(sections, ["career"]).main).toEqual(["추천채용"]);
+  });
+
+  it("지역, 특정 대상, 다른 학과, 날짜 확인 중, 행사는 어느 쪽에도 없다", () => {
+    const sections = (["region", "group", "dept", "undated", "events"] as const).map((key) => sec(key, [one(key, "scholarship")]));
+    expect(titles(sections)).toEqual({ main: [], outside: [] });
+  });
+
+  it("관심 주제를 모두 끄면 학사일정, 저장한 것, 기타만 남는다", () => {
+    const sections = [
+      sec("must", [one("수강신청", "course")]),
+      sec("open", [one("장학 공지", "scholarship"), one("저장한 교류", "exchange", { saved: true }), one("기타 공지", "other")]),
+    ];
+    expect(titles(sections, [])).toEqual({ main: ["수강신청", "저장한 교류", "기타 공지"], outside: ["장학 공지"] });
+  });
+});
+
+describe("groupByWhen", () => {
+  const rows = (...dates: string[]) => dates.map((date) => ({ date }));
+  const keys = (today: string, ...dates: string[]) => groupByWhen(rows(...dates), today).map((g) => [g.key, g.rows.map((r) => r.date)]);
+
+  it("금요일에는 일요일까지가 이번 주이고 월말까지가 이달 안이다", () => {
+    expect(keys("2026-11-06", "2026-11-08", "2026-11-09", "2026-11-15", "2026-11-16", "2026-11-30", "2026-12-01")).toEqual([
+      ["week", ["2026-11-08"]],
+      ["next", ["2026-11-09", "2026-11-15"]],
+      ["month", ["2026-11-16", "2026-11-30"]],
+      ["later", ["2026-12-01"]],
+    ]);
+  });
+
+  it("일요일에는 내일이 다음 주다", () => {
+    expect(keys("2026-11-08", "2026-11-08", "2026-11-09")).toEqual([
+      ["week", ["2026-11-08"]],
+      ["next", ["2026-11-09"]],
+    ]);
+  });
+
+  it("다음 주가 달을 넘기면 이달 안 묶음은 없다", () => {
+    expect(keys("2026-11-25", "2026-12-03", "2026-12-07")).toEqual([
+      ["next", ["2026-12-03"]],
+      ["later", ["2026-12-07"]],
+    ]);
+  });
+
+  it("해를 넘겨도 주로 나눈다", () => {
+    expect(keys("2026-12-28", "2027-01-02", "2027-01-05", "2027-01-20")).toEqual([
+      ["week", ["2027-01-02"]],
+      ["next", ["2027-01-05"]],
+      ["later", ["2027-01-20"]],
+    ]);
+  });
+
+  it("지난 날의 행은 버리고 이름을 붙인다", () => {
+    const groups = groupByWhen(rows("2026-11-04", "2026-11-06"), "2026-11-06");
+    expect(groups).toEqual([{ key: "week", label: "이번 주", rows: [{ date: "2026-11-06" }] }]);
+  });
+});
+
+describe("topicParts와 partsText", () => {
+  const section: Section = {
+    key: "open",
+    title: "",
+    note: "",
+    collapsed: false,
+    cards: [
+      card("교류", [line("2026-11-10", "서강대학교"), line("2026-11-11", "고려대학교"), line("2026-11-12", "건국대학교")], { topic: "exchange" }),
+      card("채용 가", [line("2026-11-10", "신청")], { topic: "career" }),
+      card("채용 나", [line("2026-11-11", "신청")], { topic: "career" }),
+      card("특강", [line("2026-11-10", "신청")], { topic: "extracurricular" }),
+      card("기타", [line("2026-11-10", "신청")], { topic: "other" }),
+    ],
+  };
+  const parts = topicParts(tasksOf(section.cards, TODAY));
+
+  it("행을 주제별로 세고 많은 것부터 적는다", () => {
+    expect(parts).toEqual([
+      { label: "학점교류", count: 3 },
+      { label: "취업", count: 2 },
+      { label: "비교과", count: 1 },
+      { label: "그 밖", count: 1 },
+    ]);
+  });
+
+  it("둘까지 적고 나머지는 그 밖으로 합친다", () => {
+    expect(partsText(parts)).toBe("학점교류 3 · 취업 2 · 그 밖 2");
+    expect(partsText(parts.slice(0, 2))).toBe("학점교류 3 · 취업 2");
+    expect(partsText([{ label: "다른 지역 장학", count: 4 }, { label: "다른 학과", count: 0 }])).toBe("다른 지역 장학 4");
+    expect(partsText([])).toBe("");
+  });
+});
+
+describe("dayText", () => {
+  it("이번 달이거나 두 주 안이면 요일과 날짜를 적는다", () => {
+    expect(dayText("2026-11-12", "2026-11-06")).toBe("목 12");
+    expect(dayText("2026-11-30", "2026-11-06")).toBe("월 30");
+    expect(dayText("2026-12-03", "2026-11-25")).toBe("목 3");
+  });
+
+  it("더 멀면 월과 날짜를 적는다", () => {
+    expect(dayText("2026-12-03", "2026-11-06")).toBe("12.3");
+    expect(dayText("2027-02-04", "2026-11-06")).toBe("2.4");
   });
 });
