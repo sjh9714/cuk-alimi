@@ -467,10 +467,11 @@ public final class Feed {
     private static Line line(DateItem i, String noticeTitle, Set<Long> saved, Set<Long> done) {
         String label = noticeTitle == null || sameThing(i.getTitle(), noticeTitle) ? null : tidyLabel(i.getTitle());
         boolean fromImage = DateItem.STATUS_AUTO_IMAGE.equals(i.getStatus());
+        boolean fromAi = DateItem.STATUS_AUTO_AI.equals(i.getStatus());
         Evidence evidence = i.getEvidenceText() == null ? null : new Evidence(i.getEvidenceText(), i.getEvidenceMatch());
         return new Line(i.getId(), label, i.getStartsOn(), i.getEndsOn(), i.getStartsAt(), i.getEndsAt(),
                 ItemKind.of(i.getTitle()), saved.contains(i.getId()), done.contains(i.getId()), fromImage, evidence,
-                fromImage ? FOUND_BY_IMAGE : FOUND_BY_RULE, false);
+                fromImage ? FOUND_BY_IMAGE : fromAi ? FOUND_BY_AI : FOUND_BY_RULE, i.isDoubted());
     }
 
     /** 표의 칸을 이어 붙인 이름("서강대학교 · 서강대학교 · 서울 · 첨부파일 참조")에서 겹친 칸과 안내 문구를 뺀다. */

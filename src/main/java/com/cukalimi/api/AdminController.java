@@ -149,11 +149,11 @@ public class AdminController {
             return CLOSED_RESULT;
         }
         // 아직 지나지 않은 후보가 있으면 다른 날짜가 다 지나도 닫지 않는다. 신고로 내린 날짜가 큐에서 사라지지 않게.
-        if (items.stream().anyMatch(i -> DateItem.STATUS_CANDIDATE.equals(i.getStatus()) && !i.getEndsOn().isBefore(today))) {
+        if (items.stream().anyMatch(i -> i.awaitsReview() && !i.getEndsOn().isBefore(today))) {
             return null;
         }
         // 그림에서 읽은 후보는 운영자가 아직 보지 않은 날짜다. 후보만 있는 공지는 날짜 없는 공지처럼 다룬다.
-        List<DateItem> settled = items.stream().filter(i -> !DateItem.STATUS_CANDIDATE.equals(i.getStatus())).toList();
+        List<DateItem> settled = items.stream().filter(i -> !i.awaitsReview()).toList();
         if (!settled.isEmpty()) {
             return settled.stream().allMatch(i -> i.getEndsOn().isBefore(today)) ? CLOSED_PAST : null;
         }
@@ -195,8 +195,8 @@ public class AdminController {
         notice.markReviewed(admin.getEmail());
         // 공지를 검수 완료로 두면 그 아래 자동 항목과 그림에서 읽은 후보도 확인한 것으로 본다.
         for (DateItem item : dateItems.findByNoticeIdOrderByEndsOnAsc(noticeId)) {
-            if (DateItem.STATUS_AUTO.equals(item.getStatus()) || DateItem.STATUS_CANDIDATE.equals(item.getStatus())
-                    || DateItem.STATUS_AUTO_IMAGE.equals(item.getStatus())) {
+            if (DateItem.STATUS_AUTO.equals(item.getStatus()) || item.awaitsReview()
+                    || DateItem.STATUS_AUTO_IMAGE.equals(item.getStatus()) || DateItem.STATUS_AUTO_AI.equals(item.getStatus())) {
                 ItemSnapshot before = ItemSnapshot.of(item);
                 item.markReviewed(admin.getEmail());
                 record(noticeId, item.getId(), ReviewEvent.APPROVE, before, ItemSnapshot.of(item), admin.getEmail());

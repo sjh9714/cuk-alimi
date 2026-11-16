@@ -58,6 +58,8 @@ public class Notice {
     private OffsetDateTime audienceReadAt;
     private long audienceInputTokens;
     private long audienceOutputTokens;
+    /** 문장 찾기 AI가 이 본문을 읽은 때 (ADR 016). 본문이 바뀌면 비워 다시 읽게 한다. */
+    private OffsetDateTime locatorReadAt;
 
     protected Notice() {
     }
@@ -150,6 +152,7 @@ public class Notice {
             // 정정 공지는 대상이 바뀌었을 수 있다. 다음 차례에 다시 읽는다.
             this.audienceAi = null;
             this.audienceReadAt = null;
+            this.locatorReadAt = null;
         }
         this.title = title;
         this.bodyText = bodyText;
@@ -239,5 +242,13 @@ public class Notice {
 
     public OffsetDateTime getAudienceReadAt() {
         return audienceReadAt;
+    }
+
+    public void markLocatorRead(OffsetDateTime at) {
+        this.locatorReadAt = at;
+    }
+
+    public OffsetDateTime getLocatorReadAt() {
+        return locatorReadAt;
     }
 }

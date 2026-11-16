@@ -153,7 +153,8 @@ public class QualityController {
             }
             String before = beforeStatus(e);
             boolean automatic = DateItem.STATUS_AUTO.equals(before) || DateItem.STATUS_CANDIDATE.equals(before)
-                    || DateItem.STATUS_AUTO_IMAGE.equals(before);
+                    || DateItem.STATUS_AUTO_IMAGE.equals(before) || DateItem.STATUS_AUTO_AI.equals(before)
+                    || DateItem.STATUS_HELD_AI.equals(before);
             // 자동 항목마다 첫 판단만 센다. 사람이 고친 뒤의 수정은 추출 정확도와 상관없다.
             if (!automatic || !judgedItems.add(e.getDateItemId())) {
                 continue;

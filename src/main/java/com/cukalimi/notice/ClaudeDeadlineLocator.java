@@ -75,6 +75,7 @@ public class ClaudeDeadlineLocator implements DeadlineLocator {
         }
     }
 
+    @Override
     public String model() {
         return model;
     }

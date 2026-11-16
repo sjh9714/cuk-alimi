@@ -2,6 +2,7 @@ package com.cukalimi.ops;
 
 import com.cukalimi.config.AppProperties;
 import com.cukalimi.domain.ImageTranscriptRepository;
+import com.cukalimi.domain.LocatorReadRepository;
 import com.cukalimi.domain.NoticeRepository;
 import java.time.Clock;
 import java.time.LocalDate;
@@ -32,9 +33,12 @@ public class AiBudget {
     private final AppProperties props;
     private final ImageTranscriptRepository transcripts;
     private final NoticeRepository notices;
+    private final LocatorReadRepository locatorReads;
     private final Clock clock;
 
-    public AiBudget(AppProperties props, ImageTranscriptRepository transcripts, NoticeRepository notices, Clock clock) {
+    public AiBudget(AppProperties props, ImageTranscriptRepository transcripts, NoticeRepository notices, LocatorReadRepository locatorReads,
+            Clock clock) {
+        this.locatorReads = locatorReads;
         this.props = props;
         this.transcripts = transcripts;
         this.notices = notices;
@@ -48,7 +52,7 @@ public class AiBudget {
     /** 이번 달(서울 기준 1일 0시부터) 쓴 돈. */
     public double monthToDateUsd() {
         OffsetDateTime since = LocalDate.now(clock.withZone(SEOUL)).withDayOfMonth(1).atStartOfDay(SEOUL).toOffsetDateTime();
-        return usd(transcripts.usageSince(since)) + usd(notices.audienceUsageSince(since));
+        return usd(transcripts.usageSince(since)) + usd(notices.audienceUsageSince(since)) + usd(locatorReads.usageSince(since));
     }
 
     /** 더 써도 되는가. 상한이 0 이하면 가드를 끈 것이다. */

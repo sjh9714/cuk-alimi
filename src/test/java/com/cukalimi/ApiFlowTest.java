@@ -54,7 +54,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @TestPropertySource(properties = { "app.scheduling.enabled=false", "app.fetch-interval-ms=0",
-        "app.admin-email=admin@catholic.ac.kr", "app.public-url=http://localhost:3000", "app.mail.mode=console" })
+        "app.admin-email=admin@catholic.ac.kr", "app.public-url=http://localhost:3000", "app.mail.mode=console",
+        "app.locator.enabled=true" })
 @SuppressWarnings({ "unchecked", "rawtypes" })
 class ApiFlowTest {
 
@@ -104,6 +105,12 @@ class ApiFlowTest {
         @Primary
         FakeAudienceClassifier audienceClassifier() {
             return new FakeAudienceClassifier();
+        }
+
+        @Bean
+        @Primary
+        com.cukalimi.notice.DeadlineLocators fakeDeadlineLocators() {
+            return new com.cukalimi.notice.DeadlineLocators(new FakeLocator("fake-small"), new FakeLocator("fake-large"));
         }
 
         @Bean
@@ -171,6 +178,48 @@ class ApiFlowTest {
         }
     }
 
+    /**
+     * 제목에 "문장찾기"가 있는 공지에서만 답한다. "공결 신청 기한" 줄은 학생의 할 일로, "복학 신청 기간" 줄은 할 일이 아닌 것으로 옮긴다.
+     * 줄은 원문에서 그대로 가져오므로 인용 확인을 통과한다.
+     */
+    static class FakeLocator implements com.cukalimi.notice.DeadlineLocator {
+        final String model;
+        int calls;
+        boolean on = true;
+        /** 참이면 짝수 번째 읽기는 아무것도 찾지 못한다. 두 읽기가 엇갈린다. */
+        boolean everyOther;
+
+        FakeLocator(String model) {
+            this.model = model;
+        }
+
+        @Override
+        public boolean enabled() {
+            return on;
+        }
+
+        @Override
+        public String model() {
+            return model;
+        }
+
+        @Override
+        public Result locate(com.cukalimi.notice.NoticeText text, LocalDate postedOn) {
+            calls++;
+            List<com.cukalimi.notice.LocatorReading.Found> found = new java.util.ArrayList<>();
+            if (text.lines().get(0).contains("문장찾기") && !(everyOther && calls % 2 == 0)) {
+                for (String line : text.lines()) {
+                    if (line.contains("공결 신청 기한")) {
+                        found.add(new com.cukalimi.notice.LocatorReading.Found(line, "공결 신청", true));
+                    } else if (line.contains("복학 신청 기간")) {
+                        found.add(new com.cukalimi.notice.LocatorReading.Found(line, "복학", false));
+                    }
+                }
+            }
+            return new Result(new com.cukalimi.notice.LocatorReading(found), model, 1000, 100);
+        }
+    }
+
     /** 제목에 "AI 대상"이 있으면 3학년 컴퓨터정보공학부 조건을, "어긋남"이 있으면 읽을 때마다 다른 학년을 돌려준다. */
     static class FakeAudienceClassifier implements com.cukalimi.notice.AudienceClassifier {
         int calls;
@@ -211,6 +260,12 @@ class ApiFlowTest {
     com.cukalimi.ops.HealthAlert healthAlert;
     @Autowired
     com.cukalimi.ops.AiBudget aiBudget;
+    @Autowired
+    com.cukalimi.notice.LocatorReader locatorReader;
+    @Autowired
+    com.cukalimi.notice.DeadlineLocators locators;
+    @Autowired
+    com.cukalimi.domain.LocatorReadRepository locatorReads;
     @Autowired
     com.cukalimi.domain.NoticeRawRepository rawPages;
 
@@ -958,6 +1013,121 @@ class ApiFlowTest {
         }
     }
 
+    /** 규칙이 놓치는 마감("기한", 본문 div에 바로 적힘)을 넣은 공지. 원래 있던 복학 신청 기간(7/10)은 가짜 AI가 할 일이 아니라고 답한다. */
+    private long saveLocatorNotice(long articleNo, String title) {
+        String html = Fixtures.read("notice-273306.html").replace("273306", String.valueOf(articleNo)).replace("수강신청 일정 안내", title)
+                .replace("<div class=\"fr-view\">", "<div class=\"fr-view\"><div>3. 공결 신청 기한 : 7월 25일(토) 17:00까지</div>");
+        store.save(new NoticeSummary(articleNo, "학사", "", LocalDate.of(2026, 7, 8)), html);
+        return notices.findByArticleNo(articleNo).orElseThrow().getId();
+    }
+
+    private DateItem itemOn(long noticeId, LocalDate end) {
+        return dateItems.findByNoticeIdOrderByEndsOnAsc(noticeId).stream().filter(i -> i.getEndsOn().equals(end)).findFirst().orElse(null);
+    }
+
+    /** 다른 테스트가 이 공지의 날짜를 집지 않게 의심 표시를 지우고 공지를 내린다. */
+    private void retireLocatorNotice(long noticeId) {
+        dateItems.findByNoticeIdOrderByEndsOnAsc(noticeId).forEach(i -> {
+            i.doubt(false);
+            dateItems.save(i);
+        });
+        store.retire(noticeId, "test");
+    }
+
+    static final LocalDate MISSED = LocalDate.of(2026, 7, 25);
+    static final LocalDate EXAM = LocalDate.of(2026, 7, 10);
+
+    /** 병합표의 세 줄 (ADR 016). 규칙이 놓친 마감은 "확인"을 달아 올리고, 규칙이 잘못 읽은 날짜는 숨기지 않고 의심만 달며, 신고가 오면 둘 다 내린다. */
+    @Test
+    void locatorAddsTheMissedDeadlineMarksTheDoubtedOneAndAReportTakesThemDown() {
+        FakeLocator small = (FakeLocator) locators.small();
+        FakeLocator large = (FakeLocator) locators.large();
+        small.everyOther = false;
+        long noticeId = saveLocatorNotice(999701L, "문장찾기 공결 안내");
+        try {
+            assertThat(itemOn(noticeId, MISSED)).as("규칙은 이 마감을 놓친다").isNull();
+            assertThat(itemOn(noticeId, EXAM).getStatus()).isEqualTo(DateItem.STATUS_AUTO);
+            int largeCalls = large.calls;
+
+            var r = locatorReader.readPending(LocalDate.of(2026, 7, 10));
+
+            assertThat(r.published()).isEqualTo(1);
+            assertThat(r.doubted()).isEqualTo(1);
+            assertThat(large.calls).as("두 읽기가 같으면 큰 모델을 부르지 않는다").isEqualTo(largeCalls);
+            DateItem ai = itemOn(noticeId, MISSED);
+            assertThat(ai.getStatus()).isEqualTo(DateItem.STATUS_AUTO_AI);
+            assertThat(ai.getTitle()).isEqualTo("공결 신청 기한");
+            assertThat(ai.getEvidenceText()).isEqualTo("3. 공결 신청 기한 : 7월 25일(토) 17:00까지");
+            assertThat(ai.getEvidenceMatch()).contains("7월 25일");
+            DateItem doubted = itemOn(noticeId, EXAM);
+            assertThat(doubted.getStatus()).isEqualTo(DateItem.STATUS_AUTO);
+            assertThat(doubted.isDoubted()).isTrue();
+            assertThat(locatorReads.findByNoticeIdOrderByIdAsc(noticeId)).hasSize(2)
+                    .allMatch(x -> x.getAnswer().contains("공결 신청 기한") && "fake-small".equals(x.getModel()));
+
+            String feed = rest.getForObject("/api/feed", String.class);
+            assertThat(feed).contains("\"id\":" + ai.getId() + ",").contains("\"foundBy\":\"ai\"").contains("\"doubt\":true");
+
+            // 읽은 공지는 다시 부르지 않는다.
+            int calls = small.calls;
+            locatorReader.readPending(LocalDate.of(2026, 7, 10));
+            assertThat(small.calls).isEqualTo(calls);
+
+            String cookie = login("locator-report@catholic.ac.kr");
+            for (DateItem i : List.of(ai, doubted)) {
+                assertThat(rest.exchange("/api/items/" + i.getId() + "/report", HttpMethod.POST, withCookie(cookie, null), Void.class)
+                        .getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+                assertThat(mail.lastBody()).contains("학생 화면에서 내렸어요");
+                assertThat(dateItems.findById(i.getId()).orElseThrow().getStatus()).isEqualTo(DateItem.STATUS_HELD_AI);
+                assertThat(itemIds()).doesNotContain(i.getId());
+            }
+
+            // 신고로 내린 날짜는 다시 읽어도 올리지 않는다.
+            com.cukalimi.domain.Notice n = notices.findById(noticeId).orElseThrow();
+            n.markLocatorRead(null);
+            notices.save(n);
+            assertThat(locatorReader.readPending(LocalDate.of(2026, 7, 10)).published()).isZero();
+            assertThat(dateItems.findById(ai.getId()).orElseThrow().getStatus()).isEqualTo(DateItem.STATUS_HELD_AI);
+            assertThat(dateItems.findById(doubted.getId()).orElseThrow().getStatus()).isEqualTo(DateItem.STATUS_HELD_AI);
+        } finally {
+            retireLocatorNotice(noticeId);
+        }
+    }
+
+    /** 두 읽기가 엇갈리면 큰 모델이 한 번 더 읽어 셋 중 둘로 정한다. 큰 모델이 없으면 한 표뿐이라 공개하지 않고 보류한다. */
+    @Test
+    void whenTheSmallReadsDisagreeTheLargeModelDecidesAndWithoutItTheDateIsHeld() {
+        FakeLocator small = (FakeLocator) locators.small();
+        FakeLocator large = (FakeLocator) locators.large();
+        small.calls = 0;
+        small.everyOther = true;
+        long decided = saveLocatorNotice(999702L, "문장찾기 엇갈림 안내");
+        long held = -1;
+        try {
+            int largeCalls = large.calls;
+            locatorReader.readPending(LocalDate.of(2026, 7, 10));
+            assertThat(large.calls).isEqualTo(largeCalls + 1);
+            assertThat(itemOn(decided, MISSED).getStatus()).isEqualTo(DateItem.STATUS_AUTO_AI);
+
+            large.on = false;
+            held = saveLocatorNotice(999703L, "문장찾기 보류 안내");
+            var r = locatorReader.readPending(LocalDate.of(2026, 7, 10));
+            assertThat(r.published()).isZero();
+            DateItem waiting = itemOn(held, MISSED);
+            assertThat(waiting.getStatus()).isEqualTo(DateItem.STATUS_HELD_AI);
+            assertThat(itemIds()).doesNotContain(waiting.getId());
+            // 한 표뿐인 "아니다"로는 규칙의 날짜를 의심하지 않는다.
+            assertThat(itemOn(held, EXAM).isDoubted()).isFalse();
+        } finally {
+            small.everyOther = false;
+            large.on = true;
+            retireLocatorNotice(decided);
+            if (held > 0) {
+                retireLocatorNotice(held);
+            }
+        }
+    }
+
     @Test
     void reportOnATextDateTellsTheOperatorAndKeepsTheDate() {
         DateItem item = dateItems.findByEndsOnGreaterThanEqualAndStatusNot(LocalDate.of(2026, 7, 10), DateItem.STATUS_CANDIDATE).stream()
@@ -992,6 +1162,12 @@ class ApiFlowTest {
             var images = imageReader.readPending(LocalDate.of(2026, 7, 10));
             assertThat(images.newTranscripts()).isZero();
             assertThat(images.limitReached()).isTrue();
+
+            int locatorCalls = ((FakeLocator) locators.small()).calls;
+            var located = locatorReader.readPending(LocalDate.of(2026, 7, 10));
+            assertThat(located.read()).isZero();
+            assertThat(located.limitReached()).isTrue();
+            assertThat(((FakeLocator) locators.small()).calls).isEqualTo(locatorCalls);
 
             assertThat(healthAlert.problems()).anyMatch(p -> p.contains("AI 비용") && p.contains("20달러"));
         } finally {

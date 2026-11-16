@@ -153,6 +153,8 @@ public class NoticeStore {
                         dateItems.delete(i);
                     } else {
                         i.awaitReread();
+                        // AI가 찾은 날짜도 옛 본문의 것이다. 거두어 두면 문장 찾기가 새 본문을 읽고 다시 정한다 (ADR 016).
+                        i.holdFromLocator();
                     }
                 }
             }
@@ -223,6 +225,15 @@ public class NoticeStore {
                 }
             }
         }
+        // 규칙이 이제 스스로 찾은 마감은 AI 항목이 따로 있을 까닭이 없다. 학생의 저장이 붙은 것은 남긴다(같은 날이라 화면에서는 한 행이다).
+        Set<LocalDate> ruleDates = LocatorMerge.ruleDeadlines(extracted);
+        for (DateItem old : dateItems.findByNoticeIdOrderByEndsOnAsc(notice.getId())) {
+            boolean ai = DateItem.STATUS_AUTO_AI.equals(old.getStatus())
+                    || (DateItem.STATUS_HELD_AI.equals(old.getStatus()) && !old.isWithdrawn() && old.getNaturalKey().contains(AI_KEY));
+            if (ai && ruleDates.contains(old.getEndsOn()) && !hasUserRefs(old)) {
+                dateItems.delete(old);
+            }
+        }
         log.info("notice {} [{}] {} -> {} items ({})", view.articleNo(), category, view.title(), extracted.size(), reason);
         return new Saved(notice.getId(), extracted.size(), reason);
     }
@@ -278,6 +289,93 @@ public class NoticeStore {
         }
         log.info("notice {} image -> {} new, {} agreed dates", articleNo, added, agreedDates.size());
         return added;
+    }
+
+    /** AI가 찾은 항목의 자연 키에 들어가는 표시. "notice:{번호}:ai.{마감일}"이다. */
+    static final String AI_KEY = ":ai.";
+
+    /** @param published 지금 공개 상태인 AI 날짜 수, held 보류한 수, doubted "확인"을 단 규칙 날짜 수 */
+    public record Located(int published, int held, int doubted) {
+    }
+
+    /**
+     * 문장 찾기의 결과를 넣는다 (ADR 016). 규칙이 뽑은 항목의 날짜와 이름은 건드리지 않는다.
+     * <ul>
+     * <li>표가 모인 날짜(added)는 공개한다. 화면이 "확인"을 달고 신고를 받는다.</li>
+     * <li>사람이 검수한 공지에는 공개로 더하지 않고 보류로 남긴다. 신고로 내린 날짜는 다시 올리지 않는다.</li>
+     * <li>같은 날의 마감이 이미 있으면(규칙, 그림, 사람) 더하지 않는다.</li>
+     * <li>규칙이 올린 날짜를 AI가 할 일이 아니라고 봤으면(doubt) 숨기지 않고 표시만 한다.</li>
+     * </ul>
+     */
+    @Transactional
+    public Located saveLocatedItems(long noticeId, long articleNo, LocatorMerge.Result merged) {
+        Notice notice = notices.findById(noticeId).orElseThrow();
+        List<DateItem> all = dateItems.findByNoticeIdOrderByEndsOnAsc(noticeId);
+        String prefix = "notice:" + articleNo + AI_KEY;
+        boolean humanSeen = Notice.STATUS_REVIEWED.equals(notice.getStatus())
+                || all.stream().anyMatch(i -> DateItem.STATUS_REVIEWED.equals(i.getStatus()));
+        Set<String> seen = new HashSet<>();
+        int published = 0;
+        int held = 0;
+        List<ExtractedItem> items = new java.util.ArrayList<>(merged.added());
+        items.addAll(merged.held());
+        for (ExtractedItem item : items) {
+            LocalDate end = item.range().end();
+            String key = prefix + end;
+            boolean taken = all.stream().anyMatch(i -> !i.getNaturalKey().startsWith(prefix) && i.getEndsOn().equals(end)
+                    && !DateItem.STATUS_RETIRED.equals(i.getStatus()) && !DateItem.STATUS_HELD_AI.equals(i.getStatus()));
+            if (taken || !seen.add(key)) {
+                continue;
+            }
+            DateItem fresh = DateItem.fromLocator(noticeId, key, item.title(), item.range().start(), end, item.range().startsAt(),
+                    item.range().endsAt(), item.targetGrade());
+            if (item.evidence() != null) {
+                fresh.withEvidence(item.evidence().text(), item.evidence().match());
+            }
+            DateItem row = dateItems.findByNaturalKey(key).orElse(null);
+            if (row == null) {
+                row = dateItems.save(fresh);
+            } else {
+                row.refreshLocated(item.title(), item.range().start(), end, item.range().startsAt(), item.range().endsAt());
+                row.followEvidence(fresh);
+            }
+            if (merged.added().contains(item) && !humanSeen) {
+                row.publishFromLocator();
+            } else {
+                row.holdFromLocator();
+            }
+            if (DateItem.STATUS_AUTO_AI.equals(row.getStatus())) {
+                published++;
+            } else if (DateItem.STATUS_HELD_AI.equals(row.getStatus())) {
+                held++;
+            }
+        }
+        // 다시 읽었더니 사라진 AI 항목. 보류는 지우고, 공개했던 것은 학생의 저장이나 체크가 붙어 있으면 거두고 아니면 지운다. 신고로 내린 것은 남긴다.
+        for (DateItem i : all) {
+            if (!i.getNaturalKey().startsWith(prefix) || seen.contains(i.getNaturalKey())) {
+                continue;
+            }
+            if (DateItem.STATUS_HELD_AI.equals(i.getStatus()) && !i.isWithdrawn()) {
+                dateItems.delete(i);
+            } else if (DateItem.STATUS_AUTO_AI.equals(i.getStatus())) {
+                if (hasUserRefs(i)) {
+                    i.retire();
+                } else {
+                    dateItems.delete(i);
+                }
+            }
+        }
+        int doubted = 0;
+        for (DateItem i : all) {
+            if (DateItem.SOURCE_NOTICE.equals(i.getSourceKind()) && DateItem.STATUS_AUTO.equals(i.getStatus())) {
+                boolean doubt = merged.doubt().contains(i.getEndsOn())
+                        && com.cukalimi.feed.ItemKind.ACTION.equals(com.cukalimi.feed.ItemKind.of(i.getTitle()));
+                i.doubt(doubt);
+                doubted += doubt ? 1 : 0;
+            }
+        }
+        log.info("notice {} locator -> {} published, {} held, {} doubted", articleNo, published, held, doubted);
+        return new Located(published, held, doubted);
     }
 
     /** 본문을 읽지 못한 글도 검수 큐에 넣는다. 조용히 건너뛰면 아무도 모른다. */

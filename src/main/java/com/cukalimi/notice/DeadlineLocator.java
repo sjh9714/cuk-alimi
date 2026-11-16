@@ -13,6 +13,9 @@ public interface DeadlineLocator {
 
     boolean enabled();
 
+    /** 기록과 하루 상한에 쓰는 모델 이름. */
+    String model();
+
     /**
      * 실패하면 예외를 던진다. Failed는 요금이 나갔거나 다시 해도 소용없는 실패라 기록하고 다시 부르지 않는다.
      * 그 밖의 예외(과부하, 요청 한도, 네트워크)는 다음 차례에 다시 시도한다.

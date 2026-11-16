@@ -7,6 +7,8 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
     Optional<Notice> findByArticleNo(long articleNo);
 
+    java.util.List<Notice> findByLocatorReadAtIsNullAndPostedOnGreaterThanEqual(java.time.LocalDate since);
+
     boolean existsByArticleNo(long articleNo);
 
     long countByReviewReason(String reviewReason);

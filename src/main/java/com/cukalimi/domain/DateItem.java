@@ -26,8 +26,17 @@ public class DateItem {
     public static final String STATUS_AUTO_IMAGE = "AUTO_IMAGE";
     /** 다시 뽑았더니 사라졌거나 다른 일이 된 자동 항목인데 학생의 저장이나 체크가 붙어 있어 지우지 않고 거둔 것. 화면과 알림에서 뺀다. */
     public static final String STATUS_RETIRED = "RETIRED";
+    /** 규칙은 못 찾았고 AI가 찾은 문장에서 읽어 자동으로 공개한 날짜 (ADR 016). 화면에 "확인"을 달고 신고가 오면 내린다. */
+    public static final String STATUS_AUTO_AI = "AUTO_AI";
+    /**
+     * AI가 찾았지만 표가 모자라 공개하지 않았거나 신고로 내린 날짜 (ADR 016). 운영자를 기다린다.
+     * 그림 후보(CANDIDATE)와 상태를 나눈 것은 CANDIDATE가 "날짜가 그림에만 있는 공지"를 가리는 데 쓰이기 때문이다.
+     */
+    public static final String STATUS_HELD_AI = "HELD_AI";
     /** 학생에게 보이지 않는 상태. */
-    public static final java.util.List<String> HIDDEN = java.util.List.of(STATUS_CANDIDATE, STATUS_RETIRED);
+    public static final java.util.List<String> HIDDEN = java.util.List.of(STATUS_CANDIDATE, STATUS_HELD_AI, STATUS_RETIRED);
+    /** 규칙이 할 일로 올린 날짜를 AI는 할 일이 아니라고 봤다. 숨기지 않고 "확인"을 단다. */
+    public static final String AI_NOTE_DOUBT = "doubt";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +62,7 @@ public class DateItem {
     /** 날짜를 읽은 글과 그 안의 날짜 글자 (ADR 016). 화면의 근거다. 손으로 넣은 항목에는 없다. */
     private String evidenceText;
     private String evidenceMatch;
+    private String aiNote;
 
     protected DateItem() {
     }
@@ -113,6 +123,66 @@ public class DateItem {
         DateItem item = fromNotice(noticeId, naturalKey, title, startsOn, endsOn, startsAt, endsAt, targetGrade);
         item.status = STATUS_CANDIDATE;
         return item;
+    }
+
+    /** AI가 찾은 문장에서 읽은 항목 (ADR 016). 표가 모이기 전에는 보류다. */
+    public static DateItem fromLocator(Long noticeId, String naturalKey, String title, LocalDate startsOn,
+            LocalDate endsOn, LocalTime startsAt, LocalTime endsAt, String targetGrade) {
+        DateItem item = fromNotice(noticeId, naturalKey, title, startsOn, endsOn, startsAt, endsAt, targetGrade);
+        item.status = STATUS_HELD_AI;
+        return item;
+    }
+
+    /** 표가 모여 학생에게 공개한다. 신고로 내린 날짜와 사람이 판단한 항목은 건드리지 않는다. */
+    public void publishFromLocator() {
+        if (STATUS_HELD_AI.equals(status) && withdrawnAt == null) {
+            status = STATUS_AUTO_AI;
+            updatedAt = OffsetDateTime.now();
+        }
+    }
+
+    /** 다시 읽었더니 표가 모자라거나 공지가 바뀌었다. 공개를 거둔다. 항목은 남아 학생의 저장이 유지된다. */
+    public void holdFromLocator() {
+        if (STATUS_AUTO_AI.equals(status)) {
+            status = STATUS_HELD_AI;
+            updatedAt = OffsetDateTime.now();
+        }
+    }
+
+    /** 다시 읽은 값으로 AI 항목을 고친다. 사람이 판단한 항목은 건드리지 않는다. */
+    public void refreshLocated(String title, LocalDate startsOn, LocalDate endsOn, LocalTime startsAt, LocalTime endsAt) {
+        if (STATUS_AUTO_AI.equals(status) || STATUS_HELD_AI.equals(status)) {
+            this.title = title;
+            this.startsOn = startsOn;
+            this.endsOn = endsOn;
+            this.startsAt = startsAt;
+            this.endsAt = endsAt;
+        }
+    }
+
+    /** 신고가 온 AI 날짜, 또는 AI가 의심한 규칙 날짜를 내려 운영자에게 넘긴다. 내렸으면 true. */
+    public boolean withdrawFromAi() {
+        if (!STATUS_AUTO_AI.equals(status) && !isDoubted()) {
+            return false;
+        }
+        status = STATUS_HELD_AI;
+        withdrawnAt = OffsetDateTime.now();
+        updatedAt = withdrawnAt;
+        return true;
+    }
+
+    /** AI의 의심을 적거나 지운다. 규칙이 자동으로 올린 날짜에만 적는다. */
+    public void doubt(boolean doubted) {
+        aiNote = doubted && STATUS_AUTO.equals(status) ? AI_NOTE_DOUBT : null;
+    }
+
+    public boolean isDoubted() {
+        return STATUS_AUTO.equals(status) && AI_NOTE_DOUBT.equals(aiNote);
+    }
+
+    /** 공개하지 못해 운영자를 기다리는 날짜인가. 그림 후보와 AI 보류다. */
+    public boolean awaitsReview() {
+        return STATUS_CANDIDATE.equals(status) || STATUS_HELD_AI.equals(status);
     }
 
     /** 두 번 읽기가 일치해 학생에게 공개한다. 사람이 이미 판단한 항목은 건드리지 않는다. */

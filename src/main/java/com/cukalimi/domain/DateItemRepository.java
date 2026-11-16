@@ -19,7 +19,7 @@ public interface DateItemRepository extends JpaRepository<DateItem, Long> {
 
     List<DateItem> findByEndsOnGreaterThanEqualAndStatusNotIn(java.time.LocalDate day, java.util.Collection<String> statuses);
 
-    List<DateItem> findByStatusNot(String status);
+    List<DateItem> findByStatusNotIn(java.util.Collection<String> statuses);
 
     long countBySourceKind(String sourceKind);
 

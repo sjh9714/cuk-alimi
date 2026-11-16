@@ -110,7 +110,8 @@ public class ItemsController {
         Set<Long> savedIds = user == null ? Set.of()
                 : saved.findByUserId(user.getId()).stream().map(SavedItem::getDateItemId).collect(Collectors.toSet());
 
-        List<DateItem> items = includePast ? dateItems.findByStatusNot(DateItem.STATUS_CANDIDATE)
+        // 공개하지 않은 날짜(그림 후보, AI 보류)는 지난 것까지 달라고 해도 주지 않는다.
+        List<DateItem> items = includePast ? dateItems.findByStatusNotIn(List.of(DateItem.STATUS_CANDIDATE, DateItem.STATUS_HELD_AI))
                 : dateItems.findByEndsOnGreaterThanEqualAndStatusNotIn(today, DateItem.HIDDEN);
         Map<Long, Notice> noticeById = new HashMap<>();
         for (Notice n : notices.findAllById(items.stream().map(DateItem::getNoticeId).filter(id -> id != null).toList())) {
@@ -163,20 +164,23 @@ public class ItemsController {
                 .toList();
     }
 
-    /** 날짜가 원문과 다르다는 신고. 자동 공개한 그림 날짜는 바로 내리고, 다른 날짜는 운영자가 확인하도록 메일로 알린다. */
+    /**
+     * 날짜가 원문과 다르다는 신고. 사람 확인 없이 공개한 날짜(그림, AI)와 AI가 의심한 규칙 날짜는 바로 내리고 (ADR 010, 016),
+     * 다른 날짜는 운영자가 확인하도록 메일로 알린다.
+     */
     @PostMapping("/items/{itemId}/report")
     @Transactional
     public ResponseEntity<Void> report(HttpServletRequest request, @PathVariable long itemId) {
         AppUser user = auth.requireUser(request);
         DateItem item = dateItems.findById(itemId).orElseThrow();
-        if (DateItem.STATUS_CANDIDATE.equals(item.getStatus()) || reports.existsByDateItemIdAndUserId(itemId, user.getId())) {
+        if (item.awaitsReview() || reports.existsByDateItemIdAndUserId(itemId, user.getId())) {
             return ResponseEntity.noContent().build();
         }
         if (reports.countByUserIdAndCreatedAtAfter(user.getId(), OffsetDateTime.now(clock).minusDays(1)) >= DAILY_REPORTS) {
             throw new IllegalArgumentException("오늘은 더 신고할 수 없어요. 내일 다시 시도해 주세요");
         }
         reports.save(new DateReport(itemId, user.getId()));
-        boolean withdrawn = item.withdrawFromImage();
+        boolean withdrawn = item.withdrawFromImage() || item.withdrawFromAi();
         notifyOperator(item, withdrawn);
         return ResponseEntity.noContent().build();
     }
