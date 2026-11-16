@@ -37,6 +37,25 @@ class LocatorCoreTest {
                 "3. 공결 신청 기한 : 11월 25일(수) 17:00까지", "구분 | 일정", "결과 발표 | 12. 1.(화)");
     }
 
+    /** 학교 편집기는 칸마다 문단을 넣는다. 칸마다 줄이 나뉘면 이름과 날짜가 떨어져 AI도 인용 확인도 행을 못 본다. */
+    @Test
+    void paragraphsAndBreaksInsideATableCellDoNotSplitTheRow() {
+        NoticeView view = view("[학생지원팀] 교육지원인턴 신청 안내",
+                "<table><tr><td><p>신청기간</p></td><td><p>2026.11.17.(화)~</p><p>2026.11.27.(금)</p></td><td><div>트리니티 신청 및<br>자기소개서 제출</div></td></tr></table>"
+                        + "<p>문의 : 학생지원팀</p>");
+
+        assertThat(NoticeText.of(view).lines()).containsExactly("[학생지원팀] 교육지원인턴 신청 안내",
+                "신청기간 | 2026.11.17.(화)~ 2026.11.27.(금) | 트리니티 신청 및 자기소개서 제출", "문의 : 학생지원팀");
+    }
+
+    @Test
+    void aTableInsideACellKeepsItsOwnRowsAsLines() {
+        NoticeView view = view("[취업지원팀] 특강 안내", "<table><tr><td>일정<table><tr><td>10.26.(월)</td><td>OT</td></tr>"
+                + "<tr><td>11.02.(월)</td><td>기업분석 특강</td></tr></table></td></tr></table>");
+
+        assertThat(NoticeText.of(view).lines()).containsExactly("[취업지원팀] 특강 안내", "일정", "10.26.(월) | OT", "11.02.(월) | 기업분석 특강");
+    }
+
     @Test
     void theRulesMissThisDeadlineWhichIsWhyTheLocatorExists() {
         assertThat(LocatorMerge.ruleDeadlines(DateItemExtractor.extract(LEAVE))).doesNotContain(LocalDate.of(2026, 11, 25));
